@@ -222,10 +222,10 @@
 </nav>
       <div class="body-wrap">
   
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-java" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/09/23/hello-world/" class="article-date">
+      <a href="/2016/09/23/java/" class="article-date">
       <time datetime="2016-09-22T16:06:14.000Z" itemprop="datePublished">2016-09-23</time>
 </a>
     </div>
@@ -239,7 +239,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/23/hello-world/">Hello 小东邪</a>
+      <a class="article-title" href="/2016/09/23/java/">mac系统安装Apache Tomcat详细步骤</a>
     </h1>
   
 
@@ -249,236 +249,35 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">小东邪</a>!      这是我刚刚搭建好的个人博客,欢迎吐槽,欢迎撕逼,欢迎交流,欢迎妹子,本人主要从事iOS开发,所以会经常发表一些mac电脑配置相关的问题以及iOS开发的技术文章,当然也会写一些心情,不喜勿喷.</p>
-<h2 id="Hello-World"><a href="#Hello-World" class="headerlink" title="Hello World"></a>Hello World</h2><h3 id="那时我们有梦-关于文学-关于爱情-关于穿越世界的旅行-如今我们深夜饮酒-杯子碰到一起-都是梦碎的声音"><a href="#那时我们有梦-关于文学-关于爱情-关于穿越世界的旅行-如今我们深夜饮酒-杯子碰到一起-都是梦碎的声音" class="headerlink" title="那时我们有梦,关于文学,关于爱情,关于穿越世界的旅行.如今我们深夜饮酒,杯子碰到一起,都是梦碎的声音."></a>那时我们有梦,关于文学,关于爱情,关于穿越世界的旅行.如今我们深夜饮酒,杯子碰到一起,都是梦碎的声音.</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ <span class="keyword">for</span>(short i = 0;i &lt; 1;i--) &#123;</div><div class="line">$		i++; </div><div class="line">$		<span class="built_in">printf</span>(<span class="string">"I can give you my all.\n"</span>); &#125;</div><div class="line">$	我可能永远也走不出0和1的世界,但是我想把我的世界全都给你</div></pre></td></tr></table></figure>
-<!-- ### Generate static files
+        <h2 id="ONE-在mac系统安装Apache-Tomcat"><a href="#ONE-在mac系统安装Apache-Tomcat" class="headerlink" title="ONE:在mac系统安装Apache Tomcat"></a>ONE:在mac系统安装Apache Tomcat</h2><h3 id="第一步：下载Tomcat"><a href="#第一步：下载Tomcat" class="headerlink" title="第一步：下载Tomcat"></a>第一步：下载Tomcat</h3><p>这里本人下载的tomcat version：7.0.65<br>直接上下载地址：<a href="http://tomcat.apache.org/download-70.cgi" target="_blank" rel="external">http://tomcat.apache.org/download-70.cgi</a><br>直接下载如下选中即可：<br><img src="/img/java/java1.png" alt="Alt text"></p>
+<p> 下载完成后 ，然后随意放目录吧，这里本人放入   /usr/local/</p>
+<p>###第二步将隐藏文件夹显示出来,打开终端输入<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ defaults write com.apple.finder AppleShowAllFiles -bool <span class="literal">true</span></div></pre></td></tr></table></figure></p>
+<p>隐藏：defaults write com.apple.finder AppleShowAllFiles -bool false<br>（便捷）当然为了方便你以后对tomcat操作，我们可以将tomcat的bin路径放入环境变量中：<br>1.打开你的终端：然后输入  pico .bash_profile   回车</p>
+<ol>
+<li>然后添加你tomcat放入的路径的path，如下图所示：<br><img src="/img/java/java2.png" alt="Alt text"></li>
+</ol>
+<p>编辑完后，control+x   （保存）    继续 ：y   （同意）     回车；</p>
+<h3 id="第三步：启动tamcat；"><a href="#第三步：启动tamcat；" class="headerlink" title="第三步：启动tamcat；"></a>第三步：启动tamcat；</h3><p>1)如果你配置了（便捷）这一步，你可以直接在终端输入    startup.sh<br>2) 如果你没有配置（便捷）这一步，首先  cd  xxxx   (xxx表示你tomcat放至的路径)，然后再输入  startup.sh<br>注意：<br>           如果当 startup.sh后出现类似 “Permission denied” 字样，那么需要你对此目录进行权限设置：<br>启动终端：输入   sudo chmod 755 xxx/bin/<em>.sh     (xxx表示你tomcat放至的路径) 回车；<br>OK，再次在终端输入 startup.sh 进行启动tomcat；<br>如果仍出现类似 “Permission denied” 字样则对相应的文件进行sudo chmod 755 xxx/bin/</em>.sh(xxx表示你tomcat放至的路径) 回车；<br>OK，再次在终端输入 startup.sh 进行启动tomcat；</p>
+<p>如果出现如下：<br><img src="/img/java/java3.png" alt="Alt text"></p>
+<p>OK，comcat 启动完成，我们监测下：<br>打开你的  safari  ，然后网址输入  <a href="http://localhost:8080/" target="_blank" rel="external">http://localhost:8080/</a><br>如果能正常打开tomcat首页，说明tomcat 配置启动成功:<br><img src="/img/java/java4.png" alt="Alt text"></p>
+<p>备注：原先安装了tomcat8.0.9版本，启动后，浏览器无法显示主页。通过读readme，要求java版本7.0以上若是6.0版本，不符合要求，于是安装了tomcat7.0.55版本，可以正常使用<br>快捷命令如下：<br>1）tomcat start<br>2)  tomcat stop<br>3)  tomcat restart<br>注意:如果最后测试完记得停止tomcat不然打开eclipse运行会报错端口占用,或者终端杀死进程</p>
+<h2 id="WO-在mac系统安装"><a href="#WO-在mac系统安装" class="headerlink" title="WO:在mac系统安装"></a>WO:在mac系统安装</h2><h3 id="一-下载MySQL"><a href="#一-下载MySQL" class="headerlink" title="一 下载MySQL"></a>一 下载MySQL</h3><p>访问MySQL的官网<a href="http://www.mysql.com/downloads/" target="_blank" rel="external">http://www.mysql.com/downloads/</a> 然后在页面中会看到“MySQL Community Server”下方有一个“download”点击。<br><img src="/img/java/java5.png" alt="Alt text"></p>
+<p>进入MySQL的下载界面（<a href="http://www.mysql.com/downloads/mysql/），如果你是用的Mac" target="_blank" rel="external">http://www.mysql.com/downloads/mysql/），如果你是用的Mac</a> OS来访问的话那么就会默认为你选好了Mac OS X 平台，而下面罗列的都是在Mac OS上能用的MySQL的版本，如果是用的其他平台，在“Select Platform”选项的下拉列表中选一下就好了。<br>      在Mac OS上的MySQL的版本很多，其中有按平台来的，比如10.9/10.10等平台，然后有32位的和64位的，这个你按照自己系统的情况来进行选择，然后就是文件的后缀名有.tar.gz的和.dmg的，这里我选择的是.dmg的。点击右侧的download进行下载。<br><img src="/img/java/java6.png" alt="Alt text"></p>
+<p>然后会跳转到另外一个界面，这个界面是提示你需不需要注册的，直接选择最下面的“No thanks,just take me to downloads!”,然后这才真正跳转到了下载的界面，这个界面列了很多的供下载的服务器，选择一个服务器进行下载就OK了。<br><img src="/img/java/java7.png" alt="Alt text"></p>
+<h3 id="二-安装MySQL"><a href="#二-安装MySQL" class="headerlink" title="二 安装MySQL"></a>二 安装MySQL</h3><p>打开MySQL的安装包：<br><img src="/img/java/java8.png" alt="Alt text"></p>
+<p>点击图中的文件，注意白色为隐藏文件不用管！按照步骤默认直接安装直至安装结束后弹出如下：<br><img src="/img/java/java9.png" alt="Alt text"></p>
+<h3 id="切记圈出即为MYSQL的临时密码，记住稍后修改"><a href="#切记圈出即为MYSQL的临时密码，记住稍后修改" class="headerlink" title="切记圈出即为MYSQL的临时密码，记住稍后修改"></a>切记圈出即为MYSQL的临时密码，记住稍后修改</h3><p>更改mysql root账户密码<br>终端中输入命令：/usr/local/mysql/bin/mysql -u root p （回车） (密码较难辨别,建议复制粘贴)<br>输入旧密码即刚才圈住的密码<br><img src="/img/java/java10.png" alt="Alt text"></p>
+<p>然后进入mysql输入</p>
+<blockquote>
+<p>UPDATE mysql.user SET password=password(‘新密码’)<br>WHERE user=’root’ AND host=’localhost’;<br>exit<br>终端登录mysql<br>终端中输入命令：/usr/local/mysql/bin/mysql即可。</p>
+</blockquote>
+<h2 id="三-下载安装MySQL-Workbench-GUI-Tool-喜欢用navicat的也可以另做下载道理相同"><a href="#三-下载安装MySQL-Workbench-GUI-Tool-喜欢用navicat的也可以另做下载道理相同" class="headerlink" title="三 下载安装MySQL Workbench(GUI Tool) (喜欢用navicat的也可以另做下载道理相同)"></a>三 下载安装MySQL Workbench(GUI Tool) (喜欢用navicat的也可以另做下载道理相同)</h2><h3 id="3-1-MySQL-Workbench的下载"><a href="#3-1-MySQL-Workbench的下载" class="headerlink" title="3.1 MySQL Workbench的下载"></a>3.1 MySQL Workbench的下载</h3><p>访问<a href="http://www.mysql.com/downloads/" target="_blank" rel="external">http://www.mysql.com/downloads/</a> 在下面有一个MySQL Workbench(GUI Tool)的项，点击其下的DOWNLOAD即可进入下载界面：<br><img src="/img/java/java11.png" alt="Alt text"></p>
+<p>然后同样选择版本之后选择服务器进行下载。这里貌似只有一个版本：<br><img src="/img/java/java12.png" alt="Alt text"></p>
+<h3 id="3-2-MySQL-Workbench的安装"><a href="#3-2-MySQL-Workbench的安装" class="headerlink" title="3.2 MySQL Workbench的安装"></a>3.2 MySQL Workbench的安装</h3><p>下载完成之后安装就非常简单，双击即可安装。安装完成之后我们在“应用程序”里面就能看到MySQL Workbench.app程序了。双击打开：</p>
+<p>到这里MySql Workbench就安装完毕了。<br>      安装完成之后我们就讲MySQL Workbench连接到MySQL的数据库上，然后对数据库进行管理。</p>
+<h3 id="3-3-建立一个新连接"><a href="#3-3-建立一个新连接" class="headerlink" title="3.3 建立一个新连接"></a>3.3 建立一个新连接</h3><p>可以看到MySQL Workbench的主界面有三大模块，SQL Development，Data Modeling，Server Administration。其中在SQL Development下面有一个“New Connection”点击之后就会出现一个“Setup New Connection”的对话框,填写完Connetion Name之后点击Ok。即可完成一个连接到本地数据库的连接。<br><img src="/img/java/java13.png" alt="Alt text"><br>之后输入MYSQL的密码即可进入，注意输入的时MYSQL的密码！</p>
+<h2 id="THREE-在mac系统安装Myeclipse的详细步骤"><a href="#THREE-在mac系统安装Myeclipse的详细步骤" class="headerlink" title="THREE:在mac系统安装Myeclipse的详细步骤"></a>THREE:在mac系统安装Myeclipse的详细步骤</h2><p>Myeclipse 2015 mac是Mac OS平台上一款专业的编程工具。MyEclipse的功能非常强大，该软件是在eclipse 基础上加上自己的插件开发而成的功能强大的企业级集成开发环境。<br>【官方介绍】<br>MyEclipse for mac是Mac OS平台上的编程工具，它是在 eclipse 基础上加上自己的插件开发而成的功能强大的企业级集成开发环境，主要用于Java、Java EE以及移动应用的开发。MyEclipse的功能非常强大，支持也十分广泛，尤其是对各种开源产品的支持相当不错。<br>MyEclipse 是一个十分优秀的用于开发Java, J2EE的 Eclipse 插件集合，MyEclipse的功能非常强大，支持也十分广泛，尤其是对各种开源产品的支持十分不错。MyEclipse目前支持Java Servlet，AJAX，JSP，JSF，Struts，Spring，Hibernate，EJB3，JDBC数据库链接工具等多项功能。可以说MyEclipse是几乎囊括了目前所有主流开源产品的专属eclipse开发工具。<br>【破解教程】<br>打开myeclipse-10.0-offline-installer-macosx.dmg安装…..<br>安装完成别急着打开。<br>在终端里面打开的。下面的命令意思就是找到rd这个文件夹，并打开me_active.jar。<br><img src="/img/java/java14.png" alt="Alt text"><br><img src="/img/java/java15.png" alt="Alt text"><br>在Usercode栏输入你的注册用户名，然后点击SystemId…生成SystemId，再点击Active：<br>在工具栏里点击第二项（2.SaveProperities）：<br>在工具栏里点击第一项（1.ReplacementJarFile…）：<br><img src="/img/java/java16.png" alt="Alt text"><br>找到MyEclipse的安装目录,打开就OK了。</p>
 
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html">Deployment</a> –&gt;</p>
--->
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-
-      
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-hello-world副本 2" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/09/23/hello-world副本 2/" class="article-date">
-      <time datetime="2016-09-22T16:06:14.000Z" itemprop="datePublished">2016-09-23</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/23/hello-world副本 2/">Hello 小东邪</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">小东邪</a>!      这是我刚刚搭建好的个人博客,欢迎吐槽,欢迎撕逼,欢迎交流,欢迎妹子,本人主要从事iOS开发,所以会经常发表一些mac电脑配置相关的问题以及iOS开发的技术文章,当然也会写一些心情,不喜勿喷.</p>
-<h2 id="Hello-World"><a href="#Hello-World" class="headerlink" title="Hello World"></a>Hello World</h2><h3 id="那时我们有梦-关于文学-关于爱情-关于穿越世界的旅行-如今我们深夜饮酒-杯子碰到一起-都是梦碎的声音"><a href="#那时我们有梦-关于文学-关于爱情-关于穿越世界的旅行-如今我们深夜饮酒-杯子碰到一起-都是梦碎的声音" class="headerlink" title="那时我们有梦,关于文学,关于爱情,关于穿越世界的旅行.如今我们深夜饮酒,杯子碰到一起,都是梦碎的声音."></a>那时我们有梦,关于文学,关于爱情,关于穿越世界的旅行.如今我们深夜饮酒,杯子碰到一起,都是梦碎的声音.</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ <span class="keyword">for</span>(short i = 0;i &lt; 1;i--) &#123;</div><div class="line">$		i++; </div><div class="line">$		<span class="built_in">printf</span>(<span class="string">"I can give you my all.\n"</span>); &#125;</div><div class="line">$	我可能永远也走不出0和1的世界,但是我想把我的世界全都给你</div></pre></td></tr></table></figure>
-<!-- ### Generate static files
-
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html">Deployment</a> –&gt;</p>
--->
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-
-      
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-hello-world副本 4" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/09/23/hello-world副本 4/" class="article-date">
-      <time datetime="2016-09-22T16:06:14.000Z" itemprop="datePublished">2016-09-23</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/23/hello-world副本 4/">暂不开放</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        <h2 id="本模块暂不开放"><a href="#本模块暂不开放" class="headerlink" title="本模块暂不开放"></a>本模块暂不开放</h2>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-
-      
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-hello-world副本" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/09/23/hello-world副本/" class="article-date">
-      <time datetime="2016-09-22T16:06:14.000Z" itemprop="datePublished">2016-09-23</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/23/hello-world副本/">未配妥剑,出门便已是江湖</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        <h2 id="四海为家"><a href="#四海为家" class="headerlink" title="四海为家"></a>四海为家</h2><p><img src="/img/1/1.png" alt="Alt text"><br><img src="/img/1/2.png" alt="Alt text"><br><img src="/img/1/3.png" alt="Alt text"><br><img src="/img/1/4.png" alt="Alt text"><br><img src="/img/1/5.png" alt="Alt text"><br><img src="/img/1/6.png" alt="Alt text"><br><img src="/img/1/7.png" alt="Alt text"><br><img src="/img/1/8.png" alt="Alt text"><br><img src="/img/1/9.png" alt="Alt text"><br><img src="/img/1/10.png" alt="Alt text"><br><img src="/img/1/11.png" alt="Alt text"><br><img src="/img/1/12.png" alt="Alt text"><br><img src="/img/1/13.png" alt="Alt text"><br><img src="/img/1/14.jpg" alt="Alt text"><br><img src="/img/1/15.jpg" alt="Alt text"><br><img src="/img/1/17.jpg" alt="Alt text"><br><img src="/img/1/18.jpg" alt="Alt text"><br><img src="/img/1/19.jpg" alt="Alt text"><br><img src="/img/1/20.jpg" alt="Alt text"><br><img src="/img/1/21.jpg" alt="Alt text"><br><img src="/img/1/22.jpg" alt="Alt text"></p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-
-      
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-hello-world副本 3" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/09/23/hello-world副本 3/" class="article-date">
-      <time datetime="2016-09-22T16:06:14.000Z" itemprop="datePublished">2016-09-23</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/23/hello-world副本 3/">暂不开放</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        <h2 id="本模块暂不开放"><a href="#本模块暂不开放" class="headerlink" title="本模块暂不开放"></a>本模块暂不开放</h2>
       
     </div>
     
@@ -568,10 +367,67 @@
 
 
   
+    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
-    </nav>
+    <div class="article-meta">
+      <a href="/2016/09/23/hello-world/" class="article-date">
+      <time datetime="2016-09-22T16:06:14.000Z" itemprop="datePublished">2016-09-23</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/09/23/hello-world/">Hello 小东邪</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">小东邪</a>!      这是我刚刚搭建好的个人博客,欢迎吐槽,欢迎撕逼,欢迎交流,欢迎妹子,本人主要从事iOS开发,所以会经常发表一些mac电脑配置相关的问题以及iOS开发的技术文章,当然也会写一些心情,不喜勿喷.</p>
+<h2 id="Hello-World"><a href="#Hello-World" class="headerlink" title="Hello World"></a>Hello World</h2><h3 id="那时我们有梦-关于文学-关于爱情-关于穿越世界的旅行-如今我们深夜饮酒-杯子碰到一起-都是梦碎的声音"><a href="#那时我们有梦-关于文学-关于爱情-关于穿越世界的旅行-如今我们深夜饮酒-杯子碰到一起-都是梦碎的声音" class="headerlink" title="那时我们有梦,关于文学,关于爱情,关于穿越世界的旅行.如今我们深夜饮酒,杯子碰到一起,都是梦碎的声音."></a>那时我们有梦,关于文学,关于爱情,关于穿越世界的旅行.如今我们深夜饮酒,杯子碰到一起,都是梦碎的声音.</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ <span class="keyword">for</span>(short i = 0;i &lt; 1;i--) &#123;</div><div class="line">$		i++; </div><div class="line">$		<span class="built_in">printf</span>(<span class="string">"I can give you my all.\n"</span>); &#125;</div><div class="line">$	我可能永远也走不出0和1的世界,但是我想把我的世界全都给你</div></pre></td></tr></table></figure>
+<!-- ### Generate static files
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/deployment.html">Deployment</a> –&gt;</p>
+-->
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
   
 </div>
       <footer id="footer">
