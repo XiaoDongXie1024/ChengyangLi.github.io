@@ -142,4 +142,3 @@ require([], function (){
     }
     $(".archive-article-title").attr("target", "_blank");
 });
-
