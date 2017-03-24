@@ -12,7 +12,7 @@
 <meta property="og:site_name" content="_小__东邪___">
 <meta property="og:description" content="本文需求：将Mic采集的PCM转成AAC，可得到两种不同数据,本例采用AudioQueue存储由于公司需求更改为Mic采集的pcm一路提供给WebRTC使用，另一路将pcm转为aac，将aac提供给直播用的API。因此应该先让Mic采集原始pcm数据，采用队列保存，然后在回调函数中将其转换为aac提供给C++API,github地址:原文代码">
 <meta property="og:image" content="http://yoursite.com/img/record/1.png">
-<meta property="og:updated_time" content="2017-03-24T09:53:05.000Z">
+<meta property="og:updated_time" content="2017-03-24T10:41:13.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Audio -- PCM to AAC">
 <meta name="twitter:description" content="本文需求：将Mic采集的PCM转成AAC，可得到两种不同数据,本例采用AudioQueue存储由于公司需求更改为Mic采集的pcm一路提供给WebRTC使用，另一路将pcm转为aac，将aac提供给直播用的API。因此应该先让Mic采集原始pcm数据，采用队列保存，然后在回调函数中将其转换为aac提供给C++API,github地址:原文代码">
@@ -271,9 +271,9 @@
 <p>2.memcpy：<br>原型： void <em>memcpy(void </em>dest, const void *src, size_t n);<br>解释：从源src所指的内存地址的起始位置开始拷贝n个字节到目标dest所指的内存地址的起始位置中</p>
 <h3 id="OC-中部分知识点："><a href="#OC-中部分知识点：" class="headerlink" title="OC 中部分知识点："></a>OC 中部分知识点：</h3><p>1.OSStaus:状态码，如果没有错误返回0：（即noErr）</p>
 <p>2.AudioFormatGetPropertyInfo：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">原型： </div><div class="line">AudioFormatGetPropertyInfo(</div><div class="line">					    	AudioFormatPropertyID   inPropertyID,</div><div class="line">							<span class="built_in">UInt32</span>                  inSpecifierSize,</div><div class="line">		 					<span class="keyword">const</span> <span class="keyword">void</span> * __<span class="keyword">nullable</span> inSpecifier,</div><div class="line">							<span class="built_in">UInt32</span> *                outPropertyDataSize);</div><div class="line">									</div><div class="line">* 作用：检索给定属性的信息，比如编码器目标格式的size等</div></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">原型： </div><div class="line">AudioFormatGetPropertyInfo( AudioFormatPropertyID    inPropertyID,</div><div class="line">							<span class="built_in">UInt32</span>                   inSpecifierSize,</div><div class="line">		 					<span class="keyword">const</span> <span class="keyword">void</span> * __<span class="keyword">nullable</span>  inSpecifier,</div><div class="line">							<span class="built_in">UInt32</span> *                 outPropertyDataSize);</div><div class="line">									</div><div class="line">* 作用：检索给定属性的信息，比如编码器目标格式的size等</div></pre></td></tr></table></figure>
 <p>3.AudioSessionGetProperty：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">原型： </div><div class="line"><span class="function"><span class="keyword">extern</span> OSStatus</span></div><div class="line"><span class="title">AudioSessionGetProperty</span><span class="params">(    </span></div><div class="line">							 	AudioSessionPropertyID     inID,</div><div class="line">		            			UInt32                     *ioDataSize,</div><div class="line">								<span class="keyword">void</span>                       *outData);</div><div class="line">									</div><div class="line">* 作用：获取指定AudioSession对象的inID属性的值（比如采样率，声道数等等）</div></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">原型： </div><div class="line"><span class="function"><span class="keyword">extern</span> OSStatus</span></div><div class="line"><span class="title">AudioSessionGetProperty</span><span class="params">(  AudioSessionPropertyID     inID,</span></div><div class="line">		          		  UInt32                     *ioDataSize,</div><div class="line">					   	  <span class="keyword">void</span>                       *outData);</div><div class="line">									</div><div class="line">* 作用：获取指定AudioSession对象的inID属性的值（比如采样率，声道数等等）</div></pre></td></tr></table></figure>
 <h3 id="音频基础知识"><a href="#音频基础知识" class="headerlink" title="音频基础知识"></a>音频基础知识</h3><ol>
 <li><p>AVFoundation框架中的AVAudioPlayer和AVAudioRecorder类，用法简单，但是不支持流式，也就意味着在播放音频前，必须等到整个音频加载完成后，才能开始播放音频；录音时，也必须等到录音结束后才能获得录音数据。</p>
 </li>
@@ -300,14 +300,10 @@
 <p>知识点：</p>
 </blockquote>
 <ul>
-<li><p>采样频率：单位时间内采样次数。采样频率越大，采样点之间的间隔就越小，数字化后得到的声音就越逼真，但相应的数据量就越大，声卡一般提供11.025kHz,22.05kHz和44.1kHz等不同的采样频率。</p>
-</li>
-<li><p>采样位数：记录每次采样值数值大小的位数。采样位数通常有8bits或16bits两种，采样位数越大，所能记录的声音变化度就越细腻，相应的数据量就越大。</p>
-</li>
-<li><p>声道数：处理的声音是单声道还是立体声。单声道在声音处理过程中只有单数据流，而立体声则需要左右声道的两个数据流。显然，立体声的效果要好，但相应数据量要比单声道数据量加倍。</p>
-</li>
-<li><p>声音数据量的计算公式：数据量（字节 / 秒）=（采样频率（Hz）<em> 采样位数（bit）</em> 声道数）/  8<br>单声道的声道数为1，立体声的声道数为2. 字节B，1MB=1024KB = 1024*1024B</p>
-</li>
+<li>采样频率：单位时间内采样次数。采样频率越大，采样点之间的间隔就越小，数字化后得到的声音就越逼真，但相应的数据量就越大，声卡一般提供11.025kHz,22.05kHz和44.1kHz等不同的采样频率。</li>
+<li>采样位数：记录每次采样值数值大小的位数。采样位数通常有8bits或16bits两种，采样位数越大，所能记录的声音变化度就越细腻，相应的数据量就越大。</li>
+<li>声道数：处理的声音是单声道还是立体声。单声道在声音处理过程中只有单数据流，而立体声则需要左右声道的两个数据流。显然，立体声的效果要好，但相应数据量要比单声道数据量加倍。</li>
+<li>声音数据量的计算公式：数据量（字节 / 秒）=（采样频率（Hz）<em> 采样位数（bit）</em> 声道数）/  8<br>单声道的声道数为1，立体声的声道数为2. 字节B，1MB=1024KB = 1024*1024B</li>
 </ul>
 <p>(3).音频队列 — 详细请参考 <a href="http://blog.csdn.net/jiangyiaxiu/article/details/9190035" target="_blank" rel="external">Audio Queue</a></p>
 <h3 id="简述：在iOS和Mac-OS-X中，音频队列是一个用来录制和播放音频的软件对象，他用AudioQueueRef这个不透明数据类型来表示，该类型在AudioQueue-h头文件中声明。"><a href="#简述：在iOS和Mac-OS-X中，音频队列是一个用来录制和播放音频的软件对象，他用AudioQueueRef这个不透明数据类型来表示，该类型在AudioQueue-h头文件中声明。" class="headerlink" title="简述：在iOS和Mac OS X中，音频队列是一个用来录制和播放音频的软件对象，他用AudioQueueRef这个不透明数据类型来表示，该类型在AudioQueue.h头文件中声明。"></a>简述：在iOS和Mac OS X中，音频队列是一个用来录制和播放音频的软件对象，他用AudioQueueRef这个不透明数据类型来表示，该类型在AudioQueue.h头文件中声明。</h3><h3 id="工作："><a href="#工作：" class="headerlink" title="工作："></a>工作：</h3><ul>
@@ -391,7 +387,7 @@
         <p><span>本文标题:</span><a href="/2017/03/24/record/">Audio -- PCM to AAC</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 小东邪_Chengyang 的个人博客">小东邪_Chengyang</a></p>
         <p><span>发布时间:</span>2017年03月24日 - 15时36分</p>
-        <p><span>最后更新:</span>2017年03月24日 - 17时53分</p>
+        <p><span>最后更新:</span>2017年03月24日 - 18时41分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2017/03/24/record/" title="Audio -- PCM to AAC">http://yoursite.com/2017/03/24/record/</a>
             <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2017/03/24/record/　　作者: 小东邪_Chengyang" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
