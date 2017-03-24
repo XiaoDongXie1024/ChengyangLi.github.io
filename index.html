@@ -142,7 +142,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <a href="/tags/Apache/" style="font-size: 10px;">Apache</a> <a href="/tags/Masonry/" style="font-size: 10px;">Masonry</a> <a href="/tags/MyEclipse/" style="font-size: 10px;">MyEclipse</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/TableViewGroup/" style="font-size: 10px;">TableViewGroup</a> <a href="/tags/iOS/" style="font-size: 10px;">iOS</a> <a href="/tags/iOS-API/" style="font-size: 10px;">iOS API</a> <a href="/tags/ios/" style="font-size: 20px;">ios</a> <a href="/tags/传值/" style="font-size: 10px;">传值</a> <a href="/tags/富文本/" style="font-size: 10px;">富文本</a> <a href="/tags/小东邪/" style="font-size: 10px;">小东邪</a>
+                        <a href="/tags/AAC/" style="font-size: 10px;">AAC</a> <a href="/tags/Apache/" style="font-size: 10px;">Apache</a> <a href="/tags/Audio/" style="font-size: 10px;">Audio</a> <a href="/tags/Masonry/" style="font-size: 10px;">Masonry</a> <a href="/tags/MyEclipse/" style="font-size: 10px;">MyEclipse</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/PCM/" style="font-size: 10px;">PCM</a> <a href="/tags/TableViewGroup/" style="font-size: 10px;">TableViewGroup</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-API/" style="font-size: 10px;">iOS API</a> <a href="/tags/ios/" style="font-size: 20px;">ios</a> <a href="/tags/传值/" style="font-size: 10px;">传值</a> <a href="/tags/富文本/" style="font-size: 10px;">富文本</a> <a href="/tags/小东邪/" style="font-size: 10px;">小东邪</a>
                     </div>
                 </section>
                 
@@ -220,6 +220,70 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-record" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/03/24/record/" class="article-date">
+      <time datetime="2017-03-24T07:36:31.000Z" itemprop="datePublished">2017-03-24</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/24/record/">Audio -- PCM to AAC</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <p><Excerpt in index | 首页摘要> </p>
+<ul>
+<li>本文需求：将Mic采集的PCM转成AAC，可得到两种不同数据,本例采用AudioQueue存储<br>由于公司需求更改为Mic采集的pcm一路提供给WebRTC使用，另一路将pcm转为aac，将aac提供给直播用的API。因此应该先让Mic采集原始pcm数据，采用队列保存，然后在回调函数中将其转换为aac提供给C++API,github地址:<a href="https://github.com/ChengyangLi/XDXPCMToAACDemo">原文代码</a>
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AAC/">AAC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Audio/">Audio</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PCM/">PCM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a  href="/2017/03/24/record/#more">click me >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
     <article id="post-audio" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -262,11 +326,75 @@
 
 
   
+    <article id="post-group" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/10/25/group/" class="article-date">
+      <time datetime="2016-10-25T13:46:00.000Z" itemprop="datePublished">2016-10-25</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/25/group/">代码隐藏GroupedTableView上边多余的间隔</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <p><Excerpt in index | 首页摘要> </p>
+<ul>
+<li>代码隐藏GroupedTableView上边多余的间隔,实现诸如支付宝的 “探索” 页面时，最简单的方案是在 Storyboard 中来一个静态 Grouped UITableViewController，把各个 Cell 中的元素摆好就行了,不过会有下面的问题，第一个 Section 距离屏幕顶端有间隔
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TableViewGroup/">TableViewGroup</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a  href="/2016/10/25/group/#more">click me >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
     <article id="post-sendValue" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
       <a href="/2016/10/25/sendValue/" class="article-date">
-      <time datetime="2016-10-25T13:34:34.000Z" itemprop="datePublished">2016-10-25</time>
+      <time datetime="2016-10-25T13:35:24.000Z" itemprop="datePublished">2016-10-25</time>
 </a>
     </div>
   
@@ -326,139 +454,11 @@
 
 
   
-    <article id="post-group" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/09/23/group/" class="article-date">
-      <time datetime="2016-09-23T15:18:19.000Z" itemprop="datePublished">2016-09-23</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/23/group/">代码隐藏GroupedTableView上边多余的间隔</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              <p><Excerpt in index | 首页摘要> </p>
-<ul>
-<li>代码隐藏GroupedTableView上边多余的间隔,实现诸如支付宝的 “探索” 页面时，最简单的方案是在 Storyboard 中来一个静态 Grouped UITableViewController，把各个 Cell 中的元素摆好就行了,不过会有下面的问题，第一个 Section 距离屏幕顶端有间隔
-          
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TableViewGroup/">TableViewGroup</a></li></ul>
-    </div>
-
-      
-        <p class="article-more-link">
-          <a  href="/2016/09/23/group/#more">click me >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-hello" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/09/23/hello/" class="article-date">
-      <time datetime="2016-09-23T15:18:19.000Z" itemprop="datePublished">2016-09-23</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/23/hello/">Hello 小东邪</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              <p><Excerpt in index | 首页摘要> </p>
-<ul>
-<li>Welcome to <a href="https://hexo.io/">小东邪</a>!      这是我刚刚搭建好的个人博客,欢迎吐槽,欢迎撕逼,欢迎交流,欢迎妹子,本人主要从事iOS开发,所以会经常发表一些mac电脑配置相关的问题以及iOS开发的技术文章,当然也会写一些心情,不喜勿喷.
-          
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/小东邪/">小东邪</a></li></ul>
-    </div>
-
-      
-        <p class="article-more-link">
-          <a  href="/2016/09/23/hello/#more">click me >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
     <article id="post-masonry" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/09/23/masonry/" class="article-date">
-      <time datetime="2016-09-23T15:18:19.000Z" itemprop="datePublished">2016-09-23</time>
+      <a href="/2016/10/23/masonry/" class="article-date">
+      <time datetime="2016-10-23T11:39:42.000Z" itemprop="datePublished">2016-10-23</time>
 </a>
     </div>
   
@@ -471,7 +471,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/23/masonry/">iOS之Masonry快速上手</a>
+      <a class="article-title" href="/2016/10/23/masonry/">iOS之Masonry快速上手</a>
     </h1>
   
 
@@ -499,7 +499,71 @@
 
       
         <p class="article-more-link">
-          <a  href="/2016/09/23/masonry/#more">click me >></a>
+          <a  href="/2016/10/23/masonry/#more">click me >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-hello" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/10/23/hello/" class="article-date">
+      <time datetime="2016-10-23T11:06:52.000Z" itemprop="datePublished">2016-10-23</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/23/hello/">Hello 小东邪</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <p><Excerpt in index | 首页摘要> </p>
+<ul>
+<li>Welcome to <a href="https://hexo.io/">小东邪</a>!      这是我刚刚搭建好的个人博客,欢迎吐槽,欢迎撕逼,欢迎交流,欢迎妹子,本人主要从事iOS开发,所以会经常发表一些mac电脑配置相关的问题以及iOS开发的技术文章,当然也会写一些心情,不喜勿喷.
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/小东邪/">小东邪</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a  href="/2016/10/23/hello/#more">click me >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -521,8 +585,8 @@
     <article id="post-fulltext" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/09/23/fulltext/" class="article-date">
-      <time datetime="2016-09-23T15:18:19.000Z" itemprop="datePublished">2016-09-23</time>
+      <a href="/2016/10/09/fulltext/" class="article-date">
+      <time datetime="2016-10-09T12:42:05.000Z" itemprop="datePublished">2016-10-09</time>
 </a>
     </div>
   
@@ -535,7 +599,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/23/fulltext/">iOS之富文本</a>
+      <a class="article-title" href="/2016/10/09/fulltext/">iOS之富文本</a>
     </h1>
   
 
@@ -563,71 +627,7 @@
 
       
         <p class="article-more-link">
-          <a  href="/2016/09/23/fulltext/#more">click me >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-ios-help" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/09/23/ios-help/" class="article-date">
-      <time datetime="2016-09-22T16:06:14.000Z" itemprop="datePublished">2016-09-23</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/23/ios-help/">iOS帮助文档最新安装方法</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              <p><Excerpt in index | 首页摘要> </p>
-<ul>
-<li>鉴于有关MAC OS系统的很多东西网上都是以前的教程，很多已经失效，本人会把经常遇到的问题总结如下，定期发布到博客，希望能帮助到大家，苹果帮助文档安装中最需要注意的问题已经用红色字体标识出，请注意按照步骤走。
-          
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS-API/">iOS API</a></li></ul>
-    </div>
-
-      
-        <p class="article-more-link">
-          <a  href="/2016/09/23/ios-help/#more">click me >></a>
+          <a  href="/2016/10/09/fulltext/#more">click me >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -649,8 +649,8 @@
     <article id="post-java" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/09/23/java/" class="article-date">
-      <time datetime="2016-09-22T16:06:14.000Z" itemprop="datePublished">2016-09-23</time>
+      <a href="/2016/09/25/java/" class="article-date">
+      <time datetime="2016-09-25T04:03:34.000Z" itemprop="datePublished">2016-09-25</time>
 </a>
     </div>
   
@@ -663,7 +663,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/23/java/">mac系统安装Apache Tomcat详细步骤</a>
+      <a class="article-title" href="/2016/09/25/java/">mac系统安装Apache Tomcat详细步骤</a>
     </h1>
   
 
@@ -691,7 +691,71 @@
 
       
         <p class="article-more-link">
-          <a  href="/2016/09/23/java/#more">click me >></a>
+          <a  href="/2016/09/25/java/#more">click me >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-ios-help" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/09/25/ios-help/" class="article-date">
+      <time datetime="2016-09-25T03:53:56.000Z" itemprop="datePublished">2016-09-25</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/09/25/ios-help/">iOS帮助文档最新安装方法</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <p><Excerpt in index | 首页摘要> </p>
+<ul>
+<li>鉴于有关MAC OS系统的很多东西网上都是以前的教程，很多已经失效，本人会把经常遇到的问题总结如下，定期发布到博客，希望能帮助到大家，苹果帮助文档安装中最需要注意的问题已经用红色字体标识出，请注意按照步骤走。
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS-API/">iOS API</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a  href="/2016/09/25/ios-help/#more">click me >></a>
         </p>
       
       <div class="clearfix"></div>
