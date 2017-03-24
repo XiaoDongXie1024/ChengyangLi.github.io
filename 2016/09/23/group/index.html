@@ -14,7 +14,7 @@
 <meta property="og:image" content="http://yoursite.com/img/tbgroup/1.png">
 <meta property="og:image" content="http://yoursite.com/img/tbgroup/2.png">
 <meta property="og:image" content="http://yoursite.com/img/tbgroup/3.png">
-<meta property="og:updated_time" content="2016-10-23T11:07:43.000Z">
+<meta property="og:updated_time" content="2016-10-25T13:46:00.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="代码隐藏GroupedTableView上边多余的间隔">
 <meta name="twitter:description" content="代码隐藏GroupedTableView上边多余的间隔,实现诸如支付宝的 “探索” 页面时，最简单的方案是在 Storyboard 中来一个静态 Grouped UITableViewController，把各个 Cell 中的元素摆好就行了,不过会有下面的问题，第一个 Section 距离屏幕顶端有间隔">
@@ -270,7 +270,14 @@
 <h3 id="方法一"><a href="#方法一" class="headerlink" title="方法一:"></a>方法一:</h3><pre><code>设置tableview的边距,根据个人情况调整具体位置
 self.tableView.contentInset = UIEdgeInsetsMake(-35, 0, -20, 0)
 </code></pre><h3 id="方法二"><a href="#方法二" class="headerlink" title="方法二:"></a>方法二:</h3><pre><code>简洁版:self.tableView.tableHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 你需要的高度)];
-</code></pre><h2 id="一行代码搞定"><a href="#一行代码搞定" class="headerlink" title="一行代码搞定"></a>一行代码搞定</h2><p>代码隐藏GroupedTableView上边多余的间隔,实现诸如支付宝的 “探索” 页面时，最简单的方案是在 Storyboard 中来一个静态 Grouped UITableViewController，把各个 Cell 中的元素摆好就行了,不过会有下面的问题，第一个 Section 距离屏幕顶端有间隔<br>  <img src="/img/tbgroup/1.png" alt="Alt text"><br> 研究发现，这里其实是一个被 UITableView 默认填充的 HeaderView。而且，当试图将它的高度设置为 0 时，完全不起效果。但我们用下面的代码创建一个高度特别小的 HeaderView 时，上面的边距就不见了：<br>``` bash<br> -(void)viewDidLoad {<br>    [super viewDidLoad];<br>    CGRect frame = CGRectMake(0,0,0,CGFLOAT_MIN);<br>    self.tableView.tableHaderView = [[UIView alloc] initWithFrame:frame];<br>    }<br>CGFLOAT_MIN 这个宏表示 CGFloat 能代表的最接近 0 的浮点数，64 位下大概是 0.00(300左右个)0225 这个样子<br>这样写单纯的为了避免一个魔法数字，这里用 0.1 效果是一样的，后面再讲。 </p>
+</code></pre><h2 id="一行代码搞定"><a href="#一行代码搞定" class="headerlink" title="一行代码搞定"></a>一行代码搞定</h2><p>代码隐藏GroupedTableView上边多余的间隔,实现诸如支付宝的 “探索” 页面时，最简单的方案是在 Storyboard 中来一个静态 Grouped UITableViewController，把各个 Cell 中的元素摆好就行了,不过会有下面的问题，第一个 Section 距离屏幕顶端有间隔<br>  <img src="/img/tbgroup/1.png" alt="Alt text"><br> 研究发现，这里其实是一个被 UITableView 默认填充的 HeaderView。而且，当试图将它的高度设置为 0 时，完全不起效果。但我们用下面的代码创建一个高度特别小的 HeaderView 时，上面的边距就不见了： </p>
+<pre><code class="bash">-(void)viewDidLoad {
+   [super viewDidLoad];
+   CGRect frame = CGRectMake(0,0,0,CGFLOAT_MIN);
+   self.tableView.tableHaderView = [[UIView alloc] initWithFrame:frame];
+   }
+</code></pre>
+<p>CGFLOAT_MIN 这个宏表示 CGFloat 能代表的最接近 0 的浮点数，64 位下大概是 0.00(300左右个)0225 这个样子<br>这样写单纯的为了避免一个魔法数字，这里用 0.1 效果是一样的，后面再讲。 </p>
 <h2 id="在-Storyboard-中-0-代码搞定"><a href="#在-Storyboard-中-0-代码搞定" class="headerlink" title="在 Storyboard 中 0 代码搞定"></a>在 Storyboard 中 0 代码搞定</h2><p>没用 Storyboard 的同学使用上面的代码就 OK 了； 而在 Storyboard 中可以 0 代码搞定这个事： </p>
 <p>首先，在第一个 Section 的上面拖进来一个空 UIView<br><img src="/img/tbgroup/2.png" alt="Alt text"><br>然后选中这个 UIView 的 Runtime Attributes 栏，添加一个 frame 的 KeyPath </p>
 <p>这样头部的间隔就乖乖的不见了：</p>
@@ -288,7 +295,7 @@ self.tableView.contentInset = UIEdgeInsetsMake(-35, 0, -20, 0)
         <p><span>本文标题:</span><a href="/2016/09/23/group/">代码隐藏GroupedTableView上边多余的间隔</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 小东邪_Chengyang 的个人博客">小东邪_Chengyang</a></p>
         <p><span>发布时间:</span>2016年09月23日 - 23时18分</p>
-        <p><span>最后更新:</span>2016年10月23日 - 19时07分</p>
+        <p><span>最后更新:</span>2016年10月25日 - 21时46分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2016/09/23/group/" title="代码隐藏GroupedTableView上边多余的间隔">http://yoursite.com/2016/09/23/group/</a>
             <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2016/09/23/group/　　作者: 小东邪_Chengyang" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -314,8 +321,8 @@ self.tableView.contentInset = UIEdgeInsetsMake(-35, 0, -20, 0)
     </a>
   
   
-    <a href="/2016/09/23/masonry/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">iOS之Masonry快速上手</div>
+    <a href="/2016/09/23/hello/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Hello 小东邪</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -403,12 +410,12 @@ self.tableView.contentInset = UIEdgeInsetsMake(-35, 0, -20, 0)
         
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
         
-            <a href="/2016/09/23/masonry/" title="下一篇: iOS之Masonry快速上手">
+            <a href="/2016/09/23/hello/" title="下一篇: Hello 小东邪">
                 <i class="fa fa-angle-right"></i>
             </a>
         
     </div>
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/25/sendValue/">iOS控制器之间传值</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/23/group/">代码隐藏GroupedTableView上边多余的间隔</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/23/masonry/">iOS之Masonry快速上手</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/23/hello/">Hello 小东邪</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/23/fulltext/">iOS之富文本</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/23/ios-help/">iOS帮助文档最新安装方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/23/java/">mac系统安装Apache Tomcat详细步骤</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/03/24/audio/">audio</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/25/sendValue/">iOS控制器之间传值</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/23/group/">代码隐藏GroupedTableView上边多余的间隔</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/23/hello/">Hello 小东邪</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/23/masonry/">iOS之Masonry快速上手</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/23/fulltext/">iOS之富文本</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/23/ios-help/">iOS帮助文档最新安装方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/23/java/">mac系统安装Apache Tomcat详细步骤</a></li></ul>
     <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
     <script>
         $(".post-list").addClass("toc-article");
@@ -438,7 +445,7 @@ self.tableView.contentInset = UIEdgeInsetsMake(-35, 0, -20, 0)
     <div class="outer">
         <div id="footer-info">
             <div class="footer-left">
-                &copy; 2016 小东邪_Chengyang
+                &copy; 2017 小东邪_Chengyang
             </div>
             <div class="footer-right">
                 <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman
