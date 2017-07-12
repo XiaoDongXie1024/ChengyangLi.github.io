@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>iOS开发中截取相机部分画面，切割sampleBuffer（Crop sample buffer） | _小__东邪___</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="本文需求：在类似直播的功能界面或其他需求中需要从相机捕获的画面中单独截取出一部分区域。:原文代码](Crop sample buffer">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发中截取相机部分画面，切割sampleBuffer（Crop sample buffer）">
+<meta property="og:url" content="http://yoursite.com/2017/07/12/cropSampleBuffer/index.html">
+<meta property="og:site_name" content="_小__东邪___">
+<meta property="og:description" content="本文需求：在类似直播的功能界面或其他需求中需要从相机捕获的画面中单独截取出一部分区域。:原文代码](Crop sample buffer">
+<meta property="og:image" content="https://d26dzxoao6i3hh.cloudfront.net/items/382V1S1q1B370V3t0G2L/C35987EE9EA0C8E00004B4848ACB9213.jpg">
+<meta property="og:updated_time" content="2017-07-12T12:03:02.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS开发中截取相机部分画面，切割sampleBuffer（Crop sample buffer）">
+<meta name="twitter:description" content="本文需求：在类似直播的功能界面或其他需求中需要从相机捕获的画面中单独截取出一部分区域。:原文代码](Crop sample buffer">
+<meta name="twitter:image" content="https://d26dzxoao6i3hh.cloudfront.net/items/382V1S1q1B370V3t0G2L/C35987EE9EA0C8E00004B4848ACB9213.jpg">
+  
+    <link rel="alternative" href="/atom.xml" title="_小__东邪___" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.png" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/" title="Hi Mate">小东邪_Chengyang</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">风陵渡口初相遇,一遇杨过误终身.</p>
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">桃花岛</a></li>
+                        
+                            <li><a href="/works">绝世武功</a></li>
+                        
+                            <li><a href="/about">千里传音</a></li>
+                        
+                            <li><a href="/FrontEndGuide">黯然销魂</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=xiao_dx@foxmail.com" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/ChengyangLi/ChengyangLi.github.io" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="https://www.zhihu.com/people/xiao-dong-xie-75" title="zhihu">zhihu</a>
+                            
+                                <a class="fl weibo" target="_blank" href="http://weibo.com/u/5088497199" title="weibo">weibo</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/AAC/" style="font-size: 10px;">AAC</a> <a href="/tags/Apache/" style="font-size: 10px;">Apache</a> <a href="/tags/Audio/" style="font-size: 10px;">Audio</a> <a href="/tags/CaptureSession/" style="font-size: 10px;">CaptureSession</a> <a href="/tags/Masonry/" style="font-size: 10px;">Masonry</a> <a href="/tags/MyEclipse/" style="font-size: 10px;">MyEclipse</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/PCM/" style="font-size: 10px;">PCM</a> <a href="/tags/TableViewGroup/" style="font-size: 10px;">TableViewGroup</a> <a href="/tags/crop/" style="font-size: 10px;">crop</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-API/" style="font-size: 10px;">iOS API</a> <a href="/tags/ios/" style="font-size: 15px;">ios</a> <a href="/tags/sampleBuffer/" style="font-size: 10px;">sampleBuffer</a> <a href="/tags/传值/" style="font-size: 10px;">传值</a> <a href="/tags/富文本/" style="font-size: 10px;">富文本</a> <a href="/tags/小东邪/" style="font-size: 10px;">小东邪</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://King-Cheng.github.io/">鹏丞万里</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">一生负气成今日，四海无人对夕阳.</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="Me">小东邪_Chengyang</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.png" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="Me">小东邪_Chengyang</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">风陵渡口初相遇,一遇杨过误终身.</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">桃花岛</a></li>
+                
+                    <li><a href="/works">绝世武功</a></li>
+                
+                    <li><a href="/about">千里传音</a></li>
+                
+                    <li><a href="/FrontEndGuide">黯然销魂</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=xiao_dx@foxmail.com" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/ChengyangLi/ChengyangLi.github.io" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="https://www.zhihu.com/people/xiao-dong-xie-75" title="zhihu">zhihu</a>
+                    
+                        <a class="weibo" target="_blank" href="http://weibo.com/u/5088497199" title="weibo">weibo</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-cropSampleBuffer" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/07/12/cropSampleBuffer/" class="article-date">
+      <time datetime="2017-07-12T11:52:30.000Z" itemprop="datePublished">2017-07-12</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      iOS开发中截取相机部分画面，切割sampleBuffer（Crop sample buffer）
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CaptureSession/">CaptureSession</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/crop/">crop</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sampleBuffer/">sampleBuffer</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p><excerpt in="" index="" |="" 首页摘要=""> </excerpt></p>
+<ul>
+<li>本文需求：在类似直播的功能界面或其他需求中需要从相机捕获的画面中单独截取出一部分区域。:<a href="https://github.com/ChengyangLi/Crop-sample-buffer" target="_blank" rel="external">原文代码](Crop sample buffer</a><a id="more"></a>
+<the rest="" of="" contents="" |="" 余下全文=""><h2 id="iOS开发中截取相机部分画面，切割sampleBuffer（Crop-sample-buffer）"><a href="#iOS开发中截取相机部分画面，切割sampleBuffer（Crop-sample-buffer）" class="headerlink" title="iOS开发中截取相机部分画面，切割sampleBuffer（Crop sample buffer）"></a>iOS开发中截取相机部分画面，切割sampleBuffer（Crop sample buffer）</h2></the></li>
+</ul>
+<h3 id="本例需求：在类似直播的功能界面或其他需求中需要从相机捕获的画面中单独截取出一部分区域。"><a href="#本例需求：在类似直播的功能界面或其他需求中需要从相机捕获的画面中单独截取出一部分区域。" class="headerlink" title="本例需求：在类似直播的功能界面或其他需求中需要从相机捕获的画面中单独截取出一部分区域。"></a>本例需求：在类似直播的功能界面或其他需求中需要从相机捕获的画面中单独截取出一部分区域。</h3><h3 id="原理：由于需要截取相机捕获整个画面其中一部分，所以也就必须拿到那一部分画面的数据，又因为相机AVCaptureVideoDataOutputSampleBufferDelegate中的sampleBuffer为系统私有的数据结构不可直接操作，所以需要将其转换成可以切割的数据结构再进行切割，网上有种思路说将sampleBuffer间接转换为UIImage再对图片切割，这种思路繁琐且性能低，本例将sampleBuffer转换为CoreImage中的CIImage-性能相对较高且降低代码繁琐度。"><a href="#原理：由于需要截取相机捕获整个画面其中一部分，所以也就必须拿到那一部分画面的数据，又因为相机AVCaptureVideoDataOutputSampleBufferDelegate中的sampleBuffer为系统私有的数据结构不可直接操作，所以需要将其转换成可以切割的数据结构再进行切割，网上有种思路说将sampleBuffer间接转换为UIImage再对图片切割，这种思路繁琐且性能低，本例将sampleBuffer转换为CoreImage中的CIImage-性能相对较高且降低代码繁琐度。" class="headerlink" title="原理：由于需要截取相机捕获整个画面其中一部分，所以也就必须拿到那一部分画面的数据，又因为相机AVCaptureVideoDataOutputSampleBufferDelegate中的sampleBuffer为系统私有的数据结构不可直接操作，所以需要将其转换成可以切割的数据结构再进行切割，网上有种思路说将sampleBuffer间接转换为UIImage再对图片切割，这种思路繁琐且性能低，本例将sampleBuffer转换为CoreImage中的CIImage,性能相对较高且降低代码繁琐度。"></a>原理：由于需要截取相机捕获整个画面其中一部分，所以也就必须拿到那一部分画面的数据，又因为相机AVCaptureVideoDataOutputSampleBufferDelegate中的sampleBuffer为系统私有的数据结构不可直接操作，所以需要将其转换成可以切割的数据结构再进行切割，网上有种思路说将sampleBuffer间接转换为UIImage再对图片切割，这种思路繁琐且性能低，本例将sampleBuffer转换为CoreImage中的CIImage,性能相对较高且降低代码繁琐度。</h3><h3 id="最终效果如下，-绿色框中即为截图的画面，长按可以移动。"><a href="#最终效果如下，-绿色框中即为截图的画面，长按可以移动。" class="headerlink" title="最终效果如下， 绿色框中即为截图的画面，长按可以移动。"></a>最终效果如下， 绿色框中即为截图的画面，长按可以移动。</h3><p><img src="https://d26dzxoao6i3hh.cloudfront.net/items/382V1S1q1B370V3t0G2L/C35987EE9EA0C8E00004B4848ACB9213.jpg" alt=""></p>
+<h3 id="源代码地址-Crop-sample-buffer"><a href="#源代码地址-Crop-sample-buffer" class="headerlink" title="源代码地址:Crop sample buffer"></a>源代码地址:<a href="https://github.com/ChengyangLi/Crop-sample-buffer" target="_blank" rel="external">Crop sample buffer</a></h3><h3 id="博客地址-Crop-sample-buffer"><a href="#博客地址-Crop-sample-buffer" class="headerlink" title="博客地址:Crop sample buffer"></a>博客地址:<a href="">Crop sample buffer</a></h3><h3 id="简书地址-Crop-sample-buffer"><a href="#简书地址-Crop-sample-buffer" class="headerlink" title="简书地址:Crop sample buffer"></a>简书地址:<a href="http://www.jianshu.com/p/ac79a80f1af2" target="_blank" rel="external">Crop sample buffer</a></h3><h2 id="基本配置"><a href="#基本配置" class="headerlink" title="基本配置"></a>基本配置</h2><p>1.配置相机基本环境(初始化AVCaptureSession，设置代理，开启)，在示例代码中有，这里不再重复。</p>
+<p>2.通过AVCaptureVideoDataOutputSampleBufferDelegate代理中拿到原始画面数据(CMSampleBufferRef)进行处理</p>
+<h3 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// AVCaptureVideoDataOutputSampleBufferDelegate</span></div><div class="line">- (<span class="keyword">void</span>)captureOutput:(<span class="built_in">AVCaptureOutput</span> *)captureOutput didOutputSampleBuffer:(<span class="built_in">CMSampleBufferRef</span>)sampleBuffer fromConnection:(<span class="built_in">AVCaptureConnection</span> *)connection &#123;</div><div class="line">    <span class="built_in">CGRect</span> cropRect                     = <span class="built_in">CGRectMake</span>(<span class="keyword">self</span>.cropView.frame.origin.x, <span class="keyword">self</span>.cropView.frame.origin.y, g_width_size, g_height_size);</div><div class="line">    <span class="built_in">CMSampleBufferRef</span> cropSampleBuffer  = [<span class="keyword">self</span> cropSampleBuffer:sampleBuffer withCropRect:cropRect];</div><div class="line">    <span class="comment">// note : don't forget to release cropSampleBuffer so that avoid memory error !!!  一定要对cropSampleBuffer进行release避免内存泄露过多而发生闪退</span></div><div class="line">    <span class="built_in">CFRelease</span>(cropSampleBuffer);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>以上方法为每产生一帧视频帧时调用一次的相机代理，其中sampleBuffer为每帧画面的原始数据，需要对原始数据进行切割处理方可达到本例需求。注意最后一定要对cropSampleBuffer进行release避免内存泄露过多而发生闪退。</li>
+</ul>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// crop sample buffer，</span></div><div class="line">- (<span class="built_in">CMSampleBufferRef</span>)cropSampleBuffer:(<span class="built_in">CMSampleBufferRef</span>)buffer withCropRect:(<span class="built_in">CGRect</span>)cropRect &#123;</div><div class="line">    <span class="comment">// a CMSampleBuffer's CVImageBuffer of media data.</span></div><div class="line">    CVImageBufferRef imageBuffer = <span class="built_in">CMSampleBufferGetImageBuffer</span>(buffer);</div><div class="line">    <span class="comment">// Locks the BaseAddress of the PixelBuffer to ensure that the memory is accessible. 对 imageBuffer 进行加锁处理保证内存可用。</span></div><div class="line">    CVPixelBufferLockBaseAddress(imageBuffer,<span class="number">0</span>);</div><div class="line">    </div><div class="line">    <span class="comment">/*</span></div><div class="line">     First, to render to a texture, you need an image that is compatible with the OpenGL texture cache. Images that were created with the camera API are already compatible and you can immediately map them for inputs. Suppose you want to create an image to render on and later read out for some other processing though. You have to have create the image with a special property. The attributes for the image must have kCVPixelBufferIOSurfacePropertiesKey as one of the keys to the dictionary.</div><div class="line">        如果要进行页面渲染，需要一个和OpenGL缓冲兼容的图像。用相机API创建的图像已经兼容，您可以马上映射他们进行输入。假设你从已有画面中截取一个新的画面，用作其他处理，你必须创建一种特殊的属性用来创建图像。对于图像的属性必须有kCVPixelBufferIOSurfacePropertiesKey 作为字典的Key.因此以下步骤不可省略</div><div class="line">     </div><div class="line">     */</div><div class="line">    <span class="built_in">CFDictionaryRef</span>         emptyDic; <span class="comment">// empty value for attr value.</span></div><div class="line">    <span class="built_in">CFMutableDictionaryRef</span>  dicAttrs;</div><div class="line">    emptyDic = <span class="built_in">CFDictionaryCreate</span>(kCFAllocatorDefault, <span class="comment">// our empty IOSurface properties dictionary</span></div><div class="line">                               <span class="literal">NULL</span>,</div><div class="line">                               <span class="literal">NULL</span>,</div><div class="line">                               <span class="number">0</span>,</div><div class="line">                               &amp;kCFTypeDictionaryKeyCallBacks,</div><div class="line">                               &amp;kCFTypeDictionaryValueCallBacks);</div><div class="line">    </div><div class="line">    dicAttrs = <span class="built_in">CFDictionaryCreateMutable</span>(kCFAllocatorDefault,</div><div class="line">                                      <span class="number">1</span>,</div><div class="line">                                      &amp;kCFTypeDictionaryKeyCallBacks,</div><div class="line">                                      &amp;kCFTypeDictionaryValueCallBacks);</div><div class="line">    </div><div class="line">    <span class="built_in">CFDictionarySetValue</span>(dicAttrs,</div><div class="line">                         kCVPixelBufferIOSurfacePropertiesKey,</div><div class="line">                         emptyDic);</div><div class="line">    </div><div class="line">    OSStatus status;</div><div class="line">    <span class="comment">//options: [NSDictionary dictionaryWithObjectsAndKeys:[NSNull null], kCIImageColorSpace, nil]];</span></div><div class="line">    </div><div class="line">    <span class="comment">// 采用CoreImage API中的方法进行切割，好处是比转换成UIImage进行切割性能高很多</span></div><div class="line">    <span class="built_in">CIImage</span> *ciImage = [<span class="built_in">CIImage</span> imageWithCVPixelBuffer:imageBuffer];</div><div class="line">    ciImage          = [ciImage imageByCroppingToRect:cropRect];</div><div class="line">    </div><div class="line">    </div><div class="line">    CVPixelBufferRef pixelBuffer;</div><div class="line">    status = CVPixelBufferCreate(kCFAllocatorSystemDefault, cropRect.size.width, cropRect.size.height, kCVPixelFormatType_420YpCbCr8BiPlanarFullRange, dicAttrs, &amp;pixelBuffer);</div><div class="line">    </div><div class="line"><span class="comment">//    if (status != 0) log4cplus_debug("AVCaptureVideoDataOutputSampleBufferDelegate", "CVPixelBufferCreate error %d",(int)status);</span></div><div class="line">    </div><div class="line">    <span class="comment">// ensures that the CVPixelBuffer is accessible in system memory. This should only be called if the base address is going to be used and the pixel data will be accessed by the CPU</span></div><div class="line">    CVPixelBufferLockBaseAddress(pixelBuffer, <span class="number">0</span>);</div><div class="line">    </div><div class="line">    <span class="built_in">CIContext</span> * ciContext = [<span class="built_in">CIContext</span> contextWithOptions: <span class="literal">nil</span>];</div><div class="line">    <span class="comment">// In OS X 10.11.3 and iOS 9.3 and later</span></div><div class="line">    [ciContext render:ciImage toCVPixelBuffer:pixelBuffer bounds:cropRect colorSpace:<span class="literal">nil</span>];</div><div class="line">    </div><div class="line">    CVPixelBufferUnlockBaseAddress(pixelBuffer, <span class="number">0</span>);</div><div class="line">    CVPixelBufferUnlockBaseAddress(imageBuffer, <span class="number">0</span>);</div><div class="line">    </div><div class="line">    <span class="built_in">CMSampleTimingInfo</span> sampleTime = &#123;</div><div class="line">        .duration                 = <span class="built_in">CMSampleBufferGetDuration</span>(buffer),</div><div class="line">        .presentationTimeStamp    = <span class="built_in">CMSampleBufferGetPresentationTimeStamp</span>(buffer),</div><div class="line">        .decodeTimeStamp          = <span class="built_in">CMSampleBufferGetDecodeTimeStamp</span>(buffer)</div><div class="line">    &#125;;</div><div class="line">    </div><div class="line">    <span class="built_in">CMVideoFormatDescriptionRef</span> videoInfo = <span class="literal">NULL</span>;</div><div class="line">    status = <span class="built_in">CMVideoFormatDescriptionCreateForImageBuffer</span>(kCFAllocatorDefault, pixelBuffer, &amp;videoInfo);</div><div class="line"><span class="comment">//    if (status != 0) log4cplus_debug("AVCaptureVideoDataOutputSampleBufferDelegate", "CMVideoFormatDescriptionCreateForImageBuffer error %d",(int)status);</span></div><div class="line">    </div><div class="line">    <span class="built_in">CMSampleBufferRef</span> cropBuffer;</div><div class="line">    status = <span class="built_in">CMSampleBufferCreateForImageBuffer</span>(kCFAllocatorDefault, pixelBuffer, <span class="literal">true</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, videoInfo, &amp;sampleTime, &amp;cropBuffer);</div><div class="line"><span class="comment">//    if (status != 0) log4cplus_debug("AVCaptureVideoDataOutputSampleBufferDelegate", "CMSampleBufferCreateForImageBuffer error %d",(int)status);</span></div><div class="line">    </div><div class="line">    <span class="built_in">CFRelease</span>(dicAttrs);</div><div class="line">    <span class="built_in">CFRelease</span>(emptyDic);</div><div class="line">    <span class="built_in">CFRelease</span>(videoInfo);</div><div class="line">    <span class="comment">//    CFRelease(pixelBuffer);</span></div><div class="line">    CVPixelBufferRelease(pixelBuffer);</div><div class="line">    </div><div class="line">    ciImage = <span class="literal">nil</span>;</div><div class="line">    pixelBuffer = <span class="literal">nil</span>;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> cropBuffer;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>以上方法为切割sampleBuffer的对象方法，首先从CMSampleBufferRef中提取出CVImageBufferRef数据结构，然后对CVImageBufferRef进行加锁处理，如果要进行页面渲染，需要一个和OpenGL缓冲兼容的图像。用相机API创建的图像已经兼容，您可以马上映射他们进行输入。假设你从已有画面中截取一个新的画面，用作其他处理，你必须创建一种特殊的属性用来创建图像。对于图像的属性必须有kCVPixelBufferIOSurfacePropertiesKey 作为字典的Key.因此创建字典的关键几步不可省略。</li>
+<li>此方法简单便捷，仅需传入CMSampleBufferRef的对象最后也会返回CMSampleBufferRef的对象。具体解释在代码中均有注释。</li>
+</ul>
+
+      
+      
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang" title="打赏，支持一下">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()" title="关闭">×</a>
+            <div class="shang_tit">
+              <p>劫富济贫</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">一生负气成今日，四海无人对夕阳</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2017/07/12/cropSampleBuffer/">iOS开发中截取相机部分画面，切割sampleBuffer（Crop sample buffer）</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 小东邪_Chengyang 的个人博客">小东邪_Chengyang</a></p>
+        <p><span>发布时间:</span>2017年07月12日 - 19时52分</p>
+        <p><span>最后更新:</span>2017年07月12日 - 20时03分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2017/07/12/cropSampleBuffer/" title="iOS开发中截取相机部分画面，切割sampleBuffer（Crop sample buffer）">http://yoursite.com/2017/07/12/cropSampleBuffer/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2017/07/12/cropSampleBuffer/　　作者: 小东邪_Chengyang" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+  
+    <a href="/2017/03/24/record/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Audio -- PCM to AAC</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#iOS开发中截取相机部分画面，切割sampleBuffer（Crop-sample-buffer）"><span class="toc-number">1.</span> <span class="toc-text">iOS开发中截取相机部分画面，切割sampleBuffer（Crop sample buffer）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#本例需求：在类似直播的功能界面或其他需求中需要从相机捕获的画面中单独截取出一部分区域。"><span class="toc-number">1.1.</span> <span class="toc-text">本例需求：在类似直播的功能界面或其他需求中需要从相机捕获的画面中单独截取出一部分区域。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#原理：由于需要截取相机捕获整个画面其中一部分，所以也就必须拿到那一部分画面的数据，又因为相机AVCaptureVideoDataOutputSampleBufferDelegate中的sampleBuffer为系统私有的数据结构不可直接操作，所以需要将其转换成可以切割的数据结构再进行切割，网上有种思路说将sampleBuffer间接转换为UIImage再对图片切割，这种思路繁琐且性能低，本例将sampleBuffer转换为CoreImage中的CIImage-性能相对较高且降低代码繁琐度。"><span class="toc-number">1.2.</span> <span class="toc-text">原理：由于需要截取相机捕获整个画面其中一部分，所以也就必须拿到那一部分画面的数据，又因为相机AVCaptureVideoDataOutputSampleBufferDelegate中的sampleBuffer为系统私有的数据结构不可直接操作，所以需要将其转换成可以切割的数据结构再进行切割，网上有种思路说将sampleBuffer间接转换为UIImage再对图片切割，这种思路繁琐且性能低，本例将sampleBuffer转换为CoreImage中的CIImage,性能相对较高且降低代码繁琐度。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#最终效果如下，-绿色框中即为截图的画面，长按可以移动。"><span class="toc-number">1.3.</span> <span class="toc-text">最终效果如下， 绿色框中即为截图的画面，长按可以移动。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#源代码地址-Crop-sample-buffer"><span class="toc-number">1.4.</span> <span class="toc-text">源代码地址:Crop sample buffer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#博客地址-Crop-sample-buffer"><span class="toc-number">1.5.</span> <span class="toc-text">博客地址:Crop sample buffer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#简书地址-Crop-sample-buffer"><span class="toc-number">1.6.</span> <span class="toc-text">简书地址:Crop sample buffer</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#基本配置"><span class="toc-number">2.</span> <span class="toc-text">基本配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#解析"><span class="toc-number">2.1.</span> <span class="toc-text">解析</span></a></li></ol></li></ol>
+</div>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="2017/07/12/cropSampleBuffer/" data-title="iOS开发中截取相机部分画面，切割sampleBuffer（Crop sample buffer）" data-url="http://yoursite.com/2017/07/12/cropSampleBuffer/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xiaodongxie"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = '/js/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+    <!-- 多说公共JS代码 end -->
+</div>
+
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2017/03/24/record/" title="下一篇: Audio -- PCM to AAC">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/07/12/cropSampleBuffer/">iOS开发中截取相机部分画面，切割sampleBuffer（Crop sample buffer）</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/24/record/">Audio -- PCM to AAC</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/25/group/">代码隐藏GroupedTableView上边多余的间隔</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/25/sendValue/">iOS控制器之间传值</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/23/masonry/">iOS之Masonry快速上手</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/23/hello/">Hello 小东邪</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/09/fulltext/">iOS之富文本</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/25/java/">mac系统安装Apache Tomcat详细步骤</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/25/ios-help/">iOS帮助文档最新安装方法</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2017 小东邪_Chengyang
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >桃花岛到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本模块阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+</body>
+</html>
