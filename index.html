@@ -143,7 +143,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <a href="/tags/AAC/" style="font-size: 10px;">AAC</a> <a href="/tags/Apache/" style="font-size: 10px;">Apache</a> <a href="/tags/Audio/" style="font-size: 10px;">Audio</a> <a href="/tags/CaptureSession/" style="font-size: 10px;">CaptureSession</a> <a href="/tags/Masonry/" style="font-size: 10px;">Masonry</a> <a href="/tags/MyEclipse/" style="font-size: 10px;">MyEclipse</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/PCM/" style="font-size: 10px;">PCM</a> <a href="/tags/TableViewGroup/" style="font-size: 10px;">TableViewGroup</a> <a href="/tags/crop/" style="font-size: 10px;">crop</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-API/" style="font-size: 10px;">iOS API</a> <a href="/tags/ios/" style="font-size: 15px;">ios</a> <a href="/tags/sampleBuffer/" style="font-size: 10px;">sampleBuffer</a> <a href="/tags/传值/" style="font-size: 10px;">传值</a> <a href="/tags/富文本/" style="font-size: 10px;">富文本</a> <a href="/tags/小东邪/" style="font-size: 10px;">小东邪</a>
+                        <a href="/tags/AAC/" style="font-size: 10px;">AAC</a> <a href="/tags/Apache/" style="font-size: 10px;">Apache</a> <a href="/tags/Audio/" style="font-size: 10px;">Audio</a> <a href="/tags/AudioQueue/" style="font-size: 10px;">AudioQueue</a> <a href="/tags/AudioUnit/" style="font-size: 10px;">AudioUnit</a> <a href="/tags/CaptureSession/" style="font-size: 10px;">CaptureSession</a> <a href="/tags/Masonry/" style="font-size: 10px;">Masonry</a> <a href="/tags/MyEclipse/" style="font-size: 10px;">MyEclipse</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/PCM/" style="font-size: 10px;">PCM</a> <a href="/tags/TableViewGroup/" style="font-size: 10px;">TableViewGroup</a> <a href="/tags/crop/" style="font-size: 10px;">crop</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-API/" style="font-size: 10px;">iOS API</a> <a href="/tags/ios/" style="font-size: 15px;">ios</a> <a href="/tags/sampleBuffer/" style="font-size: 10px;">sampleBuffer</a> <a href="/tags/传值/" style="font-size: 10px;">传值</a> <a href="/tags/富文本/" style="font-size: 10px;">富文本</a> <a href="/tags/小东邪/" style="font-size: 10px;">小东邪</a>
                     </div>
                 </section>
                 
@@ -250,7 +250,7 @@
           
               <p><Excerpt in index | 首页摘要> </p>
 <ul>
-<li>本文需求：在类似直播的功能界面或其他需求中需要从相机捕获的画面中单独截取出一部分区域。:<a href="https://github.com/ChengyangLi/Crop-sample-buffer">原文代码](Crop sample buffer</a>
+<li>本文需求：在类似直播的功能界面,二维码扫描，人脸识别或其他需求中需要从相机捕获的画面中单独截取出一部分区域。:<a href="https://github.com/ChengyangLi/Crop-sample-buffer">原文代码](Crop sample buffer</a>
           
       
       
@@ -315,7 +315,7 @@
           
               <p><Excerpt in index | 首页摘要> </p>
 <ul>
-<li>本文需求：将Mic采集的PCM转成AAC，可得到两种不同数据,本例采用AudioQueue存储<br>由于公司需求更改为Mic采集的pcm一路提供给WebRTC使用，另一路将pcm转为aac，将aac提供给直播用的API。因此应该先让Mic采集原始pcm数据，采用队列保存，然后在回调函数中将其转换为aac提供给C++API,github地址:<a href="https://github.com/ChengyangLi/XDXPCMToAACDemo">原文代码</a>
+<li>本文需求：将Mic采集的PCM转成AAC，可得到两种不同数据,本例采用AudioQueue/AudioUnit两种方式实现<br>由于公司需求更改为Mic采集的pcm一路提供给WebRTC使用，另一路将pcm转为aac，将aac提供给直播用的API。因此应该先让Mic采集原始pcm数据，采用AudioQueue/AudioUnit两种方式保存，然后在回调函数中将其转换为aac提供给C++API,github地址:<a href="https://github.com/ChengyangLi/XDXPCMToAACDemo">原文代码</a>
           
       
       
@@ -327,7 +327,7 @@
 
       
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AAC/">AAC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Audio/">Audio</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PCM/">PCM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AAC/">AAC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Audio/">Audio</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AudioQueue/">AudioQueue</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AudioUnit/">AudioUnit</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PCM/">PCM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
     </div>
 
       
