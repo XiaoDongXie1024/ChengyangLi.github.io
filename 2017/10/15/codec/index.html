@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>硬件编码相关知识(H264,H265) | _小__东邪___</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="本文：关于H264,H265的背景，数据结构，在iOS开发中编解码的应用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="硬件编码相关知识(H264,H265)">
+<meta property="og:url" content="http://yoursite.com/2017/10/15/codec/index.html">
+<meta property="og:site_name" content="_小__东邪___">
+<meta property="og:description" content="本文：关于H264,H265的背景，数据结构，在iOS开发中编解码的应用。">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/4MjvNUYUjn7sepN6rfHBScTU1xjpuxJNhAehV*q9nEo!/r/dD0BAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/YzR.EY74.X3qTUVug6dqgUloBXoRGpCsEMY9jTJ92hY!/r/dG0BAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/JI*RsrrYdTLiB*6L6xqdStUSCZeENlZki.WI9lWrm08!/r/dIUBAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/Udf6jXwi246EnQCpJB5GjjtIPO.JGW1HIUs5GJ.RA3g!/r/dOAAAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/lon9Gkrh218xTau1uUjCSIVGeFP1D.ngU2BI1RdLgOU!/r/dDwBAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/q72L*E2Rx5eBP9dJtK*oBsNR5QAKP.CcRMMrJvhscwQ!/r/dGkAAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/5BO2QRkJoeE63Kpq4Mjy1hLd0uWt7KFh.NUpY5eqVGI!/r/dOIAAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/Un4n*gbn6IB.zF9xMVQgDeQdCZU1SUCRycaf2r3E0vw!/r/dDwBAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/KExDsa2RJzGpe6a9NBTKJClrkX3HpcT68p2i4pqoJyY!/r/dOAAAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/yuYb34e.S.4UoETVIJDPI1L6DYdVGdlKfW80wULI.T8!/r/dHYBAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/YUsq7p4oq0E8Uvz5hYxFAxH2pA.NoV38kiwjRwYjtZY!/r/dGwBAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/6LWUuXOk2xoelipoT3Lbu6qJQDTfOemFXg55YP1dh.U!/r/dDwBAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/dLoOAI2WwVn2yGsmI0W3nqkRQplUQzK0w5gl99vUYkU!/r/dOAAAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/wNFEFe7Lz7M5qCeNJNPrrSwyQjJdG3.J75X1vkszvn8!/r/dCsAAAAAAAAA">
+<meta property="og:updated_time" content="2017-10-15T07:25:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="硬件编码相关知识(H264,H265)">
+<meta name="twitter:description" content="本文：关于H264,H265的背景，数据结构，在iOS开发中编解码的应用。">
+<meta name="twitter:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/4MjvNUYUjn7sepN6rfHBScTU1xjpuxJNhAehV*q9nEo!/r/dD0BAAAAAAAA">
+  
+    <link rel="alternative" href="/atom.xml" title="_小__东邪___" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.png" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/" title="Hi Mate">小东邪_Chengyang</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">风陵渡口初相遇,一遇杨过误终身.</p>
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">桃花岛</a></li>
+                        
+                            <li><a href="/works">绝世武功</a></li>
+                        
+                            <li><a href="/about">千里传音</a></li>
+                        
+                            <li><a href="/FrontEndGuide">黯然销魂</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=xiao_dx@foxmail.com" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/ChengyangLi/ChengyangLi.github.io" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="https://www.zhihu.com/people/xiao-dong-xie-75" title="zhihu">zhihu</a>
+                            
+                                <a class="fl weibo" target="_blank" href="http://weibo.com/u/5088497199" title="weibo">weibo</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/AAC/" style="font-size: 10px;">AAC</a> <a href="/tags/Apache/" style="font-size: 10px;">Apache</a> <a href="/tags/Audio/" style="font-size: 10px;">Audio</a> <a href="/tags/AudioQueue/" style="font-size: 10px;">AudioQueue</a> <a href="/tags/AudioUnit/" style="font-size: 10px;">AudioUnit</a> <a href="/tags/CaptureSession/" style="font-size: 10px;">CaptureSession</a> <a href="/tags/H264/" style="font-size: 10px;">H264</a> <a href="/tags/HEVC/" style="font-size: 10px;">HEVC</a> <a href="/tags/Masonry/" style="font-size: 10px;">Masonry</a> <a href="/tags/MyEclipse/" style="font-size: 10px;">MyEclipse</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/PCM/" style="font-size: 10px;">PCM</a> <a href="/tags/TableViewGroup/" style="font-size: 10px;">TableViewGroup</a> <a href="/tags/crop/" style="font-size: 10px;">crop</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-API/" style="font-size: 10px;">iOS API</a> <a href="/tags/ios/" style="font-size: 15px;">ios</a> <a href="/tags/sampleBuffer/" style="font-size: 10px;">sampleBuffer</a> <a href="/tags/传值/" style="font-size: 10px;">传值</a> <a href="/tags/富文本/" style="font-size: 10px;">富文本</a> <a href="/tags/小东邪/" style="font-size: 10px;">小东邪</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://King-Cheng.github.io/">鹏丞万里</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">一生负气成今日，四海无人对夕阳.</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="Me">小东邪_Chengyang</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.png" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="Me">小东邪_Chengyang</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">风陵渡口初相遇,一遇杨过误终身.</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">桃花岛</a></li>
+                
+                    <li><a href="/works">绝世武功</a></li>
+                
+                    <li><a href="/about">千里传音</a></li>
+                
+                    <li><a href="/FrontEndGuide">黯然销魂</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=xiao_dx@foxmail.com" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/ChengyangLi/ChengyangLi.github.io" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="https://www.zhihu.com/people/xiao-dong-xie-75" title="zhihu">zhihu</a>
+                    
+                        <a class="weibo" target="_blank" href="http://weibo.com/u/5088497199" title="weibo">weibo</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-codec" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/10/15/codec/" class="article-date">
+      <time datetime="2017-10-15T07:18:32.000Z" itemprop="datePublished">2017-10-15</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      硬件编码相关知识(H264,H265)
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/H264/">H264</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/HEVC/">HEVC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p><excerpt in="" index="" |="" 首页摘要=""> </excerpt></p>
+<ul>
+<li>本文：关于H264,H265的背景，数据结构，在iOS开发中编解码的应用。<a id="more"></a>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+</the></li>
+</ul>
+<h2 id="硬件编码相关知识-H264-H265"><a href="#硬件编码相关知识-H264-H265" class="headerlink" title="硬件编码相关知识(H264,H265)"></a>硬件编码相关知识(H264,H265)</h2><h3 id="阅读人群：研究硬件编码器应用于iOS开发中-从0研究关于硬件编解码，码流中解析数据结构"><a href="#阅读人群：研究硬件编码器应用于iOS开发中-从0研究关于硬件编解码，码流中解析数据结构" class="headerlink" title="阅读人群：研究硬件编码器应用于iOS开发中,从0研究关于硬件编解码，码流中解析数据结构"></a>阅读人群：研究硬件编码器应用于iOS开发中,从0研究关于硬件编解码，码流中解析数据结构</h3><h3 id="内容概述：关于H264-H265的背景，数据结构，在iOS开发中编解码的应用"><a href="#内容概述：关于H264-H265的背景，数据结构，在iOS开发中编解码的应用" class="headerlink" title="内容概述：关于H264,H265的背景，数据结构，在iOS开发中编解码的应用"></a>内容概述：关于H264,H265的背景，数据结构，在iOS开发中编解码的应用</h3><h3 id="博客地址-硬件编码相关知识"><a href="#博客地址-硬件编码相关知识" class="headerlink" title="博客地址:  硬件编码相关知识"></a>博客地址:  <a href="http://localhost:4000/2017/10/15/codec/#" target="_blank" rel="external">硬件编码相关知识</a></h3><h3 id="简书地址-硬件编码相关知识"><a href="#简书地址-硬件编码相关知识" class="headerlink" title="简书地址:  硬件编码相关知识"></a>简书地址:  <a href="http://www.jianshu.com/p/668e6abbed8c" target="_blank" rel="external">硬件编码相关知识</a></h3><h4 id="一-背景及概述"><a href="#一-背景及概述" class="headerlink" title="一. 背景及概述"></a>一. 背景及概述</h4><h5 id="1-在升级-iOS-11-之后，iPhone-7-及更新的设备内的照片存储将不再用-JPEG-了，而采用了一种新的图片格式-HEIF（发音同-heef），在-iOS-中对应的文件后缀为-heic-，其编码用的是-HEVC（这个发不了音，哈哈哈）格式，又称-H-265-（这个就很熟悉了-H-264-的下一代），同时视频也用-HEVC-作为编码器，对应的文件后缀还是-mov-。"><a href="#1-在升级-iOS-11-之后，iPhone-7-及更新的设备内的照片存储将不再用-JPEG-了，而采用了一种新的图片格式-HEIF（发音同-heef），在-iOS-中对应的文件后缀为-heic-，其编码用的是-HEVC（这个发不了音，哈哈哈）格式，又称-H-265-（这个就很熟悉了-H-264-的下一代），同时视频也用-HEVC-作为编码器，对应的文件后缀还是-mov-。" class="headerlink" title="1. 在升级 iOS 11 之后，iPhone 7 及更新的设备内的照片存储将不再用 JPEG 了，而采用了一种新的图片格式 HEIF（发音同 heef），在 iOS 中对应的文件后缀为 .heic ，其编码用的是 HEVC（这个发不了音，哈哈哈）格式，又称 H.265 （这个就很熟悉了 H.264 的下一代），同时视频也用 HEVC 作为编码器，对应的文件后缀还是 .mov 。"></a>1. 在升级 iOS 11 之后，iPhone 7 及更新的设备内的照片存储将不再用 JPEG 了，而采用了一种新的图片格式 HEIF（发音同 heef），在 iOS 中对应的文件后缀为 .heic ，其编码用的是 HEVC（这个发不了音，哈哈哈）格式，又称 H.265 （这个就很熟悉了 H.264 的下一代），同时视频也用 HEVC 作为编码器，对应的文件后缀还是 .mov 。</h5><h5 id="2-这里要注意他们俩的关系，-HEIF-是图片格式，而-HEVC-是编码格式-类似-H-264-VP8-，HEIF-是图片容器（类似于视频的-mkv，mp4-后缀），而用-HEVC-进行编码的-HEIF-图片就是后缀为-heic-的图片，也是苹果主要使用的格式。"><a href="#2-这里要注意他们俩的关系，-HEIF-是图片格式，而-HEVC-是编码格式-类似-H-264-VP8-，HEIF-是图片容器（类似于视频的-mkv，mp4-后缀），而用-HEVC-进行编码的-HEIF-图片就是后缀为-heic-的图片，也是苹果主要使用的格式。" class="headerlink" title="2. 这里要注意他们俩的关系， HEIF 是图片格式，而 HEVC 是编码格式(类似 H.264,VP8)，HEIF 是图片容器（类似于视频的 mkv，mp4 后缀），而用 HEVC 进行编码的 HEIF 图片就是后缀为 .heic 的图片，也是苹果主要使用的格式。"></a>2. 这里要注意他们俩的关系， HEIF 是图片格式，而 HEVC 是编码格式(类似 H.264,VP8)，HEIF 是图片容器（类似于视频的 mkv，mp4 后缀），而用 HEVC 进行编码的 HEIF 图片就是后缀为 .heic 的图片，也是苹果主要使用的格式。</h5><h5 id="3-HEIF-全称-High-Efficiency-Image-Format-HEIF-。是由-Moving-Picture-Experts-Group-制定的，存储图片和图片序列的格式。下图是形容HEIF的一句英文诗，JPEG很大，但是HEIF很小。"><a href="#3-HEIF-全称-High-Efficiency-Image-Format-HEIF-。是由-Moving-Picture-Experts-Group-制定的，存储图片和图片序列的格式。下图是形容HEIF的一句英文诗，JPEG很大，但是HEIF很小。" class="headerlink" title="3. HEIF 全称 High Efficiency Image Format (HEIF)。是由 Moving Picture Experts Group 制定的，存储图片和图片序列的格式。下图是形容HEIF的一句英文诗，JPEG很大，但是HEIF很小。"></a>3. HEIF 全称 High Efficiency Image Format (HEIF)。是由 Moving Picture Experts Group 制定的，存储图片和图片序列的格式。下图是形容HEIF的一句英文诗，JPEG很大，但是HEIF很小。</h5><p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/4MjvNUYUjn7sepN6rfHBScTU1xjpuxJNhAehV*q9nEo!/r/dD0BAAAAAAAA" alt="HEIF"></p>
+<h5 id="4-优点"><a href="#4-优点" class="headerlink" title="4. 优点"></a>4. 优点</h5><ul>
+<li>压缩比高，在相同图片质量情况下，比JPEG高两倍</li>
+<li>能增加如图片的深度信息，透明通道等辅助图片。</li>
+<li>支持存放多张图片，类似相册和集合。(实现多重曝光的效果)</li>
+<li>支持多张图片实现GIF和livePhoto的动画效果。</li>
+<li>无类似JPEG的最大像素限制</li>
+<li>支持透明像素</li>
+<li>分块加载机制</li>
+<li>支持缩略图</li>
+</ul>
+<h5 id="5-文件组成"><a href="#5-文件组成" class="headerlink" title="5. 文件组成"></a>5. 文件组成</h5><ul>
+<li>在视频文件中，容器和编码是独立开的，比如mp4,mkv等格式是容器而H.264,vp8等是编码</li>
+<li>但是图像文件中，像JPEG就是混合在一起的，所以自然不太好用。HEIF就把容器和编码分开了，有用来存放单个或多个图像的容器。</li>
+</ul>
+<h5 id="6-兼容"><a href="#6-兼容" class="headerlink" title="6. 兼容"></a>6. 兼容</h5><p>一般情况下，用户是对这个格式无感知的，因为只有在新款支持硬解码的 iOS 手机内部是以 heif &amp; hevc 格式来存储照片和视频的，而在用户通过 Airdrop或者数据线传送到电脑上的时候，对不兼容的设备会自动转换到 JPEG 的格式。所以也不会影响你使用微信，微博等软件。</p>
+<h4 id="二-视频编解码"><a href="#二-视频编解码" class="headerlink" title="二. 视频编解码"></a>二. 视频编解码</h4><h5 id="1-软编与硬编概念"><a href="#1-软编与硬编概念" class="headerlink" title="1.软编与硬编概念"></a>1.软编与硬编概念</h5><ul>
+<li>软编码：使用CPU进行编码。</li>
+<li>硬编码：不使用CPU进行编码，使用显卡GPU,专用的DSP、FPGA、ASIC芯片等硬件进行编码。</li>
+<li>比较<ul>
+<li>软编码：实现直接、简单，参数调整方便，升级易，但CPU负载重，性能较硬编码低，低码率下质量通常比硬编码要好一点。</li>
+<li>性能高，低码率下通常质量低于软编码器，但部分产品在GPU硬件平台移植了优秀的软编码算法（如X264）的，质量基本等同于软编码。</li>
+<li>苹果在iOS 8.0系统之前，没有开放系统的硬件编码解码功能，不过Mac OS系统一直有，被称为Video ToolBox的框架来处理硬件的编码和解码，终于在iOS 8.0后，苹果将该框架引入iOS系统。</li>
+</ul>
+</li>
+</ul>
+<h5 id="2-h-264编码原理"><a href="#2-h-264编码原理" class="headerlink" title="2. h.264编码原理"></a>2. h.264编码原理</h5><p>H264是新一代的编码标准，以高压缩高质量和支持多种网络的流媒体传输著称，在编码方面，我理解的他的理论依据是：参照一段时间内图像的统计结果表明，在相邻几幅图像画面中，一般有差别的像素只有10%以内的点,亮度差值变化不超过2%，而色度差值的变化只有1%以内。所以对于一段变化不大图像画面，我们可以先编码出一个完整的图像帧A，随后的B帧就不编码全部图像，只写入与A帧的差别，这样B帧的大小就只有完整帧的1/10或更小！B帧之后的C帧如果变化不大，我们可以继续以参考B的方式编码C帧，这样循环下去。这段图像我们称为一个序列（序列就是有相同特点的一段数据），当某个图像与之前的图像变化很大，无法参考前面的帧来生成，那我们就结束上一个序列，开始下一段序列，也就是对这个图像生成一个完整帧A1，随后的图像就参考A1生成，只写入与A1的差别内容。</p>
+<blockquote>
+<p>在H264协议里定义了三种帧，完整编码的帧叫I帧，参考之前的I帧生成的只包含差异部分编码的帧叫P帧，还有一种参考前后的帧编码的帧叫B帧。</p>
+<p>H264采用的核心算法是帧内压缩和帧间压缩，帧内压缩是生成I帧的算法，帧间压缩是生成B帧和P帧的算法。</p>
+</blockquote>
+<h5 id="3-对序列的说明"><a href="#3-对序列的说明" class="headerlink" title="3. 对序列的说明"></a>3. 对序列的说明</h5><blockquote>
+<p>在H264中图像以序列为单位进行组织，一个序列是一段图像编码后的数据流，以I帧开始，到下一个I帧结束。</p>
+</blockquote>
+<p>一个序列的第一个图像叫做 IDR 图像（立即刷新图像），IDR 图像都是 I 帧图像。H.264 引入 IDR 图像是为了解码的重同步，当解码器解码到 IDR 图像时，立即将参考帧队列清空，将已解码的数据全部输出或抛弃，重新查找参数集，开始一个新的序列。这样，如果前一个序列出现重大错误，在这里可以获得重新同步的机会。IDR图像之后的图像永远不会使用IDR之前的图像的数据来解码。</p>
+<p>一个序列就是一段内容差异不太大的图像编码后生成的一串数据流。当运动变化比较少时，一个序列可以很长，因为运动变化少就代表图像画面的内容变动很小，所以就可以编一个I帧，然后一直P帧、B帧了。当运动变化多时，可能一个序列就比较短了，比如就包含一个I帧和3、4个P帧。</p>
+<h5 id="4-对三种帧的介绍"><a href="#4-对三种帧的介绍" class="headerlink" title="4. 对三种帧的介绍"></a>4. 对三种帧的介绍</h5><ul>
+<li><p>I帧</p>
+<ul>
+<li>帧内编码帧 ，I帧表示关键帧，你可以理解为这一帧画面的完整保留；解码时只需要本帧数据就可以完成（因为包含完整画面）。</li>
+<li>特点<ul>
+<li>它是一个全帧压缩编码帧。它将全帧图像信息进行JPEG压缩编码及传输</li>
+<li>解码时仅用I帧的数据就可重构完整图像</li>
+<li>I帧描述了图像背景和运动主体的详情</li>
+<li>I帧不需要参考其他画面而生成</li>
+<li>I帧是P帧和B帧的参考帧(其质量直接影响到同组中以后各帧的质量)</li>
+<li>I帧是帧组GOP的基础帧(第一帧),在一组中只有一个I帧</li>
+<li>I帧不需要考虑运动矢量</li>
+<li>I帧所占数据的信息量比较大</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>P帧</p>
+<ul>
+<li>前向预测编码帧。P帧表示的是这一帧跟之前的一个关键帧（或P帧）的差别，解码时需要用之前缓存的画面叠加上本帧定义的差别，生成最终画面。（也就是差别帧，P帧没有完整画面数据，只有与前一帧的画面差别的数据），通过充分将低于图像序列中前面已编码帧的时间冗余信息来压缩传输数据量的编码图像，也叫预测帧</li>
+<li>P帧的预测与重构：P帧是以I帧为参考帧,在I帧中找出P帧“某点”的预测值和运动矢量,取预测差值和运动矢量一起传送。在接收端根据运动矢量从I帧中找出P帧“某点”的预测值并与差值相加以得到P帧“某点”样值,从而可得到完整的P帧。</li>
+<li>特点:<ul>
+<li>P帧是I帧后面相隔1~2帧的编码帧</li>
+<li>P帧采用运动补偿的方法传送它与前面的I或P帧的差值及运动矢量(预测误差)</li>
+<li>解码时必须将I帧中的预测值与预测误差求和后才能重构完整的P帧图像</li>
+<li>P帧属于前向预测的帧间编码。它只参考前面最靠近它的I帧或P帧</li>
+<li>P帧可以是其后面P帧的参考帧,也可以是其前后的B帧的参考帧</li>
+<li>由于P帧是参考帧,它可能造成解码错误的扩散</li>
+<li>由于是差值传送,P帧的压缩比较高</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>B帧</p>
+<ul>
+<li>双向预测内插编码帧。B帧是双向差别帧，也就是B帧记录的是本帧与前后帧的差别（具体比较复杂，有4种情况，但我这样说简单些），换言之，要解码B帧，不仅要取得之前的缓存画面，还要解码之后的画面，通过前后画面的与本帧数据的叠加取得最终的画面。B帧压缩率高，但是解码时CPU会比较累。</li>
+<li>B帧的预测与重构：B帧以前面的I或P帧和后面的P帧为参考帧,“找出”B帧“某点”的预测值和两个运动矢量,并取预测差值和运动矢量传送。接收端根据运动矢量在两个参考帧中“找出(算出)”预测值并与差值求和,得到B帧“某点”样值,从而可得到完整的B帧。</li>
+<li>特点：<ul>
+<li>B帧是由前面的I或P帧和后面的P帧来进行预测的</li>
+<li>B帧传送的是它与前面的I或P帧和后面的P帧之间的预测误差及运动矢量</li>
+<li>B帧是双向预测编码帧</li>
+<li>B帧压缩比最高,因为它只反映丙参考帧间运动主体的变化情况,预测比较准确</li>
+<li>B帧不是参考帧,不会造成解码错误的扩散</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>I、B、P各帧是根据压缩算法的需要，是人为定义的,它们都是实实在在的物理帧。一般来说，I帧的压缩率是7（跟JPG差不多），P帧是20，B帧可以达到50。可见使用B帧能节省大量空间，节省出来的空间可以用来保存多一些I帧，这样在相同码率下，可以提供更好的画质。</p>
+</blockquote>
+<h5 id="5-对压缩算法得说明"><a href="#5-对压缩算法得说明" class="headerlink" title="5.对压缩算法得说明"></a>5.对压缩算法得说明</h5><p>h264的压缩方法:</p>
+<ul>
+<li>分组:把几帧图像分为一组(GOP，也就是一个序列),为防止运动变化,帧数不宜取多。</li>
+<li>定义帧:将每组内各帧图像定义为三种类型,即I帧、B帧和P帧;</li>
+<li>预测帧:以I帧做为基础帧,以I帧预测P帧,再由I帧和P帧预测B帧;</li>
+<li><p>数据传输:最后将I帧数据与预测的差值信息进行存储和传输。</p>
+</li>
+<li><p>帧内（Intraframe）压缩也称为空间压缩（Spatial compression）。</p>
+<ul>
+<li>当压缩一帧图像时，仅考虑本帧的数据而不考虑相邻帧之间的冗余信息，这实际上与静态图像压缩类似。帧内一般采用有损压缩算法，由于帧内压缩是编码一个完整的图像，所以可以独立的解码、显示。帧内压缩一般达不到很高的压缩，跟编码jpeg差不多。</li>
+</ul>
+</li>
+<li><p>帧间（Interframe）压缩</p>
+<ul>
+<li>相邻几帧的数据有很大的相关性，或者说前后两帧信息变化很小的特点。也即连续的视频其相邻帧之间具有冗余信息,根据这一特性，压缩相邻帧之间的冗余量就可以进一步提高压缩量，减小压缩比。帧间压缩也称为时间压缩（Temporal compression），它通过比较时间轴上不同帧之间的数据进行压缩。帧间压缩一般是无损的。帧差值（Frame differencing）算法是一种典型的时间压缩法，它通过比较本帧与相邻帧之间的差异，仅记录本帧与其相邻帧的差值，这样可以大大减少数据量。</li>
+</ul>
+</li>
+<li><p>有损（Lossy ）压缩和无损（Lossy less）压缩。</p>
+<ul>
+<li>无损压缩也即压缩前和解压缩后的数据完全一致。多数的无损压缩都采用RLE行程编码算法。</li>
+<li>有损压缩意味着解压缩后的数据与压缩前的数据不一致。在压缩的过程中要丢失一些人眼和人耳所不敏感的图像或音频信息,而且丢失的信息不可恢复。几乎所有高压缩的算法都采用有损压缩,这样才能达到低数据率的目标。丢失的数据率与压缩比有关,压缩比越小，丢失的数据越多,解压缩后的效果一般越差。此外,某些有损压缩算法采用多次重复压缩的方式,这样还会引起额外的数据丢失。</li>
+</ul>
+</li>
+</ul>
+<h5 id="6-DTS和PTS的不同"><a href="#6-DTS和PTS的不同" class="headerlink" title="6. DTS和PTS的不同"></a>6. DTS和PTS的不同</h5><p>DTS主要用于视频的解码,在解码阶段使用.PTS主要用于视频的同步和输出.在display的时候使用.在没有B frame的情况下.DTS和PTS的输出顺序是一样的。</p>
+<p>EX：下面给出一个GOP为15的例子,其解码的参照frame及其解码的顺序都在里面:<br><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/YzR.EY74.X3qTUVug6dqgUloBXoRGpCsEMY9jTJ92hY!/r/dG0BAAAAAAAA" alt="GOP"><br>如上图：I frame 的解码不依赖于任何的其它的帧.而p frame的解码则依赖于其前面的I frame或者P frame.B frame的解码则依赖于其前的最近的一个I frame或者P frame 及其后的最近的一个P frame.</p>
+<h4 id="三-IOS系统-H-264视频硬件编解码说明"><a href="#三-IOS系统-H-264视频硬件编解码说明" class="headerlink" title="三. IOS系统 H.264视频硬件编解码说明"></a>三. IOS系统 H.264视频硬件编解码说明</h4><h5 id="1-对VideoToolbox的介绍"><a href="#1-对VideoToolbox的介绍" class="headerlink" title="1.对VideoToolbox的介绍"></a>1.对VideoToolbox的介绍</h5><p>在iOS中，与视频相关的接口有5个，从顶层开始分别是 AVKit - AVFoundation - VideoToolbox - Core Media - Core Video</p>
+<p>其中VideoToolbox可以将视频解压到CVPixelBuffer,也可以压缩到CMSampleBuffer。</p>
+<p>如果需要使用硬编码的话，在5个接口中，就需要用到AVKit，AVFoundation和VideoToolbox。在这里我就只介绍VideoToolbox。</p>
+<h5 id="2-VideoToolbox中的对象"><a href="#2-VideoToolbox中的对象" class="headerlink" title="2.VideoToolbox中的对象"></a>2.VideoToolbox中的对象</h5><ul>
+<li>CVPixelBuffer : 编码前和解码后的图像数据结构（未压缩光栅图像缓存区-Uncompressed Raster Image Buffer）</li>
+</ul>
+<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/JI*RsrrYdTLiB*6L6xqdStUSCZeENlZki.WI9lWrm08!/r/dIUBAAAAAAAA" alt="CVPixelBuffer"></p>
+<ul>
+<li>CVPixelBufferPool : 顾名思义，存放CVPixelBuffer</li>
+</ul>
+<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/Udf6jXwi246EnQCpJB5GjjtIPO.JGW1HIUs5GJ.RA3g!/r/dOAAAAAAAAAA" alt="CVPixelBufferPool"></p>
+<ul>
+<li>pixelBufferAttributes : CFDictionary对象，可能包含了视频的宽高，像素格式类型（32RGBA, YCbCr420），是否可以用于OpenGL ES等相关信息</li>
+<li>CMTime : 时间戳相关。时间以 64-big/32-bit形式出现。 分子是64-bit的时间值，分母是32-bit的时标(time scale)</li>
+<li>CMClock : 时间戳相关。时间以 64-big/32-bit形式出现。 分子是64-bit的时间值，分母是32-bit的时标(time scale)。它封装了时间源，其中CMClockGetHostTimeClock()封装了mach_absolute_time()</li>
+<li>CMTimebase : 时间戳相关。时间以 64-big/32-bit形式出现。CMClock上的控制视图。提供了时间的映射:CMTimebaseSetTime(timebase, kCMTimeZero); 速率控制: CMTimebaseSetRate(timebase, 1.0);</li>
+</ul>
+<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/lon9Gkrh218xTau1uUjCSIVGeFP1D.ngU2BI1RdLgOU!/r/dDwBAAAAAAAA" alt="CMTime"></p>
+<ul>
+<li>CMBlockBuffer : 编码后，结果图像的数据结构</li>
+<li>CMVideoFormatDescription : 图像存如图所示，编解码前后的视频图像均封装在CMSampleBuffer中，如果是编码后的图像，以CMBlockBuffe方式存储；解码后的图像，以CVPixelBuffer存储。CMSampleBuffer里面还有另外的时间信息CMTime和视频描述信息CMVideoFormatDesc。储方式，编解码器等格式描述</li>
+<li>CMSampleBuffer : 存放编解码前后的视频图像的容器数据结构</li>
+<li>如图所示，编解码前后的视频图像均封装在CMSampleBuffer中，如果是编码后的图像，以CMBlockBuffe方式存储；解码后的图像，以CVPixelBuffer存储。CMSampleBuffer里面还有另外的时间信息CMTime和视频描述信息CMVideoFormatDesc。<br><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/q72L*E2Rx5eBP9dJtK*oBsNR5QAKP.CcRMMrJvhscwQ!/r/dGkAAAAAAAAA" alt="CMSampleBuffer"></li>
+</ul>
+<h5 id="3-硬解码"><a href="#3-硬解码" class="headerlink" title="3. 硬解码"></a>3. 硬解码</h5><p>通过如图所示的一个典型应用，来说明如何使用硬件解码接口。该应用场景是从网络处传来H264编码后的视频码流，最后显示在手机屏幕上。<br><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/5BO2QRkJoeE63Kpq4Mjy1hLd0uWt7KFh.NUpY5eqVGI!/r/dOIAAAAAAAAA" alt="NAL单元"><br>要完成以上功能需要经过以下几个步骤：</p>
+<h5 id="1-gt-将-H-264码流转换为-CMSampleBuffer"><a href="#1-gt-将-H-264码流转换为-CMSampleBuffer" class="headerlink" title="1&gt; 将 H.264码流转换为 CMSampleBuffer"></a>1&gt; 将 H.264码流转换为 CMSampleBuffer</h5><p>我们知道，CMSampleBuffer = CMTime + FormatDesc + CMBlockBuffer . 需要从H264的码流里面提取出以上的三个信息。最后组合成CMSampleBuffer，提供给硬解码接口来进行解码工作。</p>
+<p>在H.264的语法中，有一个最基础的层，叫做Network Abstraction Layer, 简称为NAL。H.264流数据正是由一系列的NAL单元(NAL Unit, 简称NAUL)组成的。</p>
+<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/Un4n*gbn6IB.zF9xMVQgDeQdCZU1SUCRycaf2r3E0vw!/r/dDwBAAAAAAAA" alt="NALU"></p>
+<p>H264的码流由NALU单元组成,一个NALU可能包含有：</p>
+<ul>
+<li>视频帧,视频帧也就是视频片段，具体有 P帧, I帧，B帧</li>
+</ul>
+<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/KExDsa2RJzGpe6a9NBTKJClrkX3HpcT68p2i4pqoJyY!/r/dOAAAAAAAAAA" alt="H264的码流"></p>
+<ul>
+<li>H.264属性合集-FormatDesc(包含 SPS和PPS)</li>
+</ul>
+<p>流数据中，属性集合可能是这样的：</p>
+<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/yuYb34e.S.4UoETVIJDPI1L6DYdVGdlKfW80wULI.T8!/r/dHYBAAAAAAAA" alt="属性集合"></p>
+<p>经过处理之后，在Format Description中则是:</p>
+<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/YUsq7p4oq0E8Uvz5hYxFAxH2pA.NoV38kiwjRwYjtZY!/r/dGwBAAAAAAAA" alt="Format Description"></p>
+<p>要从基础的流数据将SPS和PPS转化为Format Desc中的话，需要调用CMVideoFormatDescriptionCreateFromH264ParameterSets()方法</p>
+<ul>
+<li>NALU header</li>
+</ul>
+<p>对于流数据来说，一个NAUL的Header中，可能是0x00 00 01或者是0x00 00 00 01作为开头(两者都有可能，下面以0x00 00 01作为例子)。0x00 00 01因此被称为开始码(Start code).</p>
+<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/6LWUuXOk2xoelipoT3Lbu6qJQDTfOemFXg55YP1dh.U!/r/dDwBAAAAAAAA" alt="NALU header"></p>
+<p>总结以上知识，我们知道H264的码流由NALU单元组成，NALU单元包含视频图像数据和H264的参数信息。其中视频图像数据就是CMBlockBuffer，而H264的参数信息则可以组合成FormatDesc。具体来说参数信息包含SPS（Sequence Parameter Set）和PPS（Picture Parameter Set）.如下图显示了一个H.264码流结构：</p>
+<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/dLoOAI2WwVn2yGsmI0W3nqkRQplUQzK0w5gl99vUYkU!/r/dOAAAAAAAAAA" alt="H.264码流"></p>
+<ul>
+<li><p>提取sps和pps生成FormatDesc</p>
+<ul>
+<li>每个NALU的开始码是0x00 00 01，按照开始码定位NALU</li>
+<li>通过类型信息找到sps和pps并提取，开始码后第一个byte的后5位，7代表sps，8代表pps</li>
+<li>使用CMVideoFormatDescriptionCreateFromH264ParameterSets函数来构建CMVideoFormatDescriptionRef</li>
+</ul>
+</li>
+<li><p>提取视频图像数据生成CMBlockBuffer</p>
+<ul>
+<li>通过开始码，定位到NALU</li>
+<li>确定类型为数据后，将开始码替换成NALU的长度信息（4 Bytes）</li>
+<li>使用CMBlockBufferCreateWithMemoryBlock接口构造CMBlockBufferRef</li>
+</ul>
+</li>
+<li><p>根据需要，生成CMTime信息。（实际测试时，加入time信息后，有不稳定的图像，不加入time信息反而没有，需要进一步研究，这里建议不加入time信息）</p>
+</li>
+</ul>
+<p>根据上述得到CMVideoFormatDescriptionRef、CMBlockBufferRef和可选的时间信息，使用CMSampleBufferCreate接口得到CMSampleBuffer数据这个待解码的原始的数据。如下图所示的H264数据转换示意图。</p>
+<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/wNFEFe7Lz7M5qCeNJNPrrSwyQjJdG3.J75X1vkszvn8!/r/dCsAAAAAAAAA" alt="CMSampleBufferCreate"></p>
+<h5 id="2-gt-将-CMSampleBuffer显示出来"><a href="#2-gt-将-CMSampleBuffer显示出来" class="headerlink" title="2&gt; 将 CMSampleBuffer显示出来"></a>2&gt; 将 CMSampleBuffer显示出来</h5><p>显示的方式有两种：</p>
+<ul>
+<li>将CMSampleBuffers提供给系统的AVSampleBufferDisplayLayer 直接显示<ul>
+<li>使用方式和其它CALayer类似。该层内置了硬件解码功能，将原始的CMSampleBuffer解码后的图像直接显示在屏幕上面，非常的简单方便。 </li>
+</ul>
+</li>
+<li>利用OPenGL自己渲染<br>通过VTDecompression接口来，将CMSampleBuffer解码成图像，将图像通过UIImageView或者OpenGL上显示。<ul>
+<li>初始化VTDecompressionSession，设置解码器的相关信息。初始化信息需要CMSampleBuffer里面的FormatDescription，以及设置解码后图像的存储方式。demo里面设置的CGBitmap模式，使用RGB方式存放。编码后的图像经过解码后，会调用一个回调函数，将解码后的图像交个这个回调函数来进一步处理。我们就在这个回调里面，将解码后的图像发给control来显示，初始化的时候要将回调指针作为参数传给create接口函数。最后使用create接口对session来进行初始化。</li>
+<li>a中所述的回调函数可以完成CGBitmap图像转换成UIImage图像的处理，将图像通过队列发送到Control来进行显示处理。</li>
+<li>调用VTDecompresSessionDecodeFrame接口进行解码操作。解码后的图像会交由以上两步骤设置的回调函数，来进一步的处理。</li>
+</ul>
+</li>
+</ul>
+<h5 id="4-硬编码"><a href="#4-硬编码" class="headerlink" title="4.硬编码"></a>4.硬编码</h5><p>硬编码的使用也通过一个典型的应用场景来描述。首先，通过摄像头来采集图像，然后将采集到的图像，通过硬编码的方式进行编码，最后编码后的数据将其组合成H264的码流通过网络传播。</p>
+<ul>
+<li><p>摄像头采集数据</p>
+<p>   摄像头采集，iOS系统提供了AVCaptureSession来采集摄像头的图像数据。设定好session的采集解析度。再设定好input和output即可。output设定的时候，需要设置delegate和输出队列。在delegate方法，处理采集好的图像。</p>
+<p>  图像输出的格式，是未编码的CMSampleBuffer形式。</p>
+</li>
+<li><p>使用VTCompressionSession进行硬编码</p>
+<ul>
+<li><p>初始化VTCompressionSession</p>
+<p>VTCompressionSession初始化的时候，一般需要给出width宽，height长，编码器类型kCMVideoCodecType_H264等。然后通过调用VTSessionSetProperty接口设置帧率等属性，demo里面提供了一些设置参考，测试的时候发现几乎没有什么影响，可能需要进一步调试。最后需要设定一个回调函数，这个回调是视频图像编码成功后调用。全部准备好后，使用VTCompressionSessionCreate创建session</p>
+</li>
+<li><p>提取摄像头采集的原始图像数据给VTCompressionSession来硬编码</p>
+<p>摄像头采集后的图像是未编码的CMSampleBuffer形式，利用给定的接口函数CMSampleBufferGetImageBuffer从中提取出CVPixelBufferRef，使用硬编码接口VTCompressionSessionEncodeFrame来对该帧进行硬编码，编码成功后，会自动调用session初始化时设置的回调函数。</p>
+</li>
+<li><p>利用回调函数，将因编码成功的CMSampleBuffer转换成H264码流，通过网络传播</p>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>基本上是硬解码的一个逆过程。解析出参数集SPS和PPS，加上开始码后组装成NALU。提取出视频数据，将长度码转换成开始码，组长成NALU。将NALU发送出去。</p>
+</blockquote>
+<h4 id="参考-H264介绍，HEIF-amp-HEVC-你知道多少？"><a href="#参考-H264介绍，HEIF-amp-HEVC-你知道多少？" class="headerlink" title="参考:H264介绍，HEIF &amp; HEVC 你知道多少？"></a>参考:<a href="https://maxwellqi.github.io/ios-h264-summ/" target="_blank" rel="external">H264介绍</a>，<a href="https://mp.weixin.qq.com/s/3v7eINoQg4k4c71HoRIpaw" target="_blank" rel="external">HEIF &amp; HEVC 你知道多少？</a></h4>
+      
+      
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang" title="打赏，支持一下">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()" title="关闭">×</a>
+            <div class="shang_tit">
+              <p>劫富济贫</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">一生负气成今日，四海无人对夕阳</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2017/10/15/codec/">硬件编码相关知识(H264,H265)</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 小东邪_Chengyang 的个人博客">小东邪_Chengyang</a></p>
+        <p><span>发布时间:</span>2017年10月15日 - 15时18分</p>
+        <p><span>最后更新:</span>2017年10月15日 - 15时25分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2017/10/15/codec/" title="硬件编码相关知识(H264,H265)">http://yoursite.com/2017/10/15/codec/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2017/10/15/codec/　　作者: 小东邪_Chengyang" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+  
+    <a href="/2017/07/12/cropSampleBuffer/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">iOS开发中截取相机部分画面，切割sampleBuffer（Crop sample buffer）</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#硬件编码相关知识-H264-H265"><span class="toc-number">1.</span> <span class="toc-text">硬件编码相关知识(H264,H265)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#阅读人群：研究硬件编码器应用于iOS开发中-从0研究关于硬件编解码，码流中解析数据结构"><span class="toc-number">1.1.</span> <span class="toc-text">阅读人群：研究硬件编码器应用于iOS开发中,从0研究关于硬件编解码，码流中解析数据结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#内容概述：关于H264-H265的背景，数据结构，在iOS开发中编解码的应用"><span class="toc-number">1.2.</span> <span class="toc-text">内容概述：关于H264,H265的背景，数据结构，在iOS开发中编解码的应用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#博客地址-硬件编码相关知识"><span class="toc-number">1.3.</span> <span class="toc-text">博客地址:  硬件编码相关知识</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#简书地址-硬件编码相关知识"><span class="toc-number">1.4.</span> <span class="toc-text">简书地址:  硬件编码相关知识</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#一-背景及概述"><span class="toc-number">1.4.1.</span> <span class="toc-text">一. 背景及概述</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-在升级-iOS-11-之后，iPhone-7-及更新的设备内的照片存储将不再用-JPEG-了，而采用了一种新的图片格式-HEIF（发音同-heef），在-iOS-中对应的文件后缀为-heic-，其编码用的是-HEVC（这个发不了音，哈哈哈）格式，又称-H-265-（这个就很熟悉了-H-264-的下一代），同时视频也用-HEVC-作为编码器，对应的文件后缀还是-mov-。"><span class="toc-number">1.4.1.1.</span> <span class="toc-text">1. 在升级 iOS 11 之后，iPhone 7 及更新的设备内的照片存储将不再用 JPEG 了，而采用了一种新的图片格式 HEIF（发音同 heef），在 iOS 中对应的文件后缀为 .heic ，其编码用的是 HEVC（这个发不了音，哈哈哈）格式，又称 H.265 （这个就很熟悉了 H.264 的下一代），同时视频也用 HEVC 作为编码器，对应的文件后缀还是 .mov 。</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-这里要注意他们俩的关系，-HEIF-是图片格式，而-HEVC-是编码格式-类似-H-264-VP8-，HEIF-是图片容器（类似于视频的-mkv，mp4-后缀），而用-HEVC-进行编码的-HEIF-图片就是后缀为-heic-的图片，也是苹果主要使用的格式。"><span class="toc-number">1.4.1.2.</span> <span class="toc-text">2. 这里要注意他们俩的关系， HEIF 是图片格式，而 HEVC 是编码格式(类似 H.264,VP8)，HEIF 是图片容器（类似于视频的 mkv，mp4 后缀），而用 HEVC 进行编码的 HEIF 图片就是后缀为 .heic 的图片，也是苹果主要使用的格式。</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-HEIF-全称-High-Efficiency-Image-Format-HEIF-。是由-Moving-Picture-Experts-Group-制定的，存储图片和图片序列的格式。下图是形容HEIF的一句英文诗，JPEG很大，但是HEIF很小。"><span class="toc-number">1.4.1.3.</span> <span class="toc-text">3. HEIF 全称 High Efficiency Image Format (HEIF)。是由 Moving Picture Experts Group 制定的，存储图片和图片序列的格式。下图是形容HEIF的一句英文诗，JPEG很大，但是HEIF很小。</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-优点"><span class="toc-number">1.4.1.4.</span> <span class="toc-text">4. 优点</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#5-文件组成"><span class="toc-number">1.4.1.5.</span> <span class="toc-text">5. 文件组成</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#6-兼容"><span class="toc-number">1.4.1.6.</span> <span class="toc-text">6. 兼容</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#二-视频编解码"><span class="toc-number">1.4.2.</span> <span class="toc-text">二. 视频编解码</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-软编与硬编概念"><span class="toc-number">1.4.2.1.</span> <span class="toc-text">1.软编与硬编概念</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-h-264编码原理"><span class="toc-number">1.4.2.2.</span> <span class="toc-text">2. h.264编码原理</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-对序列的说明"><span class="toc-number">1.4.2.3.</span> <span class="toc-text">3. 对序列的说明</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-对三种帧的介绍"><span class="toc-number">1.4.2.4.</span> <span class="toc-text">4. 对三种帧的介绍</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#5-对压缩算法得说明"><span class="toc-number">1.4.2.5.</span> <span class="toc-text">5.对压缩算法得说明</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#6-DTS和PTS的不同"><span class="toc-number">1.4.2.6.</span> <span class="toc-text">6. DTS和PTS的不同</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#三-IOS系统-H-264视频硬件编解码说明"><span class="toc-number">1.4.3.</span> <span class="toc-text">三. IOS系统 H.264视频硬件编解码说明</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-对VideoToolbox的介绍"><span class="toc-number">1.4.3.1.</span> <span class="toc-text">1.对VideoToolbox的介绍</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-VideoToolbox中的对象"><span class="toc-number">1.4.3.2.</span> <span class="toc-text">2.VideoToolbox中的对象</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-硬解码"><span class="toc-number">1.4.3.3.</span> <span class="toc-text">3. 硬解码</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-gt-将-H-264码流转换为-CMSampleBuffer"><span class="toc-number">1.4.3.4.</span> <span class="toc-text">1> 将 H.264码流转换为 CMSampleBuffer</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-gt-将-CMSampleBuffer显示出来"><span class="toc-number">1.4.3.5.</span> <span class="toc-text">2> 将 CMSampleBuffer显示出来</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-硬编码"><span class="toc-number">1.4.3.6.</span> <span class="toc-text">4.硬编码</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#参考-H264介绍，HEIF-amp-HEVC-你知道多少？"><span class="toc-number">1.4.4.</span> <span class="toc-text">参考:H264介绍，HEIF & HEVC 你知道多少？</span></a></li></ol></li></ol></li></ol>
+</div>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="2017/10/15/codec/" data-title="硬件编码相关知识(H264,H265)" data-url="http://yoursite.com/2017/10/15/codec/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xiaodongxie"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = '/js/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+    <!-- 多说公共JS代码 end -->
+</div>
+
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2017/07/12/cropSampleBuffer/" title="下一篇: iOS开发中截取相机部分画面，切割sampleBuffer（Crop sample buffer）">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/10/15/codec/">硬件编码相关知识(H264,H265)</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/12/cropSampleBuffer/">iOS开发中截取相机部分画面，切割sampleBuffer（Crop sample buffer）</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/24/record/">Audio -- PCM to AAC</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/25/group/">代码隐藏GroupedTableView上边多余的间隔</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/25/sendValue/">iOS控制器之间传值</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/23/masonry/">iOS之Masonry快速上手</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/23/hello/">Hello 小东邪</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/09/fulltext/">iOS之富文本</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/25/java/">mac系统安装Apache Tomcat详细步骤</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/25/ios-help/">iOS帮助文档最新安装方法</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2017 小东邪_Chengyang
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >桃花岛到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本模块阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+</body>
+</html>
