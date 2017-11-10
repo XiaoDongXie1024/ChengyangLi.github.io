@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>H264,H265 Encoder | _小__东邪___</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="本文需求：使用H264, H265实现视频数据的编码并录制开始200帧存为文件.比如做直播功能，需要将客户端的视频数据传给服务器，如果分辨率过大如2K,4K则传输压力太大，所以需要对视频数据进行编码，传给服务器后再解码以实现大数据量的视频数据的传输，而利用硬件编码则可以极大限度减小CPU压力，当前主流使用H264进行编码，iOS 11 之后，iPhone 7以上的设备可以支持新的编码器H26">
+<meta property="og:type" content="article">
+<meta property="og:title" content="H264,H265 Encoder">
+<meta property="og:url" content="http://yoursite.com/2017/11/10/H264H265Encoder/index.html">
+<meta property="og:site_name" content="_小__东邪___">
+<meta property="og:description" content="本文需求：使用H264, H265实现视频数据的编码并录制开始200帧存为文件.比如做直播功能，需要将客户端的视频数据传给服务器，如果分辨率过大如2K,4K则传输压力太大，所以需要对视频数据进行编码，传给服务器后再解码以实现大数据量的视频数据的传输，而利用硬件编码则可以极大限度减小CPU压力，当前主流使用H264进行编码，iOS 11 之后，iPhone 7以上的设备可以支持新的编码器H26">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/Zs.FQtSqK3HEAV0KwhBWsd11gDVDBOGc6C8nEvLWvbI!/r/dLEAAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/0laaTVE7fYiJysspAOooBZ3fCdWlUxVfVNz66tO2jv4!/r/dBABAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/KExDsa2RJzGpe6a9NBTKJClrkX3HpcT68p2i4pqoJyY!/r/dOAAAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/yuYb34e.S.4UoETVIJDPI1L6DYdVGdlKfW80wULI.T8!/r/dHYBAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/YUsq7p4oq0E8Uvz5hYxFAxH2pA.NoV38kiwjRwYjtZY!/r/dGwBAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/6LWUuXOk2xoelipoT3Lbu6qJQDTfOemFXg55YP1dh.U!/r/dDwBAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/dLoOAI2WwVn2yGsmI0W3nqkRQplUQzK0w5gl99vUYkU!/r/dOAAAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/wNFEFe7Lz7M5qCeNJNPrrSwyQjJdG3.J75X1vkszvn8!/r/dCsAAAAAAAAA">
+<meta property="og:updated_time" content="2017-11-10T10:27:37.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="H264,H265 Encoder">
+<meta name="twitter:description" content="本文需求：使用H264, H265实现视频数据的编码并录制开始200帧存为文件.比如做直播功能，需要将客户端的视频数据传给服务器，如果分辨率过大如2K,4K则传输压力太大，所以需要对视频数据进行编码，传给服务器后再解码以实现大数据量的视频数据的传输，而利用硬件编码则可以极大限度减小CPU压力，当前主流使用H264进行编码，iOS 11 之后，iPhone 7以上的设备可以支持新的编码器H26">
+<meta name="twitter:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/Zs.FQtSqK3HEAV0KwhBWsd11gDVDBOGc6C8nEvLWvbI!/r/dLEAAAAAAAAA">
+  
+    <link rel="alternative" href="/atom.xml" title="_小__东邪___" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.png" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/" title="Hi Mate">小东邪_Chengyang</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">风陵渡口初相遇,一遇杨过误终身.</p>
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">桃花岛</a></li>
+                        
+                            <li><a href="/works">绝世武功</a></li>
+                        
+                            <li><a href="/about">千里传音</a></li>
+                        
+                            <li><a href="/FrontEndGuide">黯然销魂</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=xiao_dx@foxmail.com" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/ChengyangLi/ChengyangLi.github.io" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="https://www.zhihu.com/people/xiao-dong-xie-75" title="zhihu">zhihu</a>
+                            
+                                <a class="fl weibo" target="_blank" href="http://weibo.com/u/5088497199" title="weibo">weibo</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/AAC/" style="font-size: 10px;">AAC</a> <a href="/tags/Apache/" style="font-size: 10px;">Apache</a> <a href="/tags/Audio/" style="font-size: 10px;">Audio</a> <a href="/tags/AudioQueue/" style="font-size: 10px;">AudioQueue</a> <a href="/tags/AudioUnit/" style="font-size: 10px;">AudioUnit</a> <a href="/tags/CaptureSession/" style="font-size: 10px;">CaptureSession</a> <a href="/tags/Encoder/" style="font-size: 10px;">Encoder</a> <a href="/tags/H264/" style="font-size: 15px;">H264</a> <a href="/tags/H265/" style="font-size: 10px;">H265</a> <a href="/tags/HEVC/" style="font-size: 15px;">HEVC</a> <a href="/tags/Masonry/" style="font-size: 10px;">Masonry</a> <a href="/tags/MyEclipse/" style="font-size: 10px;">MyEclipse</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/PCM/" style="font-size: 10px;">PCM</a> <a href="/tags/TableViewGroup/" style="font-size: 10px;">TableViewGroup</a> <a href="/tags/crop/" style="font-size: 10px;">crop</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-API/" style="font-size: 10px;">iOS API</a> <a href="/tags/ios/" style="font-size: 15px;">ios</a> <a href="/tags/sampleBuffer/" style="font-size: 10px;">sampleBuffer</a> <a href="/tags/传值/" style="font-size: 10px;">传值</a> <a href="/tags/富文本/" style="font-size: 10px;">富文本</a> <a href="/tags/小东邪/" style="font-size: 10px;">小东邪</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://King-Cheng.github.io/">鹏丞万里</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">一生负气成今日，四海无人对夕阳.</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="Me">小东邪_Chengyang</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.png" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="Me">小东邪_Chengyang</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">风陵渡口初相遇,一遇杨过误终身.</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">桃花岛</a></li>
+                
+                    <li><a href="/works">绝世武功</a></li>
+                
+                    <li><a href="/about">千里传音</a></li>
+                
+                    <li><a href="/FrontEndGuide">黯然销魂</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=xiao_dx@foxmail.com" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/ChengyangLi/ChengyangLi.github.io" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="https://www.zhihu.com/people/xiao-dong-xie-75" title="zhihu">zhihu</a>
+                    
+                        <a class="weibo" target="_blank" href="http://weibo.com/u/5088497199" title="weibo">weibo</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-H264H265Encoder" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/11/10/H264H265Encoder/" class="article-date">
+      <time datetime="2017-11-10T10:26:10.000Z" itemprop="datePublished">2017-11-10</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      H264,H265 Encoder
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Encoder/">Encoder</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/H264/">H264</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/H265/">H265</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/HEVC/">HEVC</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p><excerpt in="" index="" |="" 首页摘要=""> </excerpt></p>
+<ul>
+<li>本文需求：使用H264, H265实现视频数据的编码并录制开始200帧存为文件.<br>比如做直播功能，需要将客户端的视频数据传给服务器，如果分辨率过大如2K,4K则传输压力太大，所以需要对视频数据进行编码，传给服务器后再解码以实现大数据量的视频数据的传输，而利用硬件编码则可以极大限度减小CPU压力，当前主流使用H264进行编码，iOS 11 之后，iPhone 7以上的设备可以支持新的编码器H265编码器，使得同等质量视频占用的存储空间更小。所以本例中可以使用两种方式实现视频数据的编码<a id="more"></a><the rest="" of="" contents="" |="" 余下全文="">
+
+</the></li>
+</ul>
+<h3 id="—————————————————————————————————————"><a href="#—————————————————————————————————————" class="headerlink" title="—————————————————————————————————————-"></a>—————————————————————————————————————-</h3><h3 id="本例需求：使用H264-H265实现视频数据的编码并录制开始200帧存为文件"><a href="#本例需求：使用H264-H265实现视频数据的编码并录制开始200帧存为文件" class="headerlink" title="本例需求：使用H264, H265实现视频数据的编码并录制开始200帧存为文件."></a>本例需求：使用H264, H265实现视频数据的编码并录制开始200帧存为文件.</h3><h5 id="原理：比如做直播功能，需要将客户端的视频数据传给服务器，如果分辨率过大如2K-4K则传输压力太大，所以需要对视频数据进行编码，传给服务器后再解码以实现大数据量的视频数据的传输，而利用硬件编码则可以极大限度减小CPU压力，当前主流使用H264进行编码，iOS-11-之后，iPhone-7以上的设备可以支持新的编码器H265编码器，使得同等质量视频占用的存储空间更小。所以本例中可以使用两种方式实现视频数据的编码"><a href="#原理：比如做直播功能，需要将客户端的视频数据传给服务器，如果分辨率过大如2K-4K则传输压力太大，所以需要对视频数据进行编码，传给服务器后再解码以实现大数据量的视频数据的传输，而利用硬件编码则可以极大限度减小CPU压力，当前主流使用H264进行编码，iOS-11-之后，iPhone-7以上的设备可以支持新的编码器H265编码器，使得同等质量视频占用的存储空间更小。所以本例中可以使用两种方式实现视频数据的编码" class="headerlink" title="原理：比如做直播功能，需要将客户端的视频数据传给服务器，如果分辨率过大如2K,4K则传输压力太大，所以需要对视频数据进行编码，传给服务器后再解码以实现大数据量的视频数据的传输，而利用硬件编码则可以极大限度减小CPU压力，当前主流使用H264进行编码，iOS 11 之后，iPhone 7以上的设备可以支持新的编码器H265编码器，使得同等质量视频占用的存储空间更小。所以本例中可以使用两种方式实现视频数据的编码"></a>原理：比如做直播功能，需要将客户端的视频数据传给服务器，如果分辨率过大如2K,4K则传输压力太大，所以需要对视频数据进行编码，传给服务器后再解码以实现大数据量的视频数据的传输，而利用硬件编码则可以极大限度减小CPU压力，当前主流使用H264进行编码，iOS 11 之后，iPhone 7以上的设备可以支持新的编码器H265编码器，使得同等质量视频占用的存储空间更小。所以本例中可以使用两种方式实现视频数据的编码</h5><h3 id="—————————————————————————————————————-1"><a href="#—————————————————————————————————————-1" class="headerlink" title="—————————————————————————————————————-"></a>—————————————————————————————————————-</h3><h4 id="最终效果如下-：-h264"><a href="#最终效果如下-：-h264" class="headerlink" title="最终效果如下 ： h264"></a>最终效果如下 ： h264</h4><p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/Zs.FQtSqK3HEAV0KwhBWsd11gDVDBOGc6C8nEvLWvbI!/r/dLEAAAAAAAAA" alt="h264 编码"></p>
+<h4 id="h265"><a href="#h265" class="headerlink" title="h265 :"></a>h265 :</h4><p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/0laaTVE7fYiJysspAOooBZ3fCdWlUxVfVNz66tO2jv4!/r/dBABAAAAAAAA" alt="h265 编码"></p>
+<h3 id="—————————————————————————————————————-2"><a href="#—————————————————————————————————————-2" class="headerlink" title="—————————————————————————————————————-"></a>—————————————————————————————————————-</h3><h3 id="源代码地址-H264-H265Encode"><a href="#源代码地址-H264-H265Encode" class="headerlink" title="源代码地址: H264,H265Encode"></a>源代码地址: <a href="">H264,H265Encode</a></h3><h3 id="博客地址-H264-H265Encode"><a href="#博客地址-H264-H265Encode" class="headerlink" title="博客地址:   H264,H265Encode"></a>博客地址:   <a href="">H264,H265Encode</a></h3><h3 id="简书地址-H264-H265Encode"><a href="#简书地址-H264-H265Encode" class="headerlink" title="简书地址:   H264,H265Encode"></a>简书地址:   <a href="">H264,H265Encode</a></h3><h3 id="—————————————————————————————————————-3"><a href="#—————————————————————————————————————-3" class="headerlink" title="—————————————————————————————————————-"></a>—————————————————————————————————————-</h3><h2 id="实现方式："><a href="#实现方式：" class="headerlink" title="实现方式："></a>实现方式：</h2><h3 id="1-H264-H264是当前主流编码标准，以高压缩高质量和支持多种网络的流媒体传输著称"><a href="#1-H264-H264是当前主流编码标准，以高压缩高质量和支持多种网络的流媒体传输著称" class="headerlink" title="1. H264 : H264是当前主流编码标准，以高压缩高质量和支持多种网络的流媒体传输著称"></a>1. H264 : H264是当前主流编码标准，以高压缩高质量和支持多种网络的流媒体传输著称</h3><h3 id="2-H265-：H264编码器的下一代，它的主要优点提供的压缩比高，相同质量的视频是H264的两倍。"><a href="#2-H265-：H264编码器的下一代，它的主要优点提供的压缩比高，相同质量的视频是H264的两倍。" class="headerlink" title="2. H265 ：H264编码器的下一代，它的主要优点提供的压缩比高，相同质量的视频是H264的两倍。"></a>2. H265 ：H264编码器的下一代，它的主要优点提供的压缩比高，相同质量的视频是H264的两倍。</h3><h3 id="—————————————————————————————————————-4"><a href="#—————————————————————————————————————-4" class="headerlink" title="—————————————————————————————————————-"></a>—————————————————————————————————————-</h3><h2 id="一-本文需要基本知识点"><a href="#一-本文需要基本知识点" class="headerlink" title="一.本文需要基本知识点"></a>一.本文需要基本知识点</h2><h4 id="注意-可以先通过H264-H265编码器介绍了解预备知识。"><a href="#注意-可以先通过H264-H265编码器介绍了解预备知识。" class="headerlink" title="注意:可以先通过H264,H265编码器介绍了解预备知识。"></a>注意:可以先通过<a href="http://www.jianshu.com/p/668e6abbed8c" target="_blank" rel="external">H264,H265编码器介绍</a>了解预备知识。</h4><h4 id="1-软编与硬编概念"><a href="#1-软编与硬编概念" class="headerlink" title="1. 软编与硬编概念"></a>1. 软编与硬编概念</h4><ul>
+<li>软编码：使用CPU进行编码。</li>
+<li>硬编码：不使用CPU进行编码，使用显卡GPU,专用的DSP、FPGA、ASIC芯片等硬件进行编码。<ul>
+<li>比较<ul>
+<li>软编码：实现直接、简单，参数调整方便，升级易，但CPU负载重，性能较硬编码低，低码率下质量通常比硬编码要好一点。</li>
+<li>性能高，低码率下通常质量低于软编码器，但部分产品在GPU硬件平台移植了优秀的软编码算法（如X264）的，质量基本等同于软编码。</li>
+<li>苹果在iOS 8.0系统之前，没有开放系统的硬件编码解码功能，不过Mac OS系统一直有，被称为Video ToolBox的框架来处理硬件的编码和解码，终于在iOS 8.0后，苹果将该框架引入iOS系统</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-H265优点"><a href="#2-H265优点" class="headerlink" title="2.H265优点"></a>2.H265优点</h4><ul>
+<li>压缩比高，在相同图片质量情况下，比JPEG高两倍</li>
+<li>能增加如图片的深度信息，透明通道等辅助图片。</li>
+<li>支持存放多张图片，类似相册和集合。(实现多重曝光的效果)</li>
+<li>支持多张图片实现GIF和livePhoto的动画效果。</li>
+<li>无类似JPEG的最大像素限制</li>
+<li>支持透明像素</li>
+<li>分块加载机制</li>
+<li>支持缩略图</li>
+</ul>
+<h2 id="二-代码解析"><a href="#二-代码解析" class="headerlink" title="二.代码解析"></a>二.代码解析</h2><h4 id="1-实现流程"><a href="#1-实现流程" class="headerlink" title="1.实现流程"></a>1.实现流程</h4><ul>
+<li>初始化相机参数，设置相机代理，这里就固定只有竖屏模式。</li>
+<li>初始化编码器参数，并启动编码器</li>
+<li>在编码成功的回调中从开始录制200帧(文件大小可自行修改)的视频，存到沙盒中，可以通过连接数据线到电脑从itunes中将文件(test0.asf)提取出来</li>
+</ul>
+<h4 id="2-编码器实现流程"><a href="#2-编码器实现流程" class="headerlink" title="2.编码器实现流程"></a>2.编码器实现流程</h4><ul>
+<li>创建编码器需要的session (h264, h265 或同时创建)</li>
+<li>设置session属性,如实时编码，码率，fps, 编码的分辨率的宽高，相邻I帧的最大间隔等等<ul>
+<li><h6 id="注意H265目前不支持码率的限制"><a href="#注意H265目前不支持码率的限制" class="headerlink" title="注意H265目前不支持码率的限制"></a>注意H265目前不支持码率的限制</h6></li>
+</ul>
+</li>
+<li>当相机回调AVCaptureVideoDataOutputSampleBufferDelegate采集到一帧数据的时候则使用H264/H265编码器对每一帧数据进行编码。</li>
+<li>若编码成功会触发回调，回调函数首先检测是否有I帧出现，如果有I帧出现则将sps,pps信息写入否则遍历NALU码流并将startCode替换成{0x00, 0x00, 0x00, 0x01}</li>
+</ul>
+<h4 id="3-主要方法解析"><a href="#3-主要方法解析" class="headerlink" title="3.主要方法解析"></a>3.主要方法解析</h4><ul>
+<li>初始化编码器<br>首先选择使用哪种方式实现，在本例中可以设置[XDXHardwareEncoder getInstance].enableH264 = YES 或者 [XDXHardwareEncoder getInstance].enableH265 = YES，也可以同时设置，如果同时设置需要将其中一个回调函数中的writeFile的方法屏蔽掉，并且只有较新的iPhone(&gt; iPhone8 稳定)才支持同时打开两个session。</li>
+</ul>
+<blockquote>
+<p>判断当前设备是否支持H265编码，必须满足两个条件，一是iPhone 7 以上设备，二是版本大于iOS 11</p>
+</blockquote>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (@available(iOS <span class="number">11.0</span>, *)) &#123;</div><div class="line">            <span class="built_in">BOOL</span> hardwareDecodeSupported = VTIsHardwareDecodeSupported(kCMVideoCodecType_HEVC);</div><div class="line">            <span class="keyword">if</span> (hardwareDecodeSupported) &#123;</div><div class="line">                _deviceSupportH265 = <span class="literal">YES</span>;</div><div class="line">                <span class="built_in">NSLog</span>(<span class="string">@"XDXHardwareEncoder : Support H265 Encode/Decode!"</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;<span class="keyword">else</span> &#123;</div><div class="line">            _deviceSupportH265 = <span class="literal">NO</span>;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"XDXHardwareEncoder : Not support H265 Encode/Decode!"</span>);</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
+<p>系统已经提供VTIsHardwareDecodeSupported判断当前设备是否支持H265编码</p>
+<blockquote>
+<p>初始化编码器操作</p>
+</blockquote>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)prepareForEncode &#123;</div><div class="line">    <span class="keyword">if</span>(<span class="keyword">self</span>.width == <span class="number">0</span> || <span class="keyword">self</span>.height == <span class="number">0</span>) &#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"XDXHardwareEncoder : VTSession need with and height for init,with = %d,height = %d"</span>,<span class="keyword">self</span>.width, <span class="keyword">self</span>.height);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span>(g_isSupportRealTimeEncoder)  <span class="built_in">NSLog</span>(<span class="string">@"XDXHardwareEncoder : Device processor is 64 bit"</span>);</div><div class="line">    <span class="keyword">else</span>                            <span class="built_in">NSLog</span>(<span class="string">@"XDXHardwareEncoder : Device processor is not 64 bit"</span>);</div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"XDXHardwareEncoder : Current h264 open state : %d, h265 open state : %d"</span>,<span class="keyword">self</span>.enableH264, <span class="keyword">self</span>.enableH265);</div><div class="line">    </div><div class="line">    OSStatus h264Status,h265Status;</div><div class="line">    <span class="built_in">BOOL</span> isRestart = <span class="literal">NO</span>;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.enableH264) &#123;</div><div class="line">        <span class="keyword">if</span> (h264CompressionSession != <span class="literal">NULL</span>) &#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"XDXHardwareEncoder : H264 session not NULL"</span>);</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">        [m_h264_lock lock];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"XDXHardwareEncoder : Prepare H264 hardware encoder"</span>);</div><div class="line">        </div><div class="line">        <span class="comment">//[self.delegate willEncoderStart];</span></div><div class="line">        </div><div class="line">        <span class="keyword">self</span>.h264ErrCount = <span class="number">0</span>;</div><div class="line">        </div><div class="line">        h264Status = VTCompressionSessionCreate(<span class="literal">NULL</span>, <span class="keyword">self</span>.width, <span class="keyword">self</span>.height, kCMVideoCodecType_H264, <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, vtCallBack,(__bridge <span class="keyword">void</span> *)<span class="keyword">self</span>, &amp;h264CompressionSession);</div><div class="line">        <span class="keyword">if</span> (h264Status != noErr) &#123;</div><div class="line">            <span class="keyword">self</span>.h265ErrCount++;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"XDXHardwareEncoder : H264 VTCompressionSessionCreate Failed, status = %d"</span>,h264Status);</div><div class="line">        &#125;</div><div class="line">        [<span class="keyword">self</span> getSupportedPropertyFlags];</div><div class="line">        </div><div class="line">        [<span class="keyword">self</span> applyAllSessionProperty:h264CompressionSession propertyArr:<span class="keyword">self</span>.h264propertyFlags];</div><div class="line">        </div><div class="line">        h264Status = VTCompressionSessionPrepareToEncodeFrames(h264CompressionSession);</div><div class="line">        <span class="keyword">if</span>(h264Status != noErr) &#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"XDXHardwareEncoder : H264 VTCompressionSessionPrepareToEncodeFrames Failed, status = %d"</span>,h264Status);</div><div class="line">        &#125;<span class="keyword">else</span> &#123;</div><div class="line">            initializedH264     = <span class="literal">true</span>;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"XDXHardwareEncoder : H264 VTSession create success, with = %d, height = %d, framerate = %d"</span>,<span class="keyword">self</span>.width,<span class="keyword">self</span>.height,<span class="keyword">self</span>.fps);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span>(h264Status != noErr &amp;&amp; <span class="keyword">self</span>.h264ErrCount != <span class="number">0</span>) isRestart = <span class="literal">YES</span>;</div><div class="line">        [m_h264_lock unlock];</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.enableH265) &#123;</div><div class="line">        <span class="keyword">if</span> (h265CompressionSession != <span class="literal">NULL</span>) &#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"XDXHardwareEncoder : H265 session not NULL"</span>);</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">        [m_h265_lock lock];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"XDXHardwareEncoder : Prepare h265 hardware encoder"</span>);</div><div class="line">        <span class="comment">// [self.delegate willEncoderStart];</span></div><div class="line">        </div><div class="line">        <span class="keyword">self</span>.h265ErrCount = <span class="number">0</span>;</div><div class="line">        </div><div class="line">        h265Status = VTCompressionSessionCreate(<span class="literal">NULL</span>, <span class="keyword">self</span>.width, <span class="keyword">self</span>.height, kCMVideoCodecType_HEVC, <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, vtH265CallBack,(__bridge <span class="keyword">void</span> *)<span class="keyword">self</span>, &amp;h265CompressionSession);</div><div class="line">        <span class="keyword">if</span> (h265Status != noErr) &#123;</div><div class="line">            <span class="keyword">self</span>.h265ErrCount++;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"XDXHardwareEncoder : H265 VTCompressionSessionCreate Failed, status = %d"</span>,h265Status);</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        [<span class="keyword">self</span> getSupportedPropertyFlags];</div><div class="line">        </div><div class="line">        [<span class="keyword">self</span> applyAllSessionProperty:h265CompressionSession propertyArr:<span class="keyword">self</span>.h265PropertyFlags];</div><div class="line">        </div><div class="line">        h265Status = VTCompressionSessionPrepareToEncodeFrames(h265CompressionSession);</div><div class="line">        <span class="keyword">if</span>(h265Status != noErr) &#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"XDXHardwareEncoder : H265 VTCompressionSessionPrepareToEncodeFrames Failed, status = %d"</span>,h265Status);</div><div class="line">        &#125;<span class="keyword">else</span> &#123;</div><div class="line">            initializedH265     = <span class="literal">true</span>;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"XDXHardwareEncoder : H265 VTSession create success, with = %d, height = %d, framerate = %d"</span>,<span class="keyword">self</span>.width,<span class="keyword">self</span>.height,<span class="keyword">self</span>.fps);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span>(h265Status != noErr &amp;&amp; <span class="keyword">self</span>.h265ErrCount != <span class="number">0</span>) isRestart = <span class="literal">YES</span>;</div><div class="line">        [m_h265_lock unlock];</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (isRestart) &#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"XDXHardwareEncoder : VTSession create failured!"</span>);</div><div class="line">            <span class="keyword">static</span> <span class="keyword">int</span> count = <span class="number">0</span>;</div><div class="line">            count ++;</div><div class="line">            <span class="keyword">if</span> (count == <span class="number">3</span>) &#123;</div><div class="line">                <span class="built_in">NSLog</span>(<span class="string">@"TVUEncoder ： restart 5 times failured! exit!"</span>);</div><div class="line">                <span class="keyword">return</span>;</div><div class="line">            &#125;</div><div class="line">            sleep(<span class="number">1</span>);</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"TVUEncoder ： try to restart after 1 second!"</span>);</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"TVUEncoder ： vtsession error occured!,resetart encoder width: %d, height %d, times %d"</span>,<span class="keyword">self</span>.width,<span class="keyword">self</span>.height,count);</div><div class="line">            [<span class="keyword">self</span> tearDownSession];</div><div class="line">            [<span class="keyword">self</span> prepareForEncode];</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>1&gt; <code>g_isSupportRealTimeEncoder = (is64Bit == 8) ? true : false;</code>用来判断当前设备是32位还是64位</p>
+<p>2&gt; 创建H264/H265Session 区别仅仅为参数的不同，h264为kCMVideoCodecType_H264。 h265为kCMVideoCodecType_HEVC，在创建Session指定了回调函数后，当编码成功一帧就会调用相应的回调函数。</p>
+<p>3&gt; 通过<code>[self getSupportedPropertyFlags];</code>获取当前编码器支持设置的属性，经过测试，H265不支持码率的限制。目前暂时得不到解决。等待苹果后续处理。</p>
+<p>4&gt; 之后设置编码器相关属性，下面会具体介绍，设置完成后则调用VTCompressionSessionPrepareToEncodeFrames准备编码。</p>
+<ul>
+<li>设置编码器相关属性<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div></pre></td><td class="code"><pre><div class="line">- (OSStatus)setSessionProperty:(VTCompressionSessionRef)session key:(<span class="built_in">CFStringRef</span>)key value:(<span class="built_in">CFTypeRef</span>)value &#123;</div><div class="line">    OSStatus status = VTSessionSetProperty(session, key, value);</div><div class="line">    <span class="keyword">if</span> (status != noErr)  &#123;</div><div class="line">        <span class="built_in">NSString</span> *sessionStr;</div><div class="line">        <span class="keyword">if</span> (session == h264CompressionSession) &#123;</div><div class="line">            sessionStr = <span class="string">@"h264 Session"</span>;</div><div class="line">            <span class="keyword">self</span>.h264ErrCount++;</div><div class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span> (session == h265CompressionSession) &#123;</div><div class="line">            sessionStr = <span class="string">@"h265 Session"</span>;</div><div class="line">            <span class="keyword">self</span>.h265ErrCount++;</div><div class="line">        &#125;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"XDXHardwareEncoder : Set %s of %s Failed, status = %d"</span>,<span class="built_in">CFStringGetCStringPtr</span>(key, kCFStringEncodingUTF8),sessionStr.UTF8String,status);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> status;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)applyAllSessionProperty:(VTCompressionSessionRef)session propertyArr:(<span class="built_in">NSArray</span> *)propertyArr &#123;</div><div class="line">    OSStatus status;</div><div class="line">    <span class="keyword">if</span>(!g_isSupportRealTimeEncoder) &#123;</div><div class="line">        <span class="comment">/* increase max frame delay from 3 to 6 to reduce encoder pressure*/</span></div><div class="line">        <span class="keyword">int</span>         value = <span class="number">3</span>;</div><div class="line">        <span class="built_in">CFNumberRef</span> ref   = <span class="built_in">CFNumberCreate</span>(<span class="literal">NULL</span>, kCFNumberSInt32Type, &amp;value);</div><div class="line">        [<span class="keyword">self</span> setSessionProperty:session key:kVTCompressionPropertyKey_MaxFrameDelayCount value:ref];</div><div class="line">        <span class="built_in">CFRelease</span>(ref);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span>(<span class="keyword">self</span>.fps) &#123;</div><div class="line">        <span class="keyword">if</span>([<span class="keyword">self</span> isSupportPropertyWithKey:Key_ExpectedFrameRate inArray:propertyArr]) &#123;</div><div class="line">            <span class="keyword">int</span>         value = <span class="keyword">self</span>.fps;</div><div class="line">            <span class="built_in">CFNumberRef</span> ref   = <span class="built_in">CFNumberCreate</span>(<span class="literal">NULL</span>, kCFNumberSInt32Type, &amp;value);</div><div class="line">            [<span class="keyword">self</span> setSessionProperty:session key:kVTCompressionPropertyKey_ExpectedFrameRate value:ref];</div><div class="line">            <span class="built_in">CFRelease</span>(ref);</div><div class="line">        &#125;</div><div class="line">    &#125;<span class="keyword">else</span> &#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"XDXHardwareEncoder : Current fps is 0"</span>);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span>(<span class="keyword">self</span>.bitrate) &#123;</div><div class="line">        <span class="keyword">if</span>([<span class="keyword">self</span> isSupportPropertyWithKey:Key_AverageBitRate inArray:propertyArr]) &#123;</div><div class="line">            <span class="keyword">int</span> value = <span class="keyword">self</span>.bitrate;</div><div class="line">            <span class="keyword">if</span> (session == h265CompressionSession) value = <span class="number">2</span>*<span class="number">1000</span>;  <span class="comment">// if current session is h265, Set birate 2M.</span></div><div class="line">            <span class="built_in">CFNumberRef</span> ref = <span class="built_in">CFNumberCreate</span>(<span class="literal">NULL</span>, kCFNumberSInt32Type, &amp;value);</div><div class="line">            [<span class="keyword">self</span> setSessionProperty:session key:kVTCompressionPropertyKey_AverageBitRate value:ref];</div><div class="line">            <span class="built_in">CFRelease</span>(ref);</div><div class="line">        &#125;</div><div class="line">    &#125;<span class="keyword">else</span> &#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"XDXHardwareEncoder : Current bitrate is 0"</span>);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">/*2016-11-15,@gang, iphone7/7plus do not support realtime encoding, so disable it</span></div><div class="line">     otherwize ,we can not control encoding bit rate</div><div class="line">     */</div><div class="line">    <span class="keyword">if</span> (![[<span class="keyword">self</span> deviceVersion] isEqualToString:<span class="string">@"iPhone9,1"</span>] &amp;&amp; ![[<span class="keyword">self</span> deviceVersion] isEqualToString:<span class="string">@"iPhone9,2"</span>]) &#123;</div><div class="line">        <span class="keyword">if</span>(g_isSupportRealTimeEncoder) &#123;</div><div class="line">            <span class="keyword">if</span>([<span class="keyword">self</span> isSupportPropertyWithKey:Key_RealTime inArray:propertyArr]) &#123;</div><div class="line">                <span class="built_in">NSLog</span>(<span class="string">@"use RealTimeEncoder"</span>);</div><div class="line">                <span class="built_in">NSLog</span>(<span class="string">@"XDXHardwareEncoder : use realTimeEncoder"</span>);</div><div class="line">                [<span class="keyword">self</span> setSessionProperty:session key:kVTCompressionPropertyKey_RealTime value:kCFBooleanTrue];</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span>([<span class="keyword">self</span> isSupportPropertyWithKey:Key_AllowFrameReordering inArray:propertyArr]) &#123;</div><div class="line">        [<span class="keyword">self</span> setSessionProperty:session key:kVTCompressionPropertyKey_AllowFrameReordering value:kCFBooleanFalse];</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span>(g_isSupportRealTimeEncoder) &#123;</div><div class="line">        <span class="keyword">if</span>([<span class="keyword">self</span> isSupportPropertyWithKey:Key_ProfileLevel inArray:propertyArr]) &#123;</div><div class="line">            [<span class="keyword">self</span> setSessionProperty:session key:kVTCompressionPropertyKey_ProfileLevel value:<span class="keyword">self</span>.enableH264 ? kVTProfileLevel_H264_Main_AutoLevel : kVTProfileLevel_HEVC_Main_AutoLevel];</div><div class="line">        &#125;</div><div class="line">    &#125;<span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">if</span>([<span class="keyword">self</span> isSupportPropertyWithKey:Key_ProfileLevel inArray:propertyArr]) &#123;</div><div class="line">            [<span class="keyword">self</span> setSessionProperty:session key:kVTCompressionPropertyKey_ProfileLevel value:<span class="keyword">self</span>.enableH264 ? kVTProfileLevel_H264_Baseline_AutoLevel : kVTProfileLevel_HEVC_Main_AutoLevel];</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="keyword">if</span> (<span class="keyword">self</span>.enableH264) &#123;</div><div class="line">            <span class="keyword">if</span>([<span class="keyword">self</span> isSupportPropertyWithKey:Key_H264EntropyMode inArray:propertyArr]) &#123;</div><div class="line">                [<span class="keyword">self</span> setSessionProperty:session key:kVTCompressionPropertyKey_H264EntropyMode value:kVTH264EntropyMode_CAVLC];</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span>([<span class="keyword">self</span> isSupportPropertyWithKey:Key_MaxKeyFrameIntervalDuration inArray:propertyArr]) &#123;</div><div class="line">        <span class="keyword">int</span>         value   = <span class="number">1</span>;</div><div class="line">        <span class="built_in">CFNumberRef</span> ref     = <span class="built_in">CFNumberCreate</span>(<span class="literal">NULL</span>, kCFNumberSInt32Type, &amp;value);</div><div class="line">        [<span class="keyword">self</span> setSessionProperty:session key:kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration value:ref];</div><div class="line">        <span class="built_in">CFRelease</span>(ref);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>上述方法主要设置启动编码器所需的各个参数</p>
+<p>1&gt; kVTCompressionPropertyKey_MaxFrameDelayCount : 压缩器被允许保持的最大帧数在输出一个压缩帧之前。例如如果最大帧延迟数是M,那么在编码帧N返回的调用之前，帧N-M必须被排出。</p>
+<p>2&gt; kVTCompressionPropertyKey_ExpectedFrameRate : 设置fps</p>
+<p>3&gt; kVTCompressionPropertyKey_AverageBitRate : 它不是强制的限制，bit rate可能会超出峰值</p>
+<p>4&gt; kVTCompressionPropertyKey_RealTime : 设置编码器是否实时编码，如果设置为False则不是实时编码，视频效果会更好一点。</p>
+<p>5&gt; kVTCompressionPropertyKey_AllowFrameReordering : 是否让帧进行重新排序。为了编码B帧，编码器必须对帧重新排序，这将意味着解码的顺序与显示的顺序不同。将其设置为false以防止帧重新排序。</p>
+<p>6&gt; kVTCompressionPropertyKey_ProfileLevel : 指定编码比特流的配置文件和级别</p>
+<p>7&gt; kVTCompressionPropertyKey_H264EntropyMode ：如果支持h264该属性设置编码器是否应该使用基于CAVLC 还是 CABAC</p>
+<p>8&gt; kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration : 两个I帧之间最大持续时间，该属性特别有用当frame rate是可变</p>
+<ul>
+<li>相机回调中对每一帧数据进行编码<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)captureOutput:(<span class="built_in">AVCaptureOutput</span> *)captureOutput didOutputSampleBuffer:(<span class="built_in">CMSampleBufferRef</span>)sampleBuffer fromConnection:(<span class="built_in">AVCaptureConnection</span> *)connection &#123;</div><div class="line">    <span class="keyword">if</span>( !<span class="built_in">CMSampleBufferDataIsReady</span>(sampleBuffer)) &#123;</div><div class="line">        <span class="built_in">NSLog</span>( <span class="string">@"sample buffer is not ready. Skipping sample"</span> );</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span>([XDXHardwareEncoder getInstance] != <span class="literal">NULL</span>) &#123;</div><div class="line">        [[XDXHardwareEncoder getInstance] encode:sampleBuffer];</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>以上方法在每采集到一帧视频数据后会调用一次，我们将拿到的每一帧数据进行编码。</p>
+<ul>
+<li>编码具体实现<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div></pre></td><td class="code"><pre><div class="line">-(<span class="keyword">void</span>)encode:(<span class="built_in">CMSampleBufferRef</span>)sampleBuffer &#123;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.enableH264) &#123;</div><div class="line">        [m_h264_lock lock];</div><div class="line">        <span class="keyword">if</span>(h264CompressionSession == <span class="literal">NULL</span>) &#123;</div><div class="line">            [m_h264_lock unlock];</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="keyword">if</span>(initializedH264 == <span class="literal">false</span>) &#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"TVUEncoder : h264 encoder is not ready\n"</span>);</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.enableH265) &#123;</div><div class="line">        [m_h265_lock lock];</div><div class="line">        <span class="keyword">if</span>(h265CompressionSession == <span class="literal">NULL</span>) &#123;</div><div class="line">            [m_h265_lock unlock];</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="keyword">if</span>(initializedH265 == <span class="literal">false</span>) &#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"TVUEncoder : h265 encoder is not ready\n"</span>);</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    CVImageBufferRef imageBuffer = <span class="built_in">CMSampleBufferGetImageBuffer</span>(sampleBuffer);</div><div class="line">    <span class="built_in">CMTime</span> duration = <span class="built_in">CMSampleBufferGetOutputDuration</span>(sampleBuffer);</div><div class="line">    frameID++;</div><div class="line">    <span class="built_in">CMTime</span> presentationTimeStamp = <span class="built_in">CMTimeMake</span>(frameID, <span class="number">1000</span>);</div><div class="line">    </div><div class="line"></div><div class="line">    </div><div class="line">    [<span class="keyword">self</span> doSetBitrate];</div><div class="line">    </div><div class="line">    OSStatus status;</div><div class="line">    VTEncodeInfoFlags flags;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.enableH264) &#123;</div><div class="line">        status = VTCompressionSessionEncodeFrame(h264CompressionSession, imageBuffer, presentationTimeStamp, duration, <span class="literal">NULL</span>, imageBuffer, &amp;flags);</div><div class="line">        <span class="keyword">if</span>(status != noErr) <span class="built_in">NSLog</span>(<span class="string">@"TVUEncoder : H264 VTCompressionSessionEncodeFrame failed"</span>);</div><div class="line">        [m_h264_lock unlock];</div><div class="line">        </div><div class="line">        <span class="keyword">if</span> (status != noErr) &#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"TVUEncoder : VTCompressionSessionEncodeFrame failed"</span>);</div><div class="line">            VTCompressionSessionCompleteFrames(h264CompressionSession, kCMTimeInvalid);</div><div class="line">            VTCompressionSessionInvalidate(h264CompressionSession);</div><div class="line">            <span class="built_in">CFRelease</span>(h264CompressionSession);</div><div class="line">            h264CompressionSession = <span class="literal">NULL</span>;</div><div class="line">        &#125;<span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">// NSLog(@"TVUEncoder : Success VTCompressionSessionCompleteFrames");</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.enableH265) &#123;</div><div class="line">        status = VTCompressionSessionEncodeFrame(h265CompressionSession, imageBuffer, presentationTimeStamp, duration, <span class="literal">NULL</span>, imageBuffer, &amp;flags);</div><div class="line">        <span class="keyword">if</span>(status != noErr) <span class="built_in">NSLog</span>(<span class="string">@"TVUEncoder : H265 VTCompressionSessionEncodeFrame failed"</span>);</div><div class="line">        [m_h265_lock unlock];</div><div class="line">        </div><div class="line">        <span class="keyword">if</span> (status != noErr) &#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"TVUEncoder : VTCompressionSessionEncodeFrame failed"</span>);</div><div class="line">            VTCompressionSessionCompleteFrames(h265CompressionSession, kCMTimeInvalid);</div><div class="line">            VTCompressionSessionInvalidate(h265CompressionSession);</div><div class="line">            <span class="built_in">CFRelease</span>(h265CompressionSession);</div><div class="line">            h265CompressionSession = <span class="literal">NULL</span>;</div><div class="line">        &#125;<span class="keyword">else</span> &#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"TVUEncoder : Success VTCompressionSessionCompleteFrames"</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>1&gt; 通过frameID的递增构造时间戳为了使编码后的每一帧数据连续</p>
+<p>2&gt; 设置最大码率的限制，注意：H265目前不支持设置码率的限制，等待官方后续通知。可以对H264进行码率限制</p>
+<p>3&gt; kVTCompressionPropertyKey_DataRateLimits : 将数据的bytes和duration封装到CFMutableArrayRef传给API进行调用</p>
+<p>4&gt; VTCompressionSessionEncodeFrame : 调用此方法成功后触发回调函数完成编码。</p>
+<ul>
+<li>回调函数中处理头信息<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#pragma mark H264 Callback</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> vtCallBack(<span class="keyword">void</span> *outputCallbackRefCon,<span class="keyword">void</span> *souceFrameRefCon,OSStatus status,VTEncodeInfoFlags infoFlags, <span class="built_in">CMSampleBufferRef</span> sampleBuffer) &#123;</div><div class="line">    XDXHardwareEncoder *encoder = (__bridge XDXHardwareEncoder*)outputCallbackRefCon;</div><div class="line">    <span class="keyword">if</span>(status != noErr) &#123;</div><div class="line">        <span class="built_in">NSError</span> *error = [<span class="built_in">NSError</span> errorWithDomain:<span class="built_in">NSOSStatusErrorDomain</span> code:status userInfo:<span class="literal">nil</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"H264: vtCallBack failed with %@"</span>, error);</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"XDXHardwareEncoder : encode frame failured! %s"</span> ,error.debugDescription.UTF8String);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (!<span class="built_in">CMSampleBufferDataIsReady</span>(sampleBuffer)) &#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"didCompressH265 data is not ready "</span>);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (infoFlags == kVTEncodeInfo_FrameDropped) &#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"%s with frame dropped."</span>, __FUNCTION__);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="built_in">CMBlockBufferRef</span> block = <span class="built_in">CMSampleBufferGetDataBuffer</span>(sampleBuffer);</div><div class="line">    <span class="built_in">BOOL</span> isKeyframe = <span class="literal">false</span>;</div><div class="line"></div><div class="line">    <span class="built_in">CFArrayRef</span> attachments = <span class="built_in">CMSampleBufferGetSampleAttachmentsArray</span>(sampleBuffer, <span class="literal">false</span>);</div><div class="line"></div><div class="line">    <span class="keyword">if</span>(attachments != <span class="literal">NULL</span>) &#123;</div><div class="line">        <span class="built_in">CFDictionaryRef</span> attachment =(<span class="built_in">CFDictionaryRef</span>)<span class="built_in">CFArrayGetValueAtIndex</span>(attachments, <span class="number">0</span>);</div><div class="line">        <span class="built_in">CFBooleanRef</span> dependsOnOthers = (<span class="built_in">CFBooleanRef</span>)<span class="built_in">CFDictionaryGetValue</span>(attachment, kCMSampleAttachmentKey_DependsOnOthers);</div><div class="line">        isKeyframe = (dependsOnOthers == kCFBooleanFalse);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span>(isKeyframe) &#123;</div><div class="line">        <span class="built_in">CMFormatDescriptionRef</span> format = <span class="built_in">CMSampleBufferGetFormatDescription</span>(sampleBuffer);</div><div class="line">        <span class="keyword">static</span> uint8_t *spsppsNALBuff = <span class="literal">NULL</span>;</div><div class="line">        <span class="keyword">static</span> size_t  spsSize, ppsSize;</div><div class="line"></div><div class="line">            size_t parmCount;</div><div class="line">            <span class="keyword">const</span> uint8_t*sps, *pps;</div><div class="line">            <span class="keyword">int</span> NALUnitHeaderLengthOut;</div><div class="line">            <span class="built_in">CMVideoFormatDescriptionGetH264ParameterSetAtIndex</span>(format, <span class="number">0</span>, &amp;sps, &amp;spsSize, &amp;parmCount, &amp;NALUnitHeaderLengthOut );</div><div class="line">            <span class="built_in">CMVideoFormatDescriptionGetH264ParameterSetAtIndex</span>(format, <span class="number">1</span>, &amp;pps, &amp;ppsSize, &amp;parmCount, &amp;NALUnitHeaderLengthOut );</div><div class="line"></div><div class="line">            spsppsNALBuff = (uint8_t*)malloc(spsSize+<span class="number">4</span>+ppsSize+<span class="number">4</span>);</div><div class="line">            memcpy(spsppsNALBuff, <span class="string">"\x00\x00\x00\x01"</span>, <span class="number">4</span>);</div><div class="line">            memcpy(&amp;spsppsNALBuff[<span class="number">4</span>], sps, spsSize);</div><div class="line">            memcpy(&amp;spsppsNALBuff[<span class="number">4</span>+spsSize], <span class="string">"\x00\x00\x00\x01"</span>, <span class="number">4</span>);</div><div class="line">            memcpy(&amp;spsppsNALBuff[<span class="number">4</span>+spsSize+<span class="number">4</span>], pps, ppsSize);</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"XDXHardwareEncoder : H264 spsSize : %zu, ppsSize : %zu"</span>,spsSize, ppsSize);</div><div class="line">         writeFile(spsppsNALBuff,spsSize+<span class="number">4</span>+ppsSize+<span class="number">4</span>,encoder-&gt;_videoFile, <span class="number">200</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    size_t blockBufferLength;</div><div class="line">    uint8_t *bufferDataPointer = <span class="literal">NULL</span>;</div><div class="line">    <span class="built_in">CMBlockBufferGetDataPointer</span>(block, <span class="number">0</span>, <span class="literal">NULL</span>, &amp;blockBufferLength, (<span class="keyword">char</span> **)&amp;bufferDataPointer);</div><div class="line"></div><div class="line">    size_t bufferOffset = <span class="number">0</span>;</div><div class="line">    <span class="keyword">while</span> (bufferOffset &lt; blockBufferLength - startCodeLength) &#123;</div><div class="line">        uint32_t NALUnitLength = <span class="number">0</span>;</div><div class="line">        memcpy(&amp;NALUnitLength, bufferDataPointer+bufferOffset, startCodeLength);</div><div class="line">        NALUnitLength = <span class="built_in">CFSwapInt32BigToHost</span>(NALUnitLength);</div><div class="line">        memcpy(bufferDataPointer+bufferOffset, startCode, startCodeLength);</div><div class="line">        bufferOffset += startCodeLength + NALUnitLength;</div><div class="line">    &#125;</div><div class="line">    writeFile(bufferDataPointer, blockBufferLength,encoder-&gt;_videoFile, <span class="number">200</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">#pragma mark H265 Callback</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span> vtH265CallBack(<span class="keyword">void</span> *outputCallbackRefCon,<span class="keyword">void</span> *souceFrameRefCon,OSStatus status,VTEncodeInfoFlags infoFlags, <span class="built_in">CMSampleBufferRef</span> sampleBuffer) &#123;</div><div class="line">    XDXHardwareEncoder *encoder = (__bridge XDXHardwareEncoder*)outputCallbackRefCon;</div><div class="line">    <span class="keyword">if</span>(status != noErr) &#123;</div><div class="line">        <span class="built_in">NSError</span> *error = [<span class="built_in">NSError</span> errorWithDomain:<span class="built_in">NSOSStatusErrorDomain</span> code:status userInfo:<span class="literal">nil</span>];</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"H264: H265 vtH265CallBack failed with %@"</span>, error);</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"XDXHardwareEncoder : H265 encode frame failured! %s"</span> ,error.debugDescription.UTF8String);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (!<span class="built_in">CMSampleBufferDataIsReady</span>(sampleBuffer)) &#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"didCompressH265 data is not ready "</span>);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (infoFlags == kVTEncodeInfo_FrameDropped) &#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"%s with frame dropped."</span>, __FUNCTION__);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="built_in">CMBlockBufferRef</span> block = <span class="built_in">CMSampleBufferGetDataBuffer</span>(sampleBuffer);</div><div class="line">    <span class="built_in">BOOL</span> isKeyframe = <span class="literal">false</span>;</div><div class="line"></div><div class="line">    <span class="built_in">CFArrayRef</span> attachments = <span class="built_in">CMSampleBufferGetSampleAttachmentsArray</span>(sampleBuffer, <span class="literal">false</span>);</div><div class="line"></div><div class="line">    <span class="keyword">if</span>(attachments != <span class="literal">NULL</span>) &#123;</div><div class="line">        <span class="built_in">CFDictionaryRef</span> attachment =(<span class="built_in">CFDictionaryRef</span>)<span class="built_in">CFArrayGetValueAtIndex</span>(attachments, <span class="number">0</span>);</div><div class="line">        <span class="built_in">CFBooleanRef</span> dependsOnOthers = (<span class="built_in">CFBooleanRef</span>)<span class="built_in">CFDictionaryGetValue</span>(attachment, kCMSampleAttachmentKey_DependsOnOthers);</div><div class="line">        isKeyframe = (dependsOnOthers == kCFBooleanFalse);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span>(isKeyframe) &#123;</div><div class="line">        <span class="built_in">CMFormatDescriptionRef</span> format     = <span class="built_in">CMSampleBufferGetFormatDescription</span>(sampleBuffer);</div><div class="line">        <span class="keyword">static</span> uint8_t *vpsspsppsNALBuff  = <span class="literal">NULL</span>;</div><div class="line">        <span class="keyword">static</span> size_t  vpsSize, spsSize, ppsSize;</div><div class="line">            size_t parmCount;</div><div class="line">            <span class="keyword">const</span> uint8_t *vps, *sps, *pps;</div><div class="line"></div><div class="line">            <span class="keyword">if</span> (encoder.deviceSupportH265) &#123;       <span class="comment">// &gt;= iPhone 7 &amp;&amp; support ios11</span></div><div class="line">                <span class="built_in">CMVideoFormatDescriptionGetHEVCParameterSetAtIndex</span>(format, <span class="number">0</span>, &amp;vps, &amp;vpsSize, &amp;parmCount, <span class="number">0</span>);</div><div class="line">                <span class="built_in">CMVideoFormatDescriptionGetHEVCParameterSetAtIndex</span>(format, <span class="number">1</span>, &amp;sps, &amp;spsSize, &amp;parmCount, <span class="number">0</span>);</div><div class="line">                <span class="built_in">CMVideoFormatDescriptionGetHEVCParameterSetAtIndex</span>(format, <span class="number">2</span>, &amp;pps, &amp;ppsSize, &amp;parmCount, <span class="number">0</span>);</div><div class="line"></div><div class="line">                vpsspsppsNALBuff = (uint8_t*)malloc(vpsSize+<span class="number">4</span>+spsSize+<span class="number">4</span>+ppsSize+<span class="number">4</span>);</div><div class="line">                memcpy(vpsspsppsNALBuff, <span class="string">"\x00\x00\x00\x01"</span>, <span class="number">4</span>);</div><div class="line">                memcpy(&amp;vpsspsppsNALBuff[<span class="number">4</span>], vps, vpsSize);</div><div class="line">                memcpy(&amp;vpsspsppsNALBuff[<span class="number">4</span>+vpsSize], <span class="string">"\x00\x00\x00\x01"</span>, <span class="number">4</span>);</div><div class="line">                memcpy(&amp;vpsspsppsNALBuff[<span class="number">4</span>+vpsSize+<span class="number">4</span>], sps, spsSize);</div><div class="line">                memcpy(&amp;vpsspsppsNALBuff[<span class="number">4</span>+vpsSize+<span class="number">4</span>+spsSize], <span class="string">"\x00\x00\x00\x01"</span>, <span class="number">4</span>);</div><div class="line">                memcpy(&amp;vpsspsppsNALBuff[<span class="number">4</span>+vpsSize+<span class="number">4</span>+spsSize+<span class="number">4</span>], pps, ppsSize);</div><div class="line">                <span class="built_in">NSLog</span>(<span class="string">@"XDXHardwareEncoder : H265 vpsSize : %zu, spsSize : %zu, ppsSize : %zu"</span>,vpsSize,spsSize, ppsSize);</div><div class="line">            &#125;</div><div class="line">             writeFile(vpsspsppsNALBuff, vpsSize+<span class="number">4</span>+spsSize+<span class="number">4</span>+ppsSize+<span class="number">4</span>,encoder-&gt;_videoFile, <span class="number">200</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    size_t   blockBufferLength;</div><div class="line">    uint8_t  *bufferDataPointer = <span class="literal">NULL</span>;</div><div class="line">    <span class="built_in">CMBlockBufferGetDataPointer</span>(block, <span class="number">0</span>, <span class="literal">NULL</span>, &amp;blockBufferLength, (<span class="keyword">char</span> **)&amp;bufferDataPointer);</div><div class="line"></div><div class="line">    size_t bufferOffset = <span class="number">0</span>;</div><div class="line">    <span class="keyword">while</span> (bufferOffset &lt; blockBufferLength - startCodeLength) &#123;</div><div class="line">        uint32_t NALUnitLength = <span class="number">0</span>;</div><div class="line">        memcpy(&amp;NALUnitLength, bufferDataPointer+bufferOffset, startCodeLength);</div><div class="line">        NALUnitLength = <span class="built_in">CFSwapInt32BigToHost</span>(NALUnitLength);</div><div class="line">        memcpy(bufferDataPointer+bufferOffset, startCode, startCodeLength);</div><div class="line">        bufferOffset += startCodeLength + NALUnitLength;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">     writeFile(bufferDataPointer, blockBufferLength,encoder-&gt;_videoFile, <span class="number">200</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>1&gt; 首先在回调函数中截取到I帧，从I帧中提取到(h265中新增vps),sps,pps信息并写入文件<br>2&gt; 遍历其他帧将头信息0000,0001写入每个头信息中，再将该数据写入文件即可</p>
+<h2 id="二-码流数据结构介绍"><a href="#二-码流数据结构介绍" class="headerlink" title="二.码流数据结构介绍"></a>二.码流数据结构介绍</h2><p>这里我们简单介绍一下H264,H265码流信息</p>
+<ol>
+<li><p>H264流数据是由一系列NAL单元(NAL Unit)组成的。</p>
+</li>
+<li><p>一个NALU可能包含：视频帧，视频帧也就是视频片段，具体有I,P,B帧</p>
+<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/KExDsa2RJzGpe6a9NBTKJClrkX3HpcT68p2i4pqoJyY!/r/dOAAAAAAAAAA" alt="H264的码流"></p>
+</li>
+<li><p>H.264属性合集-FormatDesc(包含 SPS和PPS)</p>
+</li>
+</ol>
+<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/yuYb34e.S.4UoETVIJDPI1L6DYdVGdlKfW80wULI.T8!/r/dHYBAAAAAAAA" alt="属性集合"></p>
+<p>注意在H265流数据中新增vps在最前。</p>
+<ul>
+<li>H.264属性合集-FormatDesc(包含 SPS和PPS)</li>
+</ul>
+<p>流数据中，属性集合可能是这样的：</p>
+<p>经过处理之后，在Format Description中则是:</p>
+<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/YUsq7p4oq0E8Uvz5hYxFAxH2pA.NoV38kiwjRwYjtZY!/r/dGwBAAAAAAAA" alt="Format Description"></p>
+<ul>
+<li>NALU header<br>对于流数据来说，一个NALU的Header中，可能是0x00 00 01或者是0x00 00 00 01作为开头(两者都有可能，下面以0x00 00 01作为例子)。0x00 00 01因此被称为开始码(Start code).所以我们需要在提取的数据中用0x00 00 00 01对数据内容进行替换</li>
+</ul>
+<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/6LWUuXOk2xoelipoT3Lbu6qJQDTfOemFXg55YP1dh.U!/r/dDwBAAAAAAAA" alt="NALU header"></p>
+<blockquote>
+<p>总结以上知识，我们知道H264的码流由NALU单元组成，NALU单元包含视频图像数据和H264的参数信息。其中视频图像数据就是CMBlockBuffer，而H264的参数信息则可以组合成FormatDesc。具体来说参数信息包含SPS（Sequence Parameter Set）和PPS（Picture Parameter Set）.如下图显示了一个H.264码流结构：</p>
+</blockquote>
+<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/dLoOAI2WwVn2yGsmI0W3nqkRQplUQzK0w5gl99vUYkU!/r/dOAAAAAAAAAA" alt="H.264码流"></p>
+<ul>
+<li><p>提取sps和pps生成FormatDesc</p>
+<ul>
+<li>每个NALU的开始码是0x00 00 01，按照开始码定位NALU</li>
+<li>通过类型信息找到sps和pps并提取，开始码后第一个byte的后5位，7代表sps，8代表pps</li>
+<li>使用CMVideoFormatDescriptionCreateFromH264ParameterSets函数来构建CMVideoFormatDescriptionRef</li>
+</ul>
+</li>
+<li><p>提取视频图像数据生成CMBlockBuffer</p>
+<ul>
+<li>通过开始码，定位到NALU</li>
+<li>确定类型为数据后，将开始码替换成NALU的长度信息（4 Bytes）</li>
+<li>使用CMBlockBufferCreateWithMemoryBlock接口构造CMBlockBufferRef</li>
+</ul>
+</li>
+<li><p>根据需要，生成CMTime信息。（实际测试时，加入time信息后，有不稳定的图像，不加入time信息反而没有，需要进一步研究，这里建议不加入time信息）</p>
+</li>
+</ul>
+<p>根据上述得到CMVideoFormatDescriptionRef、CMBlockBufferRef和可选的时间信息，使用CMSampleBufferCreate接口得到CMSampleBuffer数据这个待解码的原始的数据。如下图所示的H264数据转换示意图。</p>
+<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/wNFEFe7Lz7M5qCeNJNPrrSwyQjJdG3.J75X1vkszvn8!/r/dCsAAAAAAAAA" alt="CMSampleBufferCreate"></p>
+<h3 id="编码器知识可参考-H264-H265编码器介绍"><a href="#编码器知识可参考-H264-H265编码器介绍" class="headerlink" title="编码器知识可参考:H264,H265编码器介绍"></a>编码器知识可参考:<a href="http://www.jianshu.com/p/668e6abbed8c" target="_blank" rel="external">H264,H265编码器介绍</a></h3>
+      
+      
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang" title="打赏，支持一下">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()" title="关闭">×</a>
+            <div class="shang_tit">
+              <p>劫富济贫</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">一生负气成今日，四海无人对夕阳</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2017/11/10/H264H265Encoder/">H264,H265 Encoder</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 小东邪_Chengyang 的个人博客">小东邪_Chengyang</a></p>
+        <p><span>发布时间:</span>2017年11月10日 - 18时26分</p>
+        <p><span>最后更新:</span>2017年11月10日 - 18时27分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2017/11/10/H264H265Encoder/" title="H264,H265 Encoder">http://yoursite.com/2017/11/10/H264H265Encoder/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2017/11/10/H264H265Encoder/　　作者: 小东邪_Chengyang" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+  
+    <a href="/2017/10/15/codec/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">硬件编码相关知识(H264,H265)</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#—————————————————————————————————————"><span class="toc-number">1.</span> <span class="toc-text">—————————————————————————————————————-</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#本例需求：使用H264-H265实现视频数据的编码并录制开始200帧存为文件"><span class="toc-number">2.</span> <span class="toc-text">本例需求：使用H264, H265实现视频数据的编码并录制开始200帧存为文件.</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#原理：比如做直播功能，需要将客户端的视频数据传给服务器，如果分辨率过大如2K-4K则传输压力太大，所以需要对视频数据进行编码，传给服务器后再解码以实现大数据量的视频数据的传输，而利用硬件编码则可以极大限度减小CPU压力，当前主流使用H264进行编码，iOS-11-之后，iPhone-7以上的设备可以支持新的编码器H265编码器，使得同等质量视频占用的存储空间更小。所以本例中可以使用两种方式实现视频数据的编码"><span class="toc-number">2.0.1.</span> <span class="toc-text">原理：比如做直播功能，需要将客户端的视频数据传给服务器，如果分辨率过大如2K,4K则传输压力太大，所以需要对视频数据进行编码，传给服务器后再解码以实现大数据量的视频数据的传输，而利用硬件编码则可以极大限度减小CPU压力，当前主流使用H264进行编码，iOS 11 之后，iPhone 7以上的设备可以支持新的编码器H265编码器，使得同等质量视频占用的存储空间更小。所以本例中可以使用两种方式实现视频数据的编码</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#—————————————————————————————————————-1"><span class="toc-number">3.</span> <span class="toc-text">—————————————————————————————————————-</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#最终效果如下-：-h264"><span class="toc-number">3.1.</span> <span class="toc-text">最终效果如下 ： h264</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#h265"><span class="toc-number">3.2.</span> <span class="toc-text">h265 :</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#—————————————————————————————————————-2"><span class="toc-number">4.</span> <span class="toc-text">—————————————————————————————————————-</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#源代码地址-H264-H265Encode"><span class="toc-number">5.</span> <span class="toc-text">源代码地址: H264,H265Encode</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#博客地址-H264-H265Encode"><span class="toc-number">6.</span> <span class="toc-text">博客地址:   H264,H265Encode</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#简书地址-H264-H265Encode"><span class="toc-number">7.</span> <span class="toc-text">简书地址:   H264,H265Encode</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#—————————————————————————————————————-3"><span class="toc-number">8.</span> <span class="toc-text">—————————————————————————————————————-</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现方式："><span class="toc-number"></span> <span class="toc-text">实现方式：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-H264-H264是当前主流编码标准，以高压缩高质量和支持多种网络的流媒体传输著称"><span class="toc-number">1.</span> <span class="toc-text">1. H264 : H264是当前主流编码标准，以高压缩高质量和支持多种网络的流媒体传输著称</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-H265-：H264编码器的下一代，它的主要优点提供的压缩比高，相同质量的视频是H264的两倍。"><span class="toc-number">2.</span> <span class="toc-text">2. H265 ：H264编码器的下一代，它的主要优点提供的压缩比高，相同质量的视频是H264的两倍。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#—————————————————————————————————————-4"><span class="toc-number">3.</span> <span class="toc-text">—————————————————————————————————————-</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一-本文需要基本知识点"><span class="toc-number"></span> <span class="toc-text">一.本文需要基本知识点</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#注意-可以先通过H264-H265编码器介绍了解预备知识。"><span class="toc-number">0.1.</span> <span class="toc-text">注意:可以先通过H264,H265编码器介绍了解预备知识。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-软编与硬编概念"><span class="toc-number">0.2.</span> <span class="toc-text">1. 软编与硬编概念</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-H265优点"><span class="toc-number">0.3.</span> <span class="toc-text">2.H265优点</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二-代码解析"><span class="toc-number"></span> <span class="toc-text">二.代码解析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-实现流程"><span class="toc-number">0.1.</span> <span class="toc-text">1.实现流程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-编码器实现流程"><span class="toc-number">0.2.</span> <span class="toc-text">2.编码器实现流程</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#注意H265目前不支持码率的限制"><span class="toc-number">0.2.0.1.</span> <span class="toc-text">注意H265目前不支持码率的限制</span></a></li></ol></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-主要方法解析"><span class="toc-number">0.3.</span> <span class="toc-text">3.主要方法解析</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二-码流数据结构介绍"><span class="toc-number"></span> <span class="toc-text">二.码流数据结构介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#编码器知识可参考-H264-H265编码器介绍"><span class="toc-number">1.</span> <span class="toc-text">编码器知识可参考:H264,H265编码器介绍</span></a></li></ol>
+</div>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="2017/11/10/H264H265Encoder/" data-title="H264,H265 Encoder" data-url="http://yoursite.com/2017/11/10/H264H265Encoder/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xiaodongxie"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = '/js/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+    <!-- 多说公共JS代码 end -->
+</div>
+
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2017/10/15/codec/" title="下一篇: 硬件编码相关知识(H264,H265)">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/11/10/H264H265Encoder/">H264,H265 Encoder</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/15/codec/">硬件编码相关知识(H264,H265)</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/12/cropSampleBuffer/">iOS开发中截取相机部分画面，切割sampleBuffer（Crop sample buffer）</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/24/record/">Audio -- PCM to AAC</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/25/group/">代码隐藏GroupedTableView上边多余的间隔</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/25/sendValue/">iOS控制器之间传值</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/23/masonry/">iOS之Masonry快速上手</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/23/hello/">Hello 小东邪</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/09/fulltext/">iOS之富文本</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/25/java/">mac系统安装Apache Tomcat详细步骤</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/25/ios-help/">iOS帮助文档最新安装方法</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2017 小东邪_Chengyang
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >桃花岛到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本模块阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+</body>
+</html>

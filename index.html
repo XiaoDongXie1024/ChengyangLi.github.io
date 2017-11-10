@@ -143,7 +143,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <a href="/tags/AAC/" style="font-size: 10px;">AAC</a> <a href="/tags/Apache/" style="font-size: 10px;">Apache</a> <a href="/tags/Audio/" style="font-size: 10px;">Audio</a> <a href="/tags/AudioQueue/" style="font-size: 10px;">AudioQueue</a> <a href="/tags/AudioUnit/" style="font-size: 10px;">AudioUnit</a> <a href="/tags/CaptureSession/" style="font-size: 10px;">CaptureSession</a> <a href="/tags/H264/" style="font-size: 10px;">H264</a> <a href="/tags/HEVC/" style="font-size: 10px;">HEVC</a> <a href="/tags/Masonry/" style="font-size: 10px;">Masonry</a> <a href="/tags/MyEclipse/" style="font-size: 10px;">MyEclipse</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/PCM/" style="font-size: 10px;">PCM</a> <a href="/tags/TableViewGroup/" style="font-size: 10px;">TableViewGroup</a> <a href="/tags/crop/" style="font-size: 10px;">crop</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-API/" style="font-size: 10px;">iOS API</a> <a href="/tags/ios/" style="font-size: 15px;">ios</a> <a href="/tags/sampleBuffer/" style="font-size: 10px;">sampleBuffer</a> <a href="/tags/传值/" style="font-size: 10px;">传值</a> <a href="/tags/富文本/" style="font-size: 10px;">富文本</a> <a href="/tags/小东邪/" style="font-size: 10px;">小东邪</a>
+                        <a href="/tags/AAC/" style="font-size: 10px;">AAC</a> <a href="/tags/Apache/" style="font-size: 10px;">Apache</a> <a href="/tags/Audio/" style="font-size: 10px;">Audio</a> <a href="/tags/AudioQueue/" style="font-size: 10px;">AudioQueue</a> <a href="/tags/AudioUnit/" style="font-size: 10px;">AudioUnit</a> <a href="/tags/CaptureSession/" style="font-size: 10px;">CaptureSession</a> <a href="/tags/Encoder/" style="font-size: 10px;">Encoder</a> <a href="/tags/H264/" style="font-size: 15px;">H264</a> <a href="/tags/H265/" style="font-size: 10px;">H265</a> <a href="/tags/HEVC/" style="font-size: 15px;">HEVC</a> <a href="/tags/Masonry/" style="font-size: 10px;">Masonry</a> <a href="/tags/MyEclipse/" style="font-size: 10px;">MyEclipse</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/PCM/" style="font-size: 10px;">PCM</a> <a href="/tags/TableViewGroup/" style="font-size: 10px;">TableViewGroup</a> <a href="/tags/crop/" style="font-size: 10px;">crop</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-API/" style="font-size: 10px;">iOS API</a> <a href="/tags/ios/" style="font-size: 15px;">ios</a> <a href="/tags/sampleBuffer/" style="font-size: 10px;">sampleBuffer</a> <a href="/tags/传值/" style="font-size: 10px;">传值</a> <a href="/tags/富文本/" style="font-size: 10px;">富文本</a> <a href="/tags/小东邪/" style="font-size: 10px;">小东邪</a>
                     </div>
                 </section>
                 
@@ -220,6 +220,71 @@
     </div>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-H264H265Encoder" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/11/10/H264H265Encoder/" class="article-date">
+      <time datetime="2017-11-10T10:26:10.000Z" itemprop="datePublished">2017-11-10</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/10/H264H265Encoder/">H264,H265 Encoder</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <p><Excerpt in index | 首页摘要> </p>
+<ul>
+<li>本文需求：使用H264, H265实现视频数据的编码并录制开始200帧存为文件.<br>比如做直播功能，需要将客户端的视频数据传给服务器，如果分辨率过大如2K,4K则传输压力太大，所以需要对视频数据进行编码，传给服务器后再解码以实现大数据量的视频数据的传输，而利用硬件编码则可以极大限度减小CPU压力，当前主流使用H264进行编码，iOS 11 之后，iPhone 7以上的设备可以支持新的编码器H265编码器，使得同等质量视频占用的存储空间更小。所以本例中可以使用两种方式实现视频数据的编码
+          
+      
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Encoder/">Encoder</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/H264/">H264</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/H265/">H265</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/HEVC/">HEVC</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a  href="/2017/11/10/H264H265Encoder/#more">click me >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
   
     <article id="post-codec" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -806,71 +871,10 @@
 
 
   
-    <article id="post-ios-help" class="article article-type-post" itemscope itemprop="blogPost">
   
-    <div class="article-meta">
-      <a href="/2016/09/25/ios-help/" class="article-date">
-      <time datetime="2016-09-25T03:53:56.000Z" itemprop="datePublished">2016-09-25</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/25/ios-help/">iOS帮助文档最新安装方法</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              <p><Excerpt in index | 首页摘要> </p>
-<ul>
-<li>鉴于有关MAC OS系统的很多东西网上都是以前的教程，很多已经失效，本人会把经常遇到的问题总结如下，定期发布到博客，希望能帮助到大家，苹果帮助文档安装中最需要注意的问题已经用红色字体标识出，请注意按照步骤走。
-          
-      
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS-API/">iOS API</a></li></ul>
-    </div>
-
-      
-        <p class="article-more-link">
-          <a  href="/2016/09/25/ios-help/#more">click me >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
+    <nav id="page-nav">
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+    </nav>
   
 </div>
       <footer id="footer">
