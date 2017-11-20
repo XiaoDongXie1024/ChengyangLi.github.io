@@ -3,22 +3,20 @@
 <head>
   <meta charset="utf-8">
   
-  <title>代码隐藏GroupedTableView上边多余的间隔 | _小__东邪___</title>
+  <title>iOS 音量柱的实现(mic 采集的声音DB反映成音量柱) | _小__东邪___</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="代码隐藏GroupedTableView上边多余的间隔,实现诸如支付宝的 “探索” 页面时，最简单的方案是在 Storyboard 中来一个静态 Grouped UITableViewController，把各个 Cell 中的元素摆好就行了,不过会有下面的问题，第一个 Section 距离屏幕顶端有间隔">
+  <meta name="description" content="本文：APP 将麦克风采集到的声音(Audio Queue / Audio Unit) 通过公式转换成DB然后在界面中显示出来可实时检测DB变化。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="代码隐藏GroupedTableView上边多余的间隔">
-<meta property="og:url" content="http://yoursite.com/2016/10/25/group/index.html">
+<meta property="og:title" content="iOS 音量柱的实现(mic 采集的声音DB反映成音量柱)">
+<meta property="og:url" content="http://yoursite.com/2017/11/20/audioPillar/index.html">
 <meta property="og:site_name" content="_小__东邪___">
-<meta property="og:description" content="代码隐藏GroupedTableView上边多余的间隔,实现诸如支付宝的 “探索” 页面时，最简单的方案是在 Storyboard 中来一个静态 Grouped UITableViewController，把各个 Cell 中的元素摆好就行了,不过会有下面的问题，第一个 Section 距离屏幕顶端有间隔">
-<meta property="og:image" content="http://yoursite.com/img/tbgroup/1.png">
-<meta property="og:image" content="http://yoursite.com/img/tbgroup/2.png">
-<meta property="og:image" content="http://yoursite.com/img/tbgroup/3.png">
-<meta property="og:updated_time" content="2016-10-25T13:46:00.000Z">
+<meta property="og:description" content="本文：APP 将麦克风采集到的声音(Audio Queue / Audio Unit) 通过公式转换成DB然后在界面中显示出来可实时检测DB变化。">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/5086522-7eb11d947a921a1b.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-11-20T07:10:57.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="代码隐藏GroupedTableView上边多余的间隔">
-<meta name="twitter:description" content="代码隐藏GroupedTableView上边多余的间隔,实现诸如支付宝的 “探索” 页面时，最简单的方案是在 Storyboard 中来一个静态 Grouped UITableViewController，把各个 Cell 中的元素摆好就行了,不过会有下面的问题，第一个 Section 距离屏幕顶端有间隔">
-<meta name="twitter:image" content="http://yoursite.com/img/tbgroup/1.png">
+<meta name="twitter:title" content="iOS 音量柱的实现(mic 采集的声音DB反映成音量柱)">
+<meta name="twitter:description" content="本文：APP 将麦克风采集到的声音(Audio Queue / Audio Unit) 通过公式转换成DB然后在界面中显示出来可实时检测DB变化。">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/5086522-7eb11d947a921a1b.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
   
     <link rel="alternative" href="/atom.xml" title="_小__东邪___" type="application/atom+xml">
   
@@ -224,11 +222,11 @@
         </header>                
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-group" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-audioPillar" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/10/25/group/" class="article-date">
-      <time datetime="2016-10-25T13:46:00.000Z" itemprop="datePublished">2016-10-25</time>
+      <a href="/2017/11/20/audioPillar/" class="article-date">
+      <time datetime="2017-11-20T07:09:51.000Z" itemprop="datePublished">2017-11-20</time>
 </a>
     </div>
   
@@ -241,7 +239,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      代码隐藏GroupedTableView上边多余的间隔
+      iOS 音量柱的实现(mic 采集的声音DB反映成音量柱)
     </h1>
   
 
@@ -252,7 +250,7 @@
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TableViewGroup/">TableViewGroup</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DB/">DB</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/音量柱/">音量柱</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -262,29 +260,35 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <p><excerpt in="" index="" |="" 首页摘要=""> </excerpt></p>
+        <p><excerpt in="" index="" |="" 首页摘要=""></excerpt></p>
 <ul>
-<li>代码隐藏GroupedTableView上边多余的间隔,实现诸如支付宝的 “探索” 页面时，最简单的方案是在 Storyboard 中来一个静态 Grouped UITableViewController，把各个 Cell 中的元素摆好就行了,不过会有下面的问题，第一个 Section 距离屏幕顶端有间隔<a id="more"></a><the rest="" of="" contents="" |="" 余下全文="">
+<li>本文：APP 将麦克风采集到的声音(Audio Queue / Audio Unit) 通过公式转换成DB然后在界面中显示出来可实时检测DB变化。<a id="more"></a>
+<the rest="" of="" contents="" |="" 余下全文="">
 
 </the></li>
 </ul>
-<h3 id="方法一"><a href="#方法一" class="headerlink" title="方法一:"></a>方法一:</h3><pre><code>设置tableview的边距,根据个人情况调整具体位置
-self.tableView.contentInset = UIEdgeInsetsMake(-35, 0, -20, 0)
-</code></pre><h3 id="方法二"><a href="#方法二" class="headerlink" title="方法二:"></a>方法二:</h3><pre><code>简洁版:self.tableView.tableHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 你需要的高度)];
-</code></pre><h2 id="一行代码搞定"><a href="#一行代码搞定" class="headerlink" title="一行代码搞定"></a>一行代码搞定</h2><p>代码隐藏GroupedTableView上边多余的间隔,实现诸如支付宝的 “探索” 页面时，最简单的方案是在 Storyboard 中来一个静态 Grouped UITableViewController，把各个 Cell 中的元素摆好就行了,不过会有下面的问题，第一个 Section 距离屏幕顶端有间隔<br>  <img src="/img/tbgroup/1.png" alt="Alt text"><br> 研究发现，这里其实是一个被 UITableView 默认填充的 HeaderView。而且，当试图将它的高度设置为 0 时，完全不起效果。但我们用下面的代码创建一个高度特别小的 HeaderView 时，上面的边距就不见了： </p>
-<pre><code class="bash">-(void)viewDidLoad {
-   [super viewDidLoad];
-   CGRect frame = CGRectMake(0,0,0,CGFLOAT_MIN);
-   self.tableView.tableHaderView = [[UIView alloc] initWithFrame:frame];
-   }
-</code></pre>
-<p>CGFLOAT_MIN 这个宏表示 CGFloat 能代表的最接近 0 的浮点数，64 位下大概是 0.00(300左右个)0225 这个样子<br>这样写单纯的为了避免一个魔法数字，这里用 0.1 效果是一样的，后面再讲。 </p>
-<h2 id="在-Storyboard-中-0-代码搞定"><a href="#在-Storyboard-中-0-代码搞定" class="headerlink" title="在 Storyboard 中 0 代码搞定"></a>在 Storyboard 中 0 代码搞定</h2><p>没用 Storyboard 的同学使用上面的代码就 OK 了； 而在 Storyboard 中可以 0 代码搞定这个事： </p>
-<p>首先，在第一个 Section 的上面拖进来一个空 UIView<br><img src="/img/tbgroup/2.png" alt="Alt text"><br>然后选中这个 UIView 的 Runtime Attributes 栏，添加一个 frame 的 KeyPath </p>
-<p>这样头部的间隔就乖乖的不见了：</p>
-<h2 id="刨根问底-UITableViewHeader-的猫腻"><a href="#刨根问底-UITableViewHeader-的猫腻" class="headerlink" title="刨根问底 UITableViewHeader 的猫腻"></a>刨根问底 UITableViewHeader 的猫腻</h2><p>为什么刚才说 0.1 和 CGFLOAT_MIN 是等效的呢？经过研究，这个高度值的影响大概是这样的：</p>
-<p>若传入的 height == 0，则 height 被设置成默认值<br>若 height 小于屏幕半像素对应的高度，这个 header 不在另一个像素渲染<br>半像素也就是 1.0 / scale / 2.0，如在 @2x 屏上是 0.25<br>直观的感受下，假如这个 height 被设置成 0.5 的样子：<br><img src="/img/tbgroup/3.png" alt="Alt text"><br>身患强迫症的我是绝对不能容忍导航栏下面的阴影线看上去宽了 0.5 像素的，Done。</p>
-<p>原文参考<a href="http://blog.sunnyxx.com/2015/04/15/ios-hide-grouped-tableview-header/" target="_blank" rel="external">小东邪</a>!</p>
+<h3 id="需求-APP-将麦克风采集到的声音-Audio-Queue-Audio-Unit-通过公式转换成DB然后在界面中显示出来可实时检测DB变化。"><a href="#需求-APP-将麦克风采集到的声音-Audio-Queue-Audio-Unit-通过公式转换成DB然后在界面中显示出来可实时检测DB变化。" class="headerlink" title="需求 : APP 将麦克风采集到的声音(Audio Queue / Audio Unit) 通过公式转换成DB然后在界面中显示出来可实时检测DB变化。"></a>需求 : APP 将麦克风采集到的声音(Audio Queue / Audio Unit) 通过公式转换成DB然后在界面中显示出来可实时检测DB变化。</h3><h3 id="流程："><a href="#流程：" class="headerlink" title="流程："></a>流程：</h3><ul>
+<li>配置Audio 初始化参数，必须使用Audio Queue 或 Audio Unit<br>采集声音。</li>
+<li>在Audio Queue 或 Audio Unit 采集声音的回调中将声音数据转为DB。</li>
+<li>将拿到每一帧声音的DB值传给主控制器的UI以反映声音的变化</li>
+</ul>
+<p>最终的效果如下，黄色柱形会反映声音DB的变化：<br><img src="http://upload-images.jianshu.io/upload_images/5086522-7eb11d947a921a1b.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="音量柱的实现"></p>
+<h3 id="—————————————————–"><a href="#—————————————————–" class="headerlink" title="—————————————————–"></a>—————————————————–</h3><h3 id="源代码地址-音量柱的实现"><a href="#源代码地址-音量柱的实现" class="headerlink" title="源代码地址: 音量柱的实现"></a>源代码地址: <a href="https://github.com/ChengyangLi/XDXPCMToAACDemo" target="_blank" rel="external">音量柱的实现</a></h3><h3 id="博客地址-音量柱的实现"><a href="#博客地址-音量柱的实现" class="headerlink" title="博客地址:   音量柱的实现"></a>博客地址:   <a href="">音量柱的实现</a></h3><h3 id="简书地址-音量柱的实现"><a href="#简书地址-音量柱的实现" class="headerlink" title="简书地址:   音量柱的实现"></a>简书地址:   <a href="http://www.jianshu.com/p/2a7c8d5438db" target="_blank" rel="external">音量柱的实现</a></h3><h3 id="—————————————————–-1"><a href="#—————————————————–-1" class="headerlink" title="—————————————————–"></a>—————————————————–</h3><h3 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h3><ul>
+<li>经过测试如果使用Audio Unit的方式采集声音， 由于设置的声音级别是<code>audioUnit.componentSubType = kAudioUnitSubType_VoiceProcessingIO;</code> 而采集到的声音数据从512开始变得不正常，数据格外大，非正常范围数据，所以我们从512开始不处理后面的数据。下文有具体说明</li>
+<li>如果是采用Audio Queue计算的数据则不需要额外处理</li>
+</ul>
+<h3 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h3><h5 id="1-初始化Audio-Queue-Audio-Unit-采集声音，这里不做说明，如有问题可参考Audio-Queue-Audio-Unit-采集声音"><a href="#1-初始化Audio-Queue-Audio-Unit-采集声音，这里不做说明，如有问题可参考Audio-Queue-Audio-Unit-采集声音" class="headerlink" title="1.初始化Audio Queue / Audio Unit 采集声音，这里不做说明，如有问题可参考Audio Queue/ Audio Unit 采集声音"></a>1.初始化Audio Queue / Audio Unit 采集声音，这里不做说明，如有问题可参考<a href="http://www.jianshu.com/p/e2d072b9e4d8" target="_blank" rel="external">Audio Queue/ Audio Unit 采集声音</a></h5><h5 id="2-在采集声音回调中将声音数据转为声音的DB值。"><a href="#2-在采集声音回调中将声音数据转为声音的DB值。" class="headerlink" title="2.在采集声音回调中将声音数据转为声音的DB值。"></a>2.在采集声音回调中将声音数据转为声音的DB值。</h5><p>以Audio Unit 为例，在回调中处理如下<br><figure class="highlight xl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">#pragma mark - AudioUnit</div><div class="line">static OSStatus RecordCallback(void *inRefCon,</div><div class="line">AudioUnitRenderActionFlags *ioActionFlags,</div><div class="line">const AudioTimeStamp *inTimeStamp,</div><div class="line">UInt32 inBusNumber,</div><div class="line">UInt32 inNumberFrames,</div><div class="line">AudioBufferList *ioData) &#123;</div><div class="line"></div><div class="line">XDXRecorder *recorder = (XDXRecorder *)inRefCon;</div><div class="line"></div><div class="line"><span class="comment">// 将回调数据传给_buffList</span></div><div class="line">A<span class="function"><span class="title">udioUnitRender</span>(recorder-&gt;</span>_<span class="function"><span class="title">audioUnit</span>, ioActionFlags, inTimeStamp, inBusNumber, inNumberFrames, recorder-&gt;</span>_buffList);</div><div class="line"></div><div class="line"><span class="function"><span class="title">void</span>    *bufferData = recorder-&gt;</span>_<span class="function"><span class="title">buffList</span>-&gt;</span>mBuffers[<span class="number">0</span>].mData;</div><div class="line">UI<span class="function"><span class="title">nt32</span>   bufferSize = recorder-&gt;</span>_<span class="function"><span class="title">buffList</span>-&gt;</span>mBuffers[<span class="number">0</span>].mDataByteSize;</div><div class="line"><span class="comment">//    printf("Audio Recoder Render dataSize : %d \n",bufferSize);</span></div><div class="line"></div><div class="line">float channelValue[<span class="number">2</span>];</div><div class="line">caculate_bm_db(bufferData, bufferSize, <span class="number">0</span>, k_Mono, channelValue,<span class="literal">true</span>);</div><div class="line">recorder.volLDB = channelValue[<span class="number">0</span>];</div><div class="line">recorder.volRDB = channelValue[<span class="number">1</span>];</div></pre></td></tr></table></figure></p>
+<p>根据声音的计算公式<code>dB=20∗log(A)→A=pow(10,(db/20.0))</code>，我们对回调中传来的声音数据进行处理，这里需要注意的是，经过测试如果使用Audio Unit的方式采集声音， 由于设置的声音级别是<code>audioUnit.componentSubType = kAudioUnitSubType_VoiceProcessingIO;</code> 而采集到的声音数据从512开始变得不正常，数据格外大，非正常范围数据，所以我们从512开始不处理后面的数据，具体原因可能是因为Audio Unit的kAudioUnitSubType_VoiceProcessingIO分类做了一些声音的消除回声等优化导致数据和正常数据略有不同，在AudioQueue中并不存在这样的情况。</p>
+<p>我们的APP中使用的是单声道，遍历声音数据，如下我们通过遍历每一帧完整的声音数据(audioData)找到其中最大的值(max)来对它进行处理,处理后的数据按照公式可得到一个声音的DB值(-40 - 0)</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div></pre></td><td class="code"><pre><div class="line">void caculate_bm_db(void * const data ,size_t length ,int64_t timestamp, ChannelCount channelModel,<span class="type">float</span> channelValue[<span class="number">2</span>],bool isAudioUnit) &#123;</div><div class="line">int16_t *audioData = (int16_t *)data;</div><div class="line"></div><div class="line">if (channelModel == k_Mono) &#123;   <span class="comment">// 单声道</span></div><div class="line">int     sDbChnnel     = <span class="number">0</span>;</div><div class="line">int16_t curr          = <span class="number">0</span>;</div><div class="line">int16_t max           = <span class="number">0</span>;</div><div class="line">size_t traversalTimes = <span class="number">0</span>;</div><div class="line"></div><div class="line">if (isAudioUnit) &#123;</div><div class="line">traversalTimes = length/<span class="number">2</span>;<span class="comment">// 由于512后面的数据显示异常  需要全部忽略掉</span></div><div class="line">&#125;else&#123;</div><div class="line">traversalTimes = length;</div><div class="line">&#125;</div><div class="line"></div><div class="line">for(int i = <span class="number">0</span>; i&lt; traversalTimes; i++) &#123;</div><div class="line">curr = *(audioData+i);</div><div class="line">if(curr &gt; max) max = curr;</div><div class="line">&#125;</div><div class="line"></div><div class="line">if(max &lt; <span class="number">1</span>) &#123;</div><div class="line">sDbChnnel = <span class="number">-100</span>;</div><div class="line">&#125;else &#123;</div><div class="line">sDbChnnel = (<span class="number">20</span>*log10((<span class="number">0.0</span> + max)/<span class="number">32767</span>) - <span class="number">0.5</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line">channelValue[<span class="number">0</span>] = channelValue[<span class="number">1</span>] = sDbChnnel;</div><div class="line"></div><div class="line">&#125; else if (channelModel == k_Stereo)&#123;   <span class="comment">// 立体声</span></div><div class="line">int sDbChA = <span class="number">0</span>;</div><div class="line">int sDbChB = <span class="number">0</span>;</div><div class="line"></div><div class="line">int16_t nCurr[<span class="number">2</span>] = &#123;<span class="number">0</span>&#125;;</div><div class="line">int16_t nMax[<span class="number">2</span>] = &#123;<span class="number">0</span>&#125;;</div><div class="line"></div><div class="line">for(unsigned int i=<span class="number">0</span>; i&lt;length/<span class="number">2</span>; i++) &#123;</div><div class="line">nCurr[<span class="number">0</span>] = audioData[i];</div><div class="line">nCurr[<span class="number">1</span>] = audioData[i + <span class="number">1</span>];</div><div class="line"></div><div class="line">if(nMax[<span class="number">0</span>] &lt; nCurr[<span class="number">0</span>]) nMax[<span class="number">0</span>] = nCurr[<span class="number">0</span>];</div><div class="line"></div><div class="line">if(nMax[<span class="number">1</span>] &lt; nCurr[<span class="number">1</span>]) nMax[<span class="number">1</span>] = nCurr[<span class="number">0</span>];</div><div class="line">&#125;</div><div class="line"></div><div class="line">if(nMax[<span class="number">0</span>] &lt; <span class="number">1</span>) &#123;</div><div class="line">sDbChA = <span class="number">-100</span>;</div><div class="line">&#125; else &#123;</div><div class="line">sDbChA = (<span class="number">20</span>*log10((<span class="number">0.0</span> + nMax[<span class="number">0</span>])/<span class="number">32767</span>) - <span class="number">0.5</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line">if(nMax[<span class="number">1</span>] &lt; <span class="number">1</span>) &#123;</div><div class="line">sDbChB = <span class="number">-100</span>;</div><div class="line">&#125; else &#123;</div><div class="line">sDbChB = (<span class="number">20</span>*log10((<span class="number">0.0</span> + nMax[<span class="number">1</span>])/<span class="number">32767</span>) - <span class="number">0.5</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line">channelValue[<span class="number">0</span>] = sDbChA;</div><div class="line">channelValue[<span class="number">1</span>] = sDbChB;</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h5 id="3-将拿到的DB值反映到UI界面上"><a href="#3-将拿到的DB值反映到UI界面上" class="headerlink" title="3.将拿到的DB值反映到UI界面上"></a>3.将拿到的DB值反映到UI界面上</h5><ul>
+<li>自定义音量柱的View类</li>
+</ul>
+<p>我们在这里使用CALayer来实现音量柱的变化，使用CALayer的好处是其底层自动做了动画的处理，所以当我们连续对其设置不同的DB值在UI上变化是连续的。具体UI的处理可在<code>XDXVolumeView.m</code>中查看。</p>
+<ul>
+<li>在主控制器中开启定时器设置每隔0.25s更新一次UI，这样可以保证音量柱连续变化</li>
+<li>注意：我们将拿到的声音DB值(-40 - 0)转为0 - 40方便UI的显示</li>
+</ul>
 
       
       
@@ -339,13 +343,13 @@ self.tableView.contentInset = UIEdgeInsetsMake(-35, 0, -20, 0)
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2016/10/25/group/">代码隐藏GroupedTableView上边多余的间隔</a></p>
+        <p><span>本文标题:</span><a href="/2017/11/20/audioPillar/">iOS 音量柱的实现(mic 采集的声音DB反映成音量柱)</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 小东邪_Chengyang 的个人博客">小东邪_Chengyang</a></p>
-        <p><span>发布时间:</span>2016年10月25日 - 21时46分</p>
-        <p><span>最后更新:</span>2016年10月25日 - 21时46分</p>
+        <p><span>发布时间:</span>2017年11月20日 - 15时09分</p>
+        <p><span>最后更新:</span>2017年11月20日 - 15时10分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2016/10/25/group/" title="代码隐藏GroupedTableView上边多余的间隔">http://yoursite.com/2016/10/25/group/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2016/10/25/group/　　作者: 小东邪_Chengyang" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2017/11/20/audioPillar/" title="iOS 音量柱的实现(mic 采集的声音DB反映成音量柱)">http://yoursite.com/2017/11/20/audioPillar/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2017/11/20/audioPillar/　　作者: 小东邪_Chengyang" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script src="/js/clipboard.min.js"></script>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -358,18 +362,9 @@ self.tableView.contentInset = UIEdgeInsetsMake(-35, 0, -20, 0)
 
 <nav id="article-nav">
   
-    <a href="/2017/03/24/record/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          Audio -- PCM to AAC
-        
-      </div>
-    </a>
   
-  
-    <a href="/2016/10/25/sendValue/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">iOS控制器之间传值</div>
+    <a href="/2017/11/10/H264H265Encoder/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">H264,H265 Encoder</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -380,7 +375,7 @@ self.tableView.contentInset = UIEdgeInsetsMake(-35, 0, -20, 0)
 
     <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#方法一"><span class="toc-number">1.</span> <span class="toc-text">方法一:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法二"><span class="toc-number">2.</span> <span class="toc-text">方法二:</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一行代码搞定"><span class="toc-number"></span> <span class="toc-text">一行代码搞定</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#在-Storyboard-中-0-代码搞定"><span class="toc-number"></span> <span class="toc-text">在 Storyboard 中 0 代码搞定</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#刨根问底-UITableViewHeader-的猫腻"><span class="toc-number"></span> <span class="toc-text">刨根问底 UITableViewHeader 的猫腻</span></a>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#需求-APP-将麦克风采集到的声音-Audio-Queue-Audio-Unit-通过公式转换成DB然后在界面中显示出来可实时检测DB变化。"><span class="toc-number">1.</span> <span class="toc-text">需求 : APP 将麦克风采集到的声音(Audio Queue / Audio Unit) 通过公式转换成DB然后在界面中显示出来可实时检测DB变化。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#流程："><span class="toc-number">2.</span> <span class="toc-text">流程：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#—————————————————–"><span class="toc-number">3.</span> <span class="toc-text">—————————————————–</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#源代码地址-音量柱的实现"><span class="toc-number">4.</span> <span class="toc-text">源代码地址: 音量柱的实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#博客地址-音量柱的实现"><span class="toc-number">5.</span> <span class="toc-text">博客地址:   音量柱的实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#简书地址-音量柱的实现"><span class="toc-number">6.</span> <span class="toc-text">简书地址:   音量柱的实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#—————————————————–-1"><span class="toc-number">7.</span> <span class="toc-text">—————————————————–</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#注意点"><span class="toc-number">8.</span> <span class="toc-text">注意点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#具体实现"><span class="toc-number">9.</span> <span class="toc-text">具体实现</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-初始化Audio-Queue-Audio-Unit-采集声音，这里不做说明，如有问题可参考Audio-Queue-Audio-Unit-采集声音"><span class="toc-number">9.0.1.</span> <span class="toc-text">1.初始化Audio Queue / Audio Unit 采集声音，这里不做说明，如有问题可参考Audio Queue/ Audio Unit 采集声音</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-在采集声音回调中将声音数据转为声音的DB值。"><span class="toc-number">9.0.2.</span> <span class="toc-text">2.在采集声音回调中将声音数据转为声音的DB值。</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-将拿到的DB值反映到UI界面上"><span class="toc-number">9.0.3.</span> <span class="toc-text">3.将拿到的DB值反映到UI界面上</span></a></li></ol></li></ol></li></ol>
 </div>
 <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
 
@@ -428,7 +423,7 @@ self.tableView.contentInset = UIEdgeInsetsMake(-35, 0, -20, 0)
     
       <div class="duoshuo" id="comments">
     <!-- 多说评论框 start -->
-    <div class="ds-thread" data-thread-key="2016/10/25/group/" data-title="代码隐藏GroupedTableView上边多余的间隔" data-url="http://yoursite.com/2016/10/25/group/"></div>
+    <div class="ds-thread" data-thread-key="2017/11/20/audioPillar/" data-title="iOS 音量柱的实现(mic 采集的声音DB反映成音量柱)" data-url="http://yoursite.com/2017/11/20/audioPillar/"></div>
     <!-- 多说评论框 end -->
     <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
     <script type="text/javascript">
@@ -451,13 +446,11 @@ self.tableView.contentInset = UIEdgeInsetsMake(-35, 0, -20, 0)
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2017/03/24/record/" title="上一篇: Audio -- PCM to AAC">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
         
-            <a href="/2016/10/25/sendValue/" title="下一篇: iOS控制器之间传值">
+            <a href="/2017/11/10/H264H265Encoder/" title="下一篇: H264,H265 Encoder">
                 <i class="fa fa-angle-right"></i>
             </a>
         
