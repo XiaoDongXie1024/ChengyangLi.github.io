@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>iOS开发中截取相机部分画面，切割sampleBuffer（Crop sample buffer） | _小__东邪___</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="作为一个正常上班搬砖程序猿，Git 应该是目前主流的代码管理工具，而Git在提交时有两种方式：Https 和 SSH 两种验证方式。工作中公司有公司的账号我们也有自己的github或者其他账号，这时如果要配置多个ssh方法则稍不同于单个。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发中截取相机部分画面，切割sampleBuffer（Crop sample buffer）">
+<meta property="og:url" content="http://yoursite.com/2017/12/15/configSSH/index.html">
+<meta property="og:site_name" content="_小__东邪___">
+<meta property="og:description" content="作为一个正常上班搬砖程序猿，Git 应该是目前主流的代码管理工具，而Git在提交时有两种方式：Https 和 SSH 两种验证方式。工作中公司有公司的账号我们也有自己的github或者其他账号，这时如果要配置多个ssh方法则稍不同于单个。">
+<meta property="og:updated_time" content="2017-12-15T06:47:36.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS开发中截取相机部分画面，切割sampleBuffer（Crop sample buffer）">
+<meta name="twitter:description" content="作为一个正常上班搬砖程序猿，Git 应该是目前主流的代码管理工具，而Git在提交时有两种方式：Https 和 SSH 两种验证方式。工作中公司有公司的账号我们也有自己的github或者其他账号，这时如果要配置多个ssh方法则稍不同于单个。">
+  
+    <link rel="alternative" href="/atom.xml" title="_小__东邪___" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.png" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/" title="Hi Mate">小东邪_Chengyang</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">风陵渡口初相遇,一遇杨过误终身.</p>
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">桃花岛</a></li>
+                        
+                            <li><a href="/works">绝世武功</a></li>
+                        
+                            <li><a href="/about">千里传音</a></li>
+                        
+                            <li><a href="/FrontEndGuide">黯然销魂</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=xiao_dx@foxmail.com" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/ChengyangLi/ChengyangLi.github.io" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="https://www.zhihu.com/people/xiao-dong-xie-75" title="zhihu">zhihu</a>
+                            
+                                <a class="fl weibo" target="_blank" href="http://weibo.com/u/5088497199" title="weibo">weibo</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/AAC/" style="font-size: 10px;">AAC</a> <a href="/tags/Apache/" style="font-size: 10px;">Apache</a> <a href="/tags/Audio/" style="font-size: 10px;">Audio</a> <a href="/tags/AudioQueue/" style="font-size: 10px;">AudioQueue</a> <a href="/tags/AudioUnit/" style="font-size: 10px;">AudioUnit</a> <a href="/tags/CaptureSession/" style="font-size: 13.33px;">CaptureSession</a> <a href="/tags/DB/" style="font-size: 10px;">DB</a> <a href="/tags/Data-Structure/" style="font-size: 10px;">Data Structure</a> <a href="/tags/Encoder/" style="font-size: 10px;">Encoder</a> <a href="/tags/H264/" style="font-size: 16.67px;">H264</a> <a href="/tags/H265/" style="font-size: 10px;">H265</a> <a href="/tags/HEVC/" style="font-size: 13.33px;">HEVC</a> <a href="/tags/Masonry/" style="font-size: 10px;">Masonry</a> <a href="/tags/MyEclipse/" style="font-size: 10px;">MyEclipse</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/PCM/" style="font-size: 10px;">PCM</a> <a href="/tags/TableViewGroup/" style="font-size: 10px;">TableViewGroup</a> <a href="/tags/crop/" style="font-size: 13.33px;">crop</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-API/" style="font-size: 10px;">iOS API</a> <a href="/tags/ios/" style="font-size: 13.33px;">ios</a> <a href="/tags/sampleBuffer/" style="font-size: 13.33px;">sampleBuffer</a> <a href="/tags/传值/" style="font-size: 10px;">传值</a> <a href="/tags/富文本/" style="font-size: 10px;">富文本</a> <a href="/tags/小东邪/" style="font-size: 10px;">小东邪</a> <a href="/tags/组成结构/" style="font-size: 10px;">组成结构</a> <a href="/tags/音量柱/" style="font-size: 10px;">音量柱</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://King-Cheng.github.io/">鹏丞万里</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">一生负气成今日，四海无人对夕阳.</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="Me">小东邪_Chengyang</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.png" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="Me">小东邪_Chengyang</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">风陵渡口初相遇,一遇杨过误终身.</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">桃花岛</a></li>
+                
+                    <li><a href="/works">绝世武功</a></li>
+                
+                    <li><a href="/about">千里传音</a></li>
+                
+                    <li><a href="/FrontEndGuide">黯然销魂</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=xiao_dx@foxmail.com" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/ChengyangLi/ChengyangLi.github.io" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="https://www.zhihu.com/people/xiao-dong-xie-75" title="zhihu">zhihu</a>
+                    
+                        <a class="weibo" target="_blank" href="http://weibo.com/u/5088497199" title="weibo">weibo</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-configSSH" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/12/15/configSSH/" class="article-date">
+      <time datetime="2017-12-15T06:34:20.000Z" itemprop="datePublished">2017-12-15</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      iOS开发中截取相机部分画面，切割sampleBuffer（Crop sample buffer）
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CaptureSession/">CaptureSession</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/crop/">crop</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sampleBuffer/">sampleBuffer</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p><excerpt in="" index="" |="" 首页摘要=""> </excerpt></p>
+<ul>
+<li>作为一个正常上班搬砖程序猿，Git 应该是目前主流的代码管理工具，而Git在提交时有两种方式：Https 和 SSH 两种验证方式。工作中公司有公司的账号我们也有自己的github或者其他账号，这时如果要配置多个ssh方法则稍不同于单个。</li>
+</ul>
+<a id="more"></a>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+<h3 id="博客地址-多账号配置SSH"><a href="#博客地址-多账号配置SSH" class="headerlink" title="博客地址 : 多账号配置SSH"></a>博客地址 : <a href="https://chengyangli.github.io/2017/12/15/configSSH/" target="_blank" rel="external">多账号配置SSH</a></h3><h3 id="简书地址-多账号配置SSH"><a href="#简书地址-多账号配置SSH" class="headerlink" title="简书地址 : 多账号配置SSH"></a>简书地址 : <a href="http://www.jianshu.com/p/d15d251555aa" target="_blank" rel="external">多账号配置SSH</a></h3><h3 id="快捷说明"><a href="#快捷说明" class="headerlink" title="快捷说明"></a>快捷说明</h3><blockquote>
+<p>熟练者忘记查询, 详细解析在下面模块</p>
+</blockquote>
+<figure class="highlight verilog"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ cd ~/<span class="variable">.ssh</span>								<span class="comment">// 进入文件夹</span></div><div class="line">$ ssh-keygen -t rsa -C <span class="string">"邮箱地址"</span>		<span class="comment">// 配置密钥对</span></div><div class="line">$ ssh-add rsa文件的路径/xxx_rsa			<span class="comment">// 添加配置</span></div><div class="line">$ git <span class="keyword">config</span> --<span class="keyword">global</span>(<span class="keyword">local</span>) user<span class="variable">.name</span> <span class="string">"你的名字"</span></div><div class="line">$ git <span class="keyword">config</span> --<span class="keyword">global</span>(<span class="keyword">local</span>) user<span class="variable">.email</span> <span class="string">"你的邮箱"</span></div><div class="line">$ vim ~/<span class="variable">.ssh</span>/<span class="keyword">config</span> 					<span class="comment">// 添加新的账号配置</span></div></pre></td></tr></table></figure>
+<h3 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h3><blockquote>
+<p>为什么要配置SSH</p>
+</blockquote>
+<p>作为一个正常上班搬砖程序猿，Git 应该是目前主流的代码管理工具，而Git在提交时有两种方式：Https 和 SSH 两种验证方式。</p>
+<ul>
+<li>Https : 输入账号密码，每次都要输入（麻烦，程序猿从来不做重复工作）</li>
+<li>SSH   : 提交代码时通过GIT服务器的公钥与本地私钥做验证。(配置一次，无须每次输入账号密码)</li>
+</ul>
+<blockquote>
+<p>SSH(简单原理说明) </p>
+</blockquote>
+<p>生成一对公钥-私钥，公钥添加到Git服务器，私钥放在本地。提交代码时通过GIT服务器的公钥与本地私钥做验证，如果验证通过则提交成功，简单说就是把账号和密码托管给SSH, 账号就像我们的QQ号码，是公开的可见的，密码只有我们自己知道，本地私钥就是代码我们输入密码的过程，切安全。</p>
+<h4 id="1-生成SSH-KEY"><a href="#1-生成SSH-KEY" class="headerlink" title="1. 生成SSH-KEY"></a>1. 生成SSH-KEY</h4><p>1.1 打开命令行(终端)，测试终端是否支持SSH</p>
+<pre><code><figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$ </span>ssh -V</div></pre></td></tr></table></figure>
+</code></pre><ul>
+<li><p>如果支持，可能看到类似以下版本信息：</p>
+  <figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">OpenSSH_7</span><span class="selector-class">.4p1</span>, <span class="selector-tag">LibreSSL</span> 2<span class="selector-class">.5</span><span class="selector-class">.0</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>测试如果不识别SSH,则需要另行安装，Mac默认带有ssh,不需要安装</p>
+</li>
+</ul>
+<p>1.2 生成公钥私钥</p>
+<ul>
+<li><p>用命令行进入存放ssh的文件夹,然后输入指令，引号内输入你Git的的邮箱地址</p>
+  <figure class="highlight gams"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">$</span> cd ~/.ssh</div><div class="line"><span class="symbol">$</span> ssh-keygen -t rsa -C <span class="string">"邮箱地址"</span></div></pre></td></tr></table></figure>
+<p>  接下来会提示：</p>
+  <figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Generating public/<span class="keyword">private</span> rsa key pair.</div><div class="line">Enter <span class="built_in">file</span> <span class="keyword">in</span> which <span class="built_in">to</span> save <span class="keyword">the</span> key (~/.ssh/id_rsa):</div><div class="line">Enter passphrase (<span class="literal">empty</span> <span class="keyword">for</span> no passphrase):</div><div class="line">Enter same passphrase again:</div></pre></td></tr></table></figure>
+</li>
+<li><p>生成ras的公钥私钥对</p>
+<p>  输入保存这个Key的地址，一般直接输入文件名就好(也可以输入绝对路径)，即在当前目录下的名字，为了区分一般可以按照用途起名，比如company_xx,之后会提示你输入管理该密钥对的密码，这里会输入两次校验，根据需要自己输入， 完成后即创建成功，会提示类似如下信息</p>
+  <figure class="highlight gherkin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">Your identification has been saved in xxxGitHub.</div><div class="line">Your public key has been saved in xxxGitHub.pub.</div><div class="line">The key fingerprint is:</div><div class="line">SHA256:7KVBN59ZHVBky18lBoBnBfhRQXY579Njn6JsYXHm1IA 	xxx<span class="meta">@qq.com</span></div><div class="line">The key's randomart image is:</div><div class="line">+---[RSA 2048]----+</div><div class="line">|<span class="string">        s oo*O+B*.</span>|</div><div class="line">|<span class="string">        o + +=o+</span>|</div><div class="line">|<span class="string">        .+o.  +=o</span>|</div><div class="line">|<span class="string">       o ..+ B .+</span>|</div><div class="line">|<span class="string">        S  .o</span>|</div><div class="line">|<span class="string">       . + o . +</span>|</div><div class="line">|<span class="string">        o . . . =</span>|</div><div class="line">|<span class="string">          .. . ..</span>|</div><div class="line">|<span class="string">          .o. .  </span>|</div><div class="line">+----[SHA256]-----+</div></pre></td></tr></table></figure>
+</li>
+<li><p>此时在终端输入ls,则会看到当前目录已经有了我们生成好的公钥私钥文件xxxGitHub     xxxGitHub.pub, .pub文件即是公钥</p>
+</li>
+</ul>
+<pre><code><figure class="highlight gams"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta"><span class="meta-keyword">$ls</span></span></div><div class="line">xxxGitHub     xxxGitHub.pub</div></pre></td></tr></table></figure>
+</code></pre><h4 id="2-单个账号的配置-–-全局Git配置"><a href="#2-单个账号的配置-–-全局Git配置" class="headerlink" title="2. 单个账号的配置 – 全局Git配置"></a>2. 单个账号的配置 – 全局Git配置</h4><blockquote>
+<p>大部分人使用Git一般是一个账号</p>
+</blockquote>
+<p>因为一般自己笔记本维护自己的github, 公司电脑维护公司的git, 所以先介绍单个git账号配置</p>
+<p>2.1 将生成的SSH-KEY分别配置给服务器和本地。</p>
+<ul>
+<li>将第一步生成的xxx.pub 公钥中的内容添加到git的SSH中，即在网页上GitHub或Gitlib的设置(setting)中可以找到ssh这个菜单项。</li>
+<li><p>把SSH-KEY配置给SSH,让系统SSH知道这个KEY，如果你是在其他文件夹中生成的密钥对必须 <strong>拷贝到~/.ssh文件夹</strong> 中，然后输入如下指令，将当前rsa私钥(不带.pub文件) 添加到SSH-Agent.</p>
+  <figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ssh-<span class="keyword">add</span><span class="bash"> rsa文件的路径/xxx_rsa</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>输入后会校验之前我们在上面 <strong>1.2</strong> 步骤中设置的密钥密码，校验成功后会提示 <code>Identity added: xxx_rsa (xxx_rsa)</code> </p>
+<pre><code>如果设置失败，首先检查当前目录是否为 **~/.ssh**, 然后如果提示如下，请执行`eval $(ssh-agent)` 后再重新添加，如果还不行，请执行`ssh-agent bash`再次尝试添加，如果还有问题请另行查阅，本文主要介绍配置多个ssh.
+
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Could <span class="keyword">not</span> <span class="built_in">open</span> <span class="keyword">a</span> connection <span class="built_in">to</span> your authentication agent.</div></pre></td></tr></table></figure>
+</code></pre><p>2.2 配置Git全局用户和邮箱：(邮箱为你git对应的邮箱)</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ git config --global user<span class="selector-class">.name</span> <span class="string">"你的名字"</span></div><div class="line">$ git config --global user<span class="selector-class">.email</span> <span class="string">"你的邮箱"</span></div></pre></td></tr></table></figure>
+<p>配置完成后可打开 ~/.gitconfig查看配置</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$ </span>vim ./gitconfig</div></pre></td></tr></table></figure>
+<p>内容大致如下</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[user]</div><div class="line">    <span class="attr">name</span> = xxx</div><div class="line">    <span class="attr">email</span> = xxx@foxmail.com</div></pre></td></tr></table></figure>
+<blockquote>
+<p>此时单个账号配置全部结束</p>
+</blockquote>
+<h4 id="3-多个Git帐号的配置——局部Git配置"><a href="#3-多个Git帐号的配置——局部Git配置" class="headerlink" title="3. 多个Git帐号的配置——局部Git配置"></a>3. 多个Git帐号的配置——局部Git配置</h4><blockquote>
+<p>大部分人使用Git一般是一个账号, 所以步骤2中可以完成，但是如果你考虑到以后可能维护多个，或者像本人想在公司电脑里使用公司邮箱的gitlab与自己的github一起，这时就需要配置多个私钥对。</p>
+</blockquote>
+<p>3.1 上面配置ssh密钥对 1.2 时提到起名防止冲突，所以这里不再介绍，反正原则就是一个账号对应一对密钥(xx, xx.pub).</p>
+<p>3.2 接下来服务器添加公钥步骤同2.1中添加公钥的步骤，第二部为SSH配置私钥位置时和上面方法不同，我们需要在<strong>.ssh</strong>文件夹中新建一个config的文件(名字可以自己取，但是不要有冲突和当前目录下)， <code>touch config</code> ，然后通过指令<code>vim config</code>进入config文件，键盘敲击小写字母a进入编辑模式，输入如下内容：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">Host gitlib<span class="selector-class">.com</span></div><div class="line">    HostName gitlib<span class="selector-class">.com</span></div><div class="line">    User xxx@foxmail<span class="selector-class">.com</span></div><div class="line">    PreferredAuthentications publickey</div><div class="line">    IdentityFile id_rsa_gitlib</div><div class="line">Host oschina<span class="selector-class">.com</span></div><div class="line">    HostName oschina<span class="selector-class">.com</span></div><div class="line">    User xxx@foxmail<span class="selector-class">.com</span></div><div class="line">    PreferredAuthentications publickey</div><div class="line">    IdentityFile /D/Workspace/ssh/id_rsa_oschina</div><div class="line">Host <span class="number">192.168</span>.<span class="number">1.222</span></div><div class="line">    HostName <span class="number">192.168</span>.<span class="number">1.222</span></div><div class="line">    User xxx@foxmail<span class="selector-class">.com</span></div><div class="line">    PreferredAuthentications publickey</div><div class="line">    IdentityFile /D/Workspace/ssh/id_rsa_oschina</div></pre></td></tr></table></figure>
+<p>注意：</p>
+<ul>
+<li><p>HostName是服务器的地址，User是用户名，PreferredAuthentications照抄即可，这里主要说的是IdentityFile，上面我们看到了三种情况，所以它的书写原则是：</p>
+<ul>
+<li>填私钥文件的本地路径。</li>
+<li>不论是Linux还是Windows都可以写相对路径，比如把id_rsa_xxx私钥文件放在.ssh文件夹下。</li>
+<li>文件放在不同跟路径下时，需要写绝对路径  </li>
+</ul>
+</li>
+<li><p>HostName 不可带http或https开头</p>
+</li>
+</ul>
+<p>3.3 将所有的id_rsa私钥文件添加到SSH-Agent</p>
+<p>3.4 最后，配置局部邮箱<br>在上面步骤我们配置了全局的邮箱即如果是通过该邮箱的项目ssh的配对已经完成，如果是其他账户的项目则需要进入该仓库文件夹后配置，配置命令如下：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$git</span> config --local user<span class="selector-class">.name</span> <span class="string">"你的名字"</span></div><div class="line"><span class="variable">$git</span> config --local user<span class="selector-class">.email</span> <span class="string">"你的邮箱"</span></div></pre></td></tr></table></figure>
+<p>配置成功后，我们可以进入项目文件夹下的.git文件夹查看config文件内容，大概内容如下：</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">...</div><div class="line">[user]</div><div class="line">    <span class="attr">name</span> = xxx</div><div class="line">    <span class="attr">email</span> = xxx@foxmail.com</div></pre></td></tr></table></figure>
+<p>此时配置全部结束，请查看下方测试SSH-KEY配置是否成功进行测试。如果配置成功，你就可以clone和commit了。</p>
+<h4 id="4-测试SSH-KEY配置是否成功"><a href="#4-测试SSH-KEY配置是否成功" class="headerlink" title="4. 测试SSH-KEY配置是否成功"></a>4. 测试SSH-KEY配置是否成功</h4><ul>
+<li>如果你是Github：</li>
+</ul>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$ </span>ssh -T git<span class="variable">@github</span>.com</div></pre></td></tr></table></figure>
+<ul>
+<li><p>如果你是Gitlib：</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$ </span>ssh -T git<span class="variable">@gitlib</span>.com</div></pre></td></tr></table></figure>
+</li>
+<li><p>如果你是局域网10.12.22.201</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ssh -T git@<span class="number">10.12</span><span class="number">.22</span><span class="number">.201</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>其他自行解决</p>
+</li>
+</ul>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ssh-<span class="keyword">add</span><span class="bash"> rsa私钥文件的路径</span></div></pre></td></tr></table></figure>
+</the>
+      
+      
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang" title="打赏，支持一下">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()" title="关闭">×</a>
+            <div class="shang_tit">
+              <p>劫富济贫</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">一生负气成今日，四海无人对夕阳</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2017/12/15/configSSH/">iOS开发中截取相机部分画面，切割sampleBuffer（Crop sample buffer）</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 小东邪_Chengyang 的个人博客">小东邪_Chengyang</a></p>
+        <p><span>发布时间:</span>2017年12月15日 - 14时34分</p>
+        <p><span>最后更新:</span>2017年12月15日 - 14时47分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2017/12/15/configSSH/" title="iOS开发中截取相机部分画面，切割sampleBuffer（Crop sample buffer）">http://yoursite.com/2017/12/15/configSSH/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2017/12/15/configSSH/　　作者: 小东邪_Chengyang" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+  
+    <a href="/2017/12/11/h264DataStructure/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">H.264 Data Structure (H.264码流结构)</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#博客地址-多账号配置SSH"><span class="toc-number">1.</span> <span class="toc-text">博客地址 : 多账号配置SSH</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#简书地址-多账号配置SSH"><span class="toc-number">2.</span> <span class="toc-text">简书地址 : 多账号配置SSH</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#快捷说明"><span class="toc-number">3.</span> <span class="toc-text">快捷说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#背景介绍"><span class="toc-number">4.</span> <span class="toc-text">背景介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-生成SSH-KEY"><span class="toc-number">4.1.</span> <span class="toc-text">1. 生成SSH-KEY</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-单个账号的配置-–-全局Git配置"><span class="toc-number">4.2.</span> <span class="toc-text">2. 单个账号的配置 – 全局Git配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-多个Git帐号的配置——局部Git配置"><span class="toc-number">4.3.</span> <span class="toc-text">3. 多个Git帐号的配置——局部Git配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-测试SSH-KEY配置是否成功"><span class="toc-number">4.4.</span> <span class="toc-text">4. 测试SSH-KEY配置是否成功</span></a></li></ol></li></ol>
+</div>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="2017/12/15/configSSH/" data-title="iOS开发中截取相机部分画面，切割sampleBuffer（Crop sample buffer）" data-url="http://yoursite.com/2017/12/15/configSSH/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xiaodongxie"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = '/js/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+    <!-- 多说公共JS代码 end -->
+</div>
+
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2017/12/11/h264DataStructure/" title="下一篇: H.264 Data Structure (H.264码流结构)">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/12/15/configSSH/">iOS开发中截取相机部分画面，切割sampleBuffer（Crop sample buffer）</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/11/h264DataStructure/">H.264 Data Structure (H.264码流结构)</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/20/audioPillar/">iOS 音量柱的实现(mic 采集的声音DB反映成音量柱)</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/10/H264H265Encoder/">H264,H265 Encoder</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/15/codec/">硬件编码相关知识(H264,H265)</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/12/cropSampleBuffer/">iOS开发中截取相机部分画面，切割sampleBuffer（Crop sample buffer）</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/24/record/">Audio -- PCM to AAC</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/25/group/">代码隐藏GroupedTableView上边多余的间隔</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/25/sendValue/">iOS控制器之间传值</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/23/masonry/">iOS之Masonry快速上手</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/23/hello/">Hello 小东邪</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/09/fulltext/">iOS之富文本</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/25/java/">mac系统安装Apache Tomcat详细步骤</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/25/ios-help/">iOS帮助文档最新安装方法</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2017 小东邪_Chengyang
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >桃花岛到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本模块阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+</body>
+</html>
