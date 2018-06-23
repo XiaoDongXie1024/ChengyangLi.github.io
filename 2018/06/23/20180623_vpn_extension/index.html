@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>App extension实战 - Personal VPN 连接并捕获packet | _小__东邪___</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="iOS建立简单的VPN连接并成功拦截IP数据包pakcet。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="App extension实战 - Personal VPN 连接并捕获packet">
+<meta property="og:url" content="http://yoursite.com/2018/06/23/20180623_vpn_extension/index.html">
+<meta property="og:site_name" content="_小__东邪___">
+<meta property="og:description" content="iOS建立简单的VPN连接并成功拦截IP数据包pakcet。">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/l5e9HND4p5UdWGTtvv9IGl71AEm*FwybI9p.9Pi4nOE!/r/dDIBAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/33etL5uwnktKbZ5FKOVcQm3DOEGPx0ZGi5*ILu5VRpY!/r/dDIBAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/Z7sSQTd4xJgpKUnlvyaLo*c5aecky0NJJX7hIltusGw!/r/dFYAAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/ULTGAA2LgPLemmi3qXRmNfvAmdP62pck8AbXv0eCPy0!/r/dEIBAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/Ql9cVTA1MVgND97qk41RjZq9.A4akyoaoftZF7FOBZU!/r/dC0BAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/F4UGBH1Kiw.mzhblxh9uQvqWM3TQhrSOYTQR.ZMf6.E!/r/dIMAAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/y3HzLJE3NyHKNg211fuWByjKAm*LqYzlp*xAFnY6mEM!/r/dDMBAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/bPkkOuDbF8g9Ir84ov8MHUPufS8T8rGd*.E9rH44UeE!/r/dDEBAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/CjbMoURq9pKpca*eA.wR2Trw0USP6lYnVC7YGNTjM5A!/r/dDIBAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/2Ior*QwxZALeTzeAL0FmkkagKPPdq.SKfRyiEq3CL9c!/r/dEIBAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/mOMVeRnjTsZcgRHb0eYFsIBONPgD7u.sSViDpUNFVQk!/r/dAgBAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/izQf7SxkTPdQWu60q3C8X5AOwJvDjoSJU1hh4YIKE9M!/r/dA4AAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/PW5JfBUVyBHM7U7TC5VAecT4N5kwPFXzWexe.p92ZaA!/r/dIUBAAAAAAAA">
+<meta property="og:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/4KTKTmd64MoMxTZiFo292.6A6H1UHaB6G3pYrWghG*U!/r/dOAAAAAAAAAA">
+<meta property="og:updated_time" content="2018-06-23T07:37:52.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="App extension实战 - Personal VPN 连接并捕获packet">
+<meta name="twitter:description" content="iOS建立简单的VPN连接并成功拦截IP数据包pakcet。">
+<meta name="twitter:image" content="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/l5e9HND4p5UdWGTtvv9IGl71AEm*FwybI9p.9Pi4nOE!/r/dDIBAAAAAAAA">
+  
+    <link rel="alternative" href="/atom.xml" title="_小__东邪___" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.png" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/" title="Hi Mate">小东邪_Chengyang</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">风陵渡口初相遇,一遇杨过误终身.</p>
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">桃花岛</a></li>
+                        
+                            <li><a href="/works">绝世武功</a></li>
+                        
+                            <li><a href="/about">千里传音</a></li>
+                        
+                            <li><a href="/FrontEndGuide">黯然销魂</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=xiao_dx@foxmail.com" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/ChengyangLi/ChengyangLi.github.io" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="https://www.zhihu.com/people/xiao-dong-xie-75" title="zhihu">zhihu</a>
+                            
+                                <a class="fl weibo" target="_blank" href="http://weibo.com/u/5088497199" title="weibo">weibo</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/AAC/" style="font-size: 10px;">AAC</a> <a href="/tags/Apache/" style="font-size: 10px;">Apache</a> <a href="/tags/App-extension/" style="font-size: 10px;">App extension</a> <a href="/tags/Audio/" style="font-size: 10px;">Audio</a> <a href="/tags/AudioQueue/" style="font-size: 10px;">AudioQueue</a> <a href="/tags/AudioUnit/" style="font-size: 10px;">AudioUnit</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Camera/" style="font-size: 10px;">Camera</a> <a href="/tags/CaptureSession/" style="font-size: 10px;">CaptureSession</a> <a href="/tags/DB/" style="font-size: 10px;">DB</a> <a href="/tags/Data-Structure/" style="font-size: 10px;">Data Structure</a> <a href="/tags/Encoder/" style="font-size: 10px;">Encoder</a> <a href="/tags/H264/" style="font-size: 16.67px;">H264</a> <a href="/tags/H265/" style="font-size: 10px;">H265</a> <a href="/tags/HEVC/" style="font-size: 13.33px;">HEVC</a> <a href="/tags/Masonry/" style="font-size: 10px;">Masonry</a> <a href="/tags/MyEclipse/" style="font-size: 10px;">MyEclipse</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/Orientation/" style="font-size: 10px;">Orientation</a> <a href="/tags/PCM/" style="font-size: 10px;">PCM</a> <a href="/tags/Rotate/" style="font-size: 10px;">Rotate</a> <a href="/tags/SizeClass/" style="font-size: 10px;">SizeClass</a> <a href="/tags/TableViewGroup/" style="font-size: 10px;">TableViewGroup</a> <a href="/tags/VPN/" style="font-size: 10px;">VPN</a> <a href="/tags/crop/" style="font-size: 10px;">crop</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-API/" style="font-size: 10px;">iOS API</a> <a href="/tags/ios/" style="font-size: 13.33px;">ios</a> <a href="/tags/sampleBuffer/" style="font-size: 10px;">sampleBuffer</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/video/" style="font-size: 10px;">video</a> <a href="/tags/yuv/" style="font-size: 10px;">yuv</a> <a href="/tags/传值/" style="font-size: 10px;">传值</a> <a href="/tags/富文本/" style="font-size: 10px;">富文本</a> <a href="/tags/小东邪/" style="font-size: 10px;">小东邪</a> <a href="/tags/相机/" style="font-size: 10px;">相机</a> <a href="/tags/组成结构/" style="font-size: 10px;">组成结构</a> <a href="/tags/队列/" style="font-size: 10px;">队列</a> <a href="/tags/音视频/" style="font-size: 10px;">音视频</a> <a href="/tags/音量柱/" style="font-size: 10px;">音量柱</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://King-Cheng.github.io/">鹏丞万里</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">一生负气成今日，四海无人对夕阳.</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="Me">小东邪_Chengyang</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.png" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="Me">小东邪_Chengyang</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">风陵渡口初相遇,一遇杨过误终身.</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">桃花岛</a></li>
+                
+                    <li><a href="/works">绝世武功</a></li>
+                
+                    <li><a href="/about">千里传音</a></li>
+                
+                    <li><a href="/FrontEndGuide">黯然销魂</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=xiao_dx@foxmail.com" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/ChengyangLi/ChengyangLi.github.io" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="https://www.zhihu.com/people/xiao-dong-xie-75" title="zhihu">zhihu</a>
+                    
+                        <a class="weibo" target="_blank" href="http://weibo.com/u/5088497199" title="weibo">weibo</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-20180623_vpn_extension" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/06/23/20180623_vpn_extension/" class="article-date">
+      <time datetime="2018-06-23T06:38:19.000Z" itemprop="datePublished">2018-06-23</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      App extension实战 - Personal VPN 连接并捕获packet
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/App-extension/">App extension</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VPN/">VPN</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p><excerpt in="" index="" |="" 首页摘要=""> </excerpt></p>
+<ul>
+<li>iOS建立简单的VPN连接并成功拦截IP数据包pakcet。<a id="more"></a>
+<the rest="" of="" contents="" |="" 余下全文="">
+
+
+</the></li>
+</ul>
+<h3 id="本例需求-iOS建立简单的VPN连接并成功拦截IP数据包pakcet"><a href="#本例需求-iOS建立简单的VPN连接并成功拦截IP数据包pakcet" class="headerlink" title="本例需求 : iOS建立简单的VPN连接并成功拦截IP数据包pakcet."></a>本例需求 : iOS建立简单的VPN连接并成功拦截IP数据包pakcet.</h3><hr>
+<h3 id="建议：建议阅读本文前先仔细阅读并理解下App-extension原理，有助于在项目中解决很多问题。App-extension总结"><a href="#建议：建议阅读本文前先仔细阅读并理解下App-extension原理，有助于在项目中解决很多问题。App-extension总结" class="headerlink" title="建议：建议阅读本文前先仔细阅读并理解下App extension原理，有助于在项目中解决很多问题。App extension总结"></a>建议：建议阅读本文前先仔细阅读并理解下App extension原理，有助于在项目中解决很多问题。<a href="">App extension总结</a></h3><hr>
+<h3 id="注意：Personal-VPN功能是苹果开发者账号才有权限开启，所以如果没有开发者账号次Demo无法运行"><a href="#注意：Personal-VPN功能是苹果开发者账号才有权限开启，所以如果没有开发者账号次Demo无法运行" class="headerlink" title="注意：Personal-VPN功能是苹果开发者账号才有权限开启，所以如果没有开发者账号次Demo无法运行"></a>注意：Personal-VPN功能是苹果开发者账号才有权限开启，所以如果没有开发者账号次Demo无法运行</h3><p>本Demo中已经测试可以通过，只需要下载Demo并按照Demo中所说提供两个合法的bundle id即可运行。</p>
+<hr>
+<h4 id="GitHub地址-附代码"><a href="#GitHub地址-附代码" class="headerlink" title="GitHub地址(附代码) : "></a>GitHub地址(附代码) : <a href=""></a></h4><h4 id="简书地址"><a href="#简书地址" class="headerlink" title="简书地址     : "></a>简书地址     : <a href=""></a></h4><h4 id="博客地址"><a href="#博客地址" class="headerlink" title="博客地址     : "></a>博客地址     : <a href=""></a></h4><h4 id="掘金地址"><a href="#掘金地址" class="headerlink" title="掘金地址     : "></a>掘金地址     : <a href=""></a></h4><hr>
+<h2 id="一-App-extension-定义及工作原理"><a href="#一-App-extension-定义及工作原理" class="headerlink" title="一. App extension 定义及工作原理"></a>一. App extension 定义及工作原理</h2><h4 id="1-App-extension-更多请了解App-extension总结"><a href="#1-App-extension-更多请了解App-extension总结" class="headerlink" title="1. App extension, 更多请了解App extension总结"></a>1. App extension, 更多请了解<a href="https://juejin.im/post/5acefc0e6fb9a028e1205688" target="_blank" rel="external">App extension总结</a></h4><ul>
+<li><p>定义：App Extension 可以让开发者们拓展自定义的功能和内容到应用程序之外，并在用户与其他应用程序或系统交互时提供给用户。</p>
+</li>
+<li><p>苹果定义了很多种app extension, 每一种不同功能的app extension 称为extension point,其中我们要学习的VPN Extension就是一种extension point。 </p>
+</li>
+</ul>
+<h2 id="二-VPN-extension-简介"><a href="#二-VPN-extension-简介" class="headerlink" title="二. VPN extension 简介"></a>二. VPN extension 简介</h2><h4 id="1-背景"><a href="#1-背景" class="headerlink" title="1. 背景"></a>1. 背景</h4><p>我们先来简单了解一下国内墙的原理</p>
+<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/l5e9HND4p5UdWGTtvv9IGl71AEm*FwybI9p.9Pi4nOE!/r/dDIBAAAAAAAA" alt="network1"></p>
+<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/33etL5uwnktKbZ5FKOVcQm3DOEGPx0ZGi5*ILu5VRpY!/r/dDIBAAAAAAAA" alt="network2"></p>
+<h4 id="2-定义"><a href="#2-定义" class="headerlink" title="2. 定义"></a>2. 定义</h4><p>苹果提供的VPN Extension可以帮助我们配置VPN通道，自定义和拓展核心网络功能。</p>
+<p>苹果官方文档中定义如下</p>
+<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/Z7sSQTd4xJgpKUnlvyaLo*c5aecky0NJJX7hIltusGw!/r/dFYAAAAAAAAA" alt="5-VPN Extension"></p>
+<h4 id="3-使用框架"><a href="#3-使用框架" class="headerlink" title="3.使用框架"></a>3.使用框架</h4><p>NetworkExtension ：包含在iOS和macOS中用于自定义和拓展核心网络功能的API集合。</p>
+<p>其中我们要讲的是NetworkExtension框架中的Personal VPN服务。</p>
+<ul>
+<li><p>Personal VPN </p>
+<p>NEVPNManager API提供给我们去创建和管理个人VPN的配置。它通常用来向用户提供服务确保用户安全的上网，例如使用公共场所的wifi。</p>
+</li>
+</ul>
+<h4 id="4-核心API"><a href="#4-核心API" class="headerlink" title="4. 核心API"></a>4. 核心API</h4><ul>
+<li><p>NETunnelProviderManager 和 NEPacketTunnelProvider</p>
+<p>在 iOS 9 中，开发者可以用 NETunnelProvider 扩展核心网络层，从而实现非标准化的私密VPN技术。最重要的两个类是 NETunnelProviderManager 和 NEPacketTunnelProvider。</p>
+</li>
+</ul>
+<h2 id="二-VPN-extension-创建步骤"><a href="#二-VPN-extension-创建步骤" class="headerlink" title="二. VPN extension 创建步骤"></a>二. VPN extension 创建步骤</h2><h4 id="1-新建Target"><a href="#1-新建Target" class="headerlink" title="1. 新建Target"></a>1. 新建Target</h4><p>在已经创建好的项目中新建Target</p>
+<ul>
+<li>Target : 指定了应用程序中构建product的设置信息和文件,即包含App extension point的代码集合。</li>
+</ul>
+<blockquote>
+<p>Xcode会为每一种extension point提供一个模板，每种模板里会提供特定的源文件(源文件中会包含一些示例代码)和设置信息，build这个target将会生成一个指定的二进制文件被添加到app’s bundle中。</p>
+</blockquote>
+<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/ULTGAA2LgPLemmi3qXRmNfvAmdP62pck8AbXv0eCPy0!/r/dEIBAAAAAAAA" alt="1-NewTarget"></p>
+<p>在弹出列表中选择Packet Tunnel Provider,注意在最新的Xcode中该模板已经被取消，需要我们手动下载，安装好后重启Xcode即可，这里提供下载链接链接: </p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">https:<span class="regexp">//</span>pan.baidu.com<span class="regexp">/s/</span><span class="number">1</span>V3xIljdRedmqGyp5QSwbTA</div><div class="line">密码: ne8x</div></pre></td></tr></table></figure>
+<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/Ql9cVTA1MVgND97qk41RjZq9.A4akyoaoftZF7FOBZU!/r/dC0BAAAAAAAA" alt="2-extensionList"></p>
+<p>选择好后我们可以看到我们项目中的变化如下：</p>
+<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/F4UGBH1Kiw.mzhblxh9uQvqWM3TQhrSOYTQR.ZMf6.E!/r/dIMAAAAAAAAA" alt="4-target"></p>
+<p>我们的项目中增加了对Target的配置，左侧项目工程文件中增加了系统为我们自动生成的模板，注意如果在新建Target时选择的是Ojective-C语言模板中有一处错误信息，因为与我们要实现的并无关联，模板中代码我们均不使用，忽略即可。</p>
+<h4 id="2-删除模板中多余代码"><a href="#2-删除模板中多余代码" class="headerlink" title="2. 删除模板中多余代码"></a>2. 删除模板中多余代码</h4><p>由于我们这里只演示简单的建立连接的过程，所以模板中生成的很多代码使用不到，我们只需要留下如下代码。</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">-</span> (void)<span class="selector-tag">startTunnelWithOptions</span><span class="selector-pseudo">:(NSDictionary</span> *)<span class="selector-tag">options</span> <span class="selector-tag">completionHandler</span><span class="selector-pseudo">:(void</span> (^)(NSError *))<span class="selector-tag">completionHandler</span></div><div class="line">&#123;</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="selector-tag">-</span> (void)<span class="selector-tag">stopTunnelWithReason</span><span class="selector-pseudo">:(NEProviderStopReason)reason</span> <span class="selector-tag">completionHandler</span><span class="selector-pseudo">:(void</span> (^)(void))<span class="selector-tag">completionHandler</span></div><div class="line">&#123;</div><div class="line">	<span class="comment">// Add code here to start the process of stopping the tunnel</span></div><div class="line">	<span class="selector-attr">[self.connection cancel]</span>;</div><div class="line">	<span class="selector-tag">completionHandler</span>();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在这里我们需要建立和断开连接的回调即可。此时Build通过。</p>
+<h4 id="3-配置VPN所需信息"><a href="#3-配置VPN所需信息" class="headerlink" title="3. 配置VPN所需信息"></a>3. 配置VPN所需信息</h4><h5 id="3-1-配置签名信息，开启权限"><a href="#3-1-配置签名信息，开启权限" class="headerlink" title="3-1. 配置签名信息，开启权限"></a>3-1. 配置签名信息，开启权限</h5><ul>
+<li><p>Personal-VPN功能是苹果开发者账号才有权限开启，所以如果没有开发者账号此Demo无法运行。</p>
+</li>
+<li><p>Bundle Identifier不可随意写，需要按照规范com.xxx.xxx形式来书写，否则Build会出错</p>
+</li>
+<li><p>因为vpn extension并不是一个独立的app,所以创建target时前缀必须为主app的前缀再.extensionName.</p>
+</li>
+</ul>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">主app  Bundle Identifier : com<span class="selector-class">.xdx</span><span class="selector-class">.TVURouterDemo</span><span class="selector-class">.XDXVPNExtensionDemo</span></div><div class="line"></div><div class="line">extension Bundle Identifier : com<span class="selector-class">.xdx</span><span class="selector-class">.TVURouterDemo</span><span class="selector-class">.XDXVPNExtensionDemo</span><span class="selector-class">.XDXVPNTunnelDemo</span></div></pre></td></tr></table></figure>
+<h5 id="3-2-开启权限"><a href="#3-2-开启权限" class="headerlink" title="3-2 开启权限"></a>3-2 开启权限</h5><ul>
+<li>因为personal vpn权限较高，不能直接在Xcode中打开，所以我们需要先登录<a href="https://developer.apple.com/" target="_blank" rel="external">苹果开发者中心</a></li>
+</ul>
+<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/y3HzLJE3NyHKNg211fuWByjKAm*LqYzlp*xAFnY6mEM!/r/dDMBAAAAAAAA" alt="8-selectAccount"></p>
+<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/bPkkOuDbF8g9Ir84ov8MHUPufS8T8rGd*.E9rH44UeE!/r/dDEBAAAAAAAA" alt="9-selectProfile"></p>
+<ul>
+<li><p>需要手动为主工程的target和vpn的target创建父子App ID。创建APP ID的方法网上较多，不再说明。</p>
+</li>
+<li><p>在创建APP ID时打开Service 中的<br>Network Extensions 和<br>Personal VPN两个功能。对于已经创建好的APP ID需要在编辑中增加这两个Service。</p>
+</li>
+</ul>
+<blockquote>
+<p>注意：主target和extension target 对应的app id中都需要打开这两个权限。</p>
+</blockquote>
+<ul>
+<li>创建好APP ID后需要继续创建Profile文件，如果是已经存在的app id中增加了这两项服务后需要重新激活配置文件Profile。</li>
+</ul>
+<h5 id="3-3-在Xcode中配置VPN"><a href="#3-3-在Xcode中配置VPN" class="headerlink" title="3-3 在Xcode中配置VPN"></a>3-3 在Xcode中配置VPN</h5><ul>
+<li>在两个Target中选择正确的Profile。（前提是在3-2中正确配置了APP ID并开启了对应两项服务）由于我们只是测试，所以这里只配置了开发证书.</li>
+<li>在Capabilities中开启Personal VPN 和 Network Extension（同时如图勾选前三项），然后你的两个Target项目文件中会新增两个.entitlements结尾的配置文件。</li>
+</ul>
+<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/CjbMoURq9pKpca*eA.wR2Trw0USP6lYnVC7YGNTjM5A!/r/dDIBAAAAAAAA" alt="12-XcodeConfig"></p>
+<h4 id="4-实现步骤"><a href="#4-实现步骤" class="headerlink" title="4. 实现步骤"></a>4. 实现步骤</h4><h5 id="4-1-导入必需框架"><a href="#4-1-导入必需框架" class="headerlink" title="4-1 导入必需框架"></a>4-1 导入必需框架</h5><p>在项目中导入NetworkExtension.framework框架<br><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/2Ior*QwxZALeTzeAL0FmkkagKPPdq.SKfRyiEq3CL9c!/r/dEIBAAAAAAAA" alt="13-exportNE"></p>
+<p>之后在主控制器导入<code>#import &lt;NetworkExtension/NetworkExtension.h&gt;</code></p>
+<h5 id="4-1-初始化并配置NETunnelProviderManager对象"><a href="#4-1-初始化并配置NETunnelProviderManager对象" class="headerlink" title="4-1 初始化并配置NETunnelProviderManager对象"></a>4-1 初始化并配置NETunnelProviderManager对象</h5><ul>
+<li><p>NETunnelProviderManager ：配置并控制由Tunnel Provider app extension提供的VPN 连接。</p>
+<blockquote>
+<p>可以理解为建立VPN连接前负责配置基本参数信息保存设置到系统(即一般vpn app中都会在第一次打开时授权并保存到系统的VPN设置中)</p>
+</blockquote>
+</li>
+<li><p>包含Packet Tunnel Provider extension的containing app使用NETunnelProviderManager去创建和管理使用自定义协议配置VPN。</p>
+</li>
+</ul>
+<h4 id="注意：配置好的NETunnelProviderManager对象仅在系统设置中起展示作用，或者说这里的设置并不真正生效，真正生效的设置在app-extension-target中，如果为了保持一致，如果仅仅测试，配置信息可以随便填写（但target-bundle-id-必须为项目target真实的ID），如果为了与vpn真正配置保持一致，可填写正确地址。"><a href="#注意：配置好的NETunnelProviderManager对象仅在系统设置中起展示作用，或者说这里的设置并不真正生效，真正生效的设置在app-extension-target中，如果为了保持一致，如果仅仅测试，配置信息可以随便填写（但target-bundle-id-必须为项目target真实的ID），如果为了与vpn真正配置保持一致，可填写正确地址。" class="headerlink" title="注意：配置好的NETunnelProviderManager对象仅在系统设置中起展示作用，或者说这里的设置并不真正生效，真正生效的设置在app extension target中，如果为了保持一致，如果仅仅测试，配置信息可以随便填写（但target bundle id 必须为项目target真实的ID），如果为了与vpn真正配置保持一致，可填写正确地址。"></a>注意：配置好的NETunnelProviderManager对象仅在系统设置中起展示作用，或者说这里的设置并不真正生效，真正生效的设置在app extension target中，如果为了保持一致，如果仅仅测试，配置信息可以随便填写（但target bundle id 必须为项目target真实的ID），如果为了与vpn真正配置保持一致，可填写正确地址。</h4><hr>
+<h3 id="知识点，了解可跳过"><a href="#知识点，了解可跳过" class="headerlink" title="知识点，了解可跳过"></a>知识点，了解可跳过</h3><h5 id="知识点-1-区别"><a href="#知识点-1-区别" class="headerlink" title="知识点 1. 区别"></a>知识点 1. 区别</h5><h5 id="NETunnelProviderManager类继承了-NEVPNManager大多数基本的功能，主要的区别如下："><a href="#NETunnelProviderManager类继承了-NEVPNManager大多数基本的功能，主要的区别如下：" class="headerlink" title="NETunnelProviderManager类继承了 NEVPNManager大多数基本的功能，主要的区别如下："></a>NETunnelProviderManager类继承了 NEVPNManager大多数基本的功能，主要的区别如下：</h5><ul>
+<li>protocolConfiguration 属性只有 NETunnelProviderProtocol类才能设置</li>
+<li>connection这个只读属性只能通过 NETunnelProviderSession这个类设置。</li>
+</ul>
+<p>每个NETunnelProviderManager实例对应一个VPN配置被存储在 Network Extension偏好设置中。可以创建多个NETunnelProviderManager实例来管理多个VPN配置的。</p>
+<p>使用NETunnelProviderManager创建的VPN配置被归属为常规企业VPN配置(而不是由NEVPNManager创建的个人VPN)。一次只能在系统启用一个VPN配置。如果同时在系统中激活个人VPN和企业VPN,企业VPN优先使用。</p>
+<h5 id="知识点-2-将网络数据路由到VPN两种方式"><a href="#知识点-2-将网络数据路由到VPN两种方式" class="headerlink" title="知识点 2. 将网络数据路由到VPN两种方式"></a>知识点 2. 将网络数据路由到VPN两种方式</h5><ul>
+<li><p>IP 地址</p>
+<p>这是默认的路由方式。IP通道通过Packet Tunnel Provider extension被标记在VPN通道完全被建立。</p>
+</li>
+<li><p>By source application (Per-App VPN)</p>
+<p>Per-App VPN 应用程序规则同时用于路由规则和VPN 需求规则。这与基于路由的IP地址形成鲜明的对比，当onDemandEnabled属性被设置成true并且app匹配he Per-App VPN规则试图通过网络进行通信，VPN将自动开始。</p>
+</li>
+</ul>
+<hr>
+<h5 id="4-2-初始化NETunnelProviderManager对象"><a href="#4-2-初始化NETunnelProviderManager对象" class="headerlink" title="4-2  初始化NETunnelProviderManager对象"></a>4-2  初始化NETunnelProviderManager对象</h5><ul>
+<li><p>设置NETunnelProviderManager所需的各个参数的值</p>
+<p>在本例中利用各个参数的值均用模型实现，在主控制器直接调用以下即可</p>
+</li>
+</ul>
+<blockquote>
+<p>注意</p>
+</blockquote>
+<ul>
+<li>TunnelBundleId 需要传入VPN Extension Target 的BundleID</li>
+<li>serverAddress:即在手机设置的VPN中显示的VPN地址</li>
+<li>其余参数根据真实情况填写，如果只是测试即可直接用以下参数(或设置其他参数也可)</li>
+<li>以下参数只是在系统设置中VPN设置里显示的参数，真正设置网络参数在VPN Target项目中重新设置。</li>
+</ul>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[model configureInfoWithTunnelBundleId:@<span class="string">"com.tvunetworks.TVURouterDemo.TVURouterVPNExtensionDemo"</span></div><div class="line"><span class="symbol">                         serverAddress:</span>@<span class="string">"10.10.10.1"</span></div><div class="line"><span class="symbol">                            serverPort:</span>@<span class="string">"54345"</span></div><div class="line"><span class="symbol">                                   mtu:</span>@<span class="string">"1400"</span></div><div class="line"><span class="symbol">                                    ip:</span>@<span class="string">"10.8.0.2"</span></div><div class="line"><span class="symbol">                                subnet:</span>@<span class="string">"255.255.255.0"</span></div><div class="line"><span class="symbol">                                   dns:</span>@<span class="string">"8.8.8.8,8.4.4.4"</span>];</div></pre></td></tr></table></figure>
+<p>而在封装管理NETunnelProviderManager对象真正起作用的是如下代码</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)applyVpnConfiguration &#123;</div><div class="line">    [NETunnelProviderManager loadAllFromPreferencesWithCompletionHandler:^(<span class="built_in">NSArray</span>&lt;NETunnelProviderManager *&gt; * _Nullable managers, <span class="built_in">NSError</span> * _Nullable error) &#123;</div><div class="line">        <span class="keyword">if</span> (managers.count &gt; <span class="number">0</span>) &#123;</div><div class="line">            <span class="keyword">self</span>.vpnManager = managers[<span class="number">0</span>];</div><div class="line">            log4cplus_error(<span class="string">"XDXVPNManager"</span>, <span class="string">"The vpn already configured. We will use it."</span>);</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;<span class="keyword">else</span> &#123;</div><div class="line">            log4cplus_error(<span class="string">"XDXVPNManager"</span>, <span class="string">"The vpn config is NULL, we will config it later."</span>);</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        [<span class="keyword">self</span>.vpnManager loadFromPreferencesWithCompletionHandler:^(<span class="built_in">NSError</span> * _Nullable error) &#123;</div><div class="line">            <span class="keyword">if</span> (error != <span class="number">0</span>) &#123;</div><div class="line">                <span class="keyword">const</span> <span class="keyword">char</span> *errorInfo = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%@"</span>,error].UTF8String;</div><div class="line">                log4cplus_error(<span class="string">"XDXVPNManager"</span>, <span class="string">"applyVpnConfiguration loadFromPreferencesWithCompletionHandler Failed - %s !"</span>,errorInfo);</div><div class="line">                <span class="keyword">return</span>;</div><div class="line">            &#125;</div><div class="line">            </div><div class="line">            NETunnelProviderProtocol *protocol = [[NETunnelProviderProtocol alloc] init];</div><div class="line">            protocol.providerBundleIdentifier  = <span class="keyword">self</span>.vpnConfigurationModel.tunnelBundleId;</div><div class="line">            </div><div class="line">            <span class="built_in">NSMutableDictionary</span> *configInfo = [<span class="built_in">NSMutableDictionary</span> dictionary];</div><div class="line">            [configInfo safeSetObject:<span class="keyword">self</span>.vpnConfigurationModel.serverPort       forKey:<span class="string">@"port"</span>];</div><div class="line">            [configInfo safeSetObject:<span class="keyword">self</span>.vpnConfigurationModel.serverAddress    forKey:<span class="string">@"server"</span>];</div><div class="line">            [configInfo safeSetObject:<span class="keyword">self</span>.vpnConfigurationModel.ip               forKey:<span class="string">@"ip"</span>];</div><div class="line">            [configInfo safeSetObject:<span class="keyword">self</span>.vpnConfigurationModel.subnet           forKey:<span class="string">@"subnet"</span>];</div><div class="line">            [configInfo safeSetObject:<span class="keyword">self</span>.vpnConfigurationModel.mtu              forKey:<span class="string">@"mtu"</span>];</div><div class="line">            [configInfo safeSetObject:<span class="keyword">self</span>.vpnConfigurationModel.dns              forKey:<span class="string">@"dns"</span>];</div><div class="line">            </div><div class="line">            protocol.providerConfiguration        = configInfo;</div><div class="line">            protocol.serverAddress                = <span class="keyword">self</span>.vpnConfigurationModel.serverAddress;</div><div class="line">            <span class="keyword">self</span>.vpnManager.protocolConfiguration = protocol;</div><div class="line">            <span class="keyword">self</span>.vpnManager.localizedDescription  = <span class="string">@"NEPacketTunnelVPNDemoConfig"</span>;</div><div class="line">            </div><div class="line">            [<span class="keyword">self</span>.vpnManager setEnabled:<span class="literal">YES</span>];</div><div class="line">            [<span class="keyword">self</span>.vpnManager saveToPreferencesWithCompletionHandler:^(<span class="built_in">NSError</span> * _Nullable error) &#123;</div><div class="line">                <span class="keyword">if</span> (error != <span class="number">0</span>) &#123;</div><div class="line">                    <span class="keyword">const</span> <span class="keyword">char</span> *errorInfo = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%@"</span>,error].UTF8String;</div><div class="line">                    log4cplus_error(<span class="string">"XDXVPNManager"</span>, <span class="string">"applyVpnConfiguration saveToPreferencesWithCompletionHandler Failed - %s !"</span>,errorInfo);</div><div class="line">                &#125;<span class="keyword">else</span> &#123;</div><div class="line">                    [<span class="keyword">self</span> applyVpnConfiguration];</div><div class="line">                    log4cplus_info(<span class="string">"XDXVPNManager"</span>, <span class="string">"Save vpn configuration successfully !"</span>);</div><div class="line">                &#125;</div><div class="line">            &#125;];</div><div class="line">        &#125;];</div><div class="line">    &#125;];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>以上代码通过NETunnelProviderManager的类方法<code>+ (void)loadAllFromPreferencesWithCompletionHandler:(void (^)(NSArray&lt;NETunnelProviderManager *&gt; * __nullable managers, NSError * __nullable error))completionHandler</code>实现</p>
+<ul>
+<li>如果是第一次配置VPN,VPN的设置未保存在系统中，所以上述代码managers.count读取结果应该为0，需要我们做如上设置，第一次设置成功后，VPN的配置信息会保存在设置信息里，所以以后无需重复设置，只需要读取到就好。</li>
+<li>注意，第一次配置时需要手机授权，如果拒绝则无法继续进行。</li>
+</ul>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">此函数异步读取调用所有app创建且先前保存在本地的NETunnelProvider配置信息，并将它们在回调中以一个存放NETunnelProvider对象的数组的形式返回。</div><div class="line"></div><div class="line">+ (<span class="keyword">void</span>)loadAllFromPreferencesWithCompletionHandler:(<span class="keyword">void</span> (^)(<span class="built_in">NSArray</span>&lt;NETunnelProviderManager *&gt; * __<span class="keyword">nullable</span> managers, <span class="built_in">NSError</span> * __<span class="keyword">nullable</span> error))completionHandler</div><div class="line"></div><div class="line">该函数从调用者的VPN设置中加载当前VPN配置</div><div class="line">- (<span class="keyword">void</span>)loadFromPreferencesWithCompletionHandler:(<span class="keyword">void</span> (^)(<span class="built_in">NSError</span> * __<span class="keyword">nullable</span> error))completionHandler；</div></pre></td></tr></table></figure>
+<p>然后将存入模型的所有参数放入一个字典，并存入NETunnelProviderProtocol对象的providerConfiguration中，该字典在tunnel建立成功后会传递给NETunnelProviders对象。最后将配置好的NETunnelProviderProtocol对象赋值给NETunnelProviderManager对象的protocolConfiguration即可。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">调用此方法用来保存上述配置好的VPN到本机设备的VPN设置中。</div><div class="line">- (<span class="keyword">void</span>)saveToPreferencesWithCompletionHandler:(<span class="keyword">nullable</span> <span class="keyword">void</span> (^)(<span class="built_in">NSError</span> * __<span class="keyword">nullable</span> error))completionHandler;</div></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">调用此函数会使用NEVPNConnection对象当前VPN配置来建立VPN连接。返回<span class="literal">YES</span>表示成功。</div><div class="line">[<span class="keyword">self</span>.vpnManager.connection startVPNTunnelAndReturnError:&amp;error];</div><div class="line">- (<span class="built_in">BOOL</span>)startVPNTunnelAndReturnError:(<span class="built_in">NSError</span> **)error;</div><div class="line"></div><div class="line">调用此函数会关闭当前建立的VPN连接。</div><div class="line">[<span class="keyword">self</span>.vpnManager.connection stopVPNTunnel];</div><div class="line">- (<span class="keyword">void</span>)stopVPNTunnel;</div></pre></td></tr></table></figure>
+<h5 id="4-3-主控制器启动VPN"><a href="#4-3-主控制器启动VPN" class="headerlink" title="4-3. 主控制器启动VPN"></a>4-3. 主控制器启动VPN</h5><ul>
+<li><p>在viewDidLoad中完成初始化操作</p>
+<ul>
+<li>初始化模型即根据实际情况对各个网络参数赋值(注意TunnelBundleId为本项目VPN Extension的BundleID)</li>
+<li>对XDXVPNManager进行初始化配置模型，设置代理。</li>
+<li>注册通知(NEVPNStatusDidChangeNotification)，监听VPN状态变化</li>
+</ul>
+</li>
+<li><p>在<code>- (void)vpnDidChange:(NSNotification *)notification</code>方法中根据VPN的状态动态改变按钮状态</p>
+</li>
+<li>点击按钮实现开启/关闭VPN连接</li>
+</ul>
+<h5 id="4-4-在PacketTunnelProvider回调中完成剩余工作"><a href="#4-4-在PacketTunnelProvider回调中完成剩余工作" class="headerlink" title="4-4.在PacketTunnelProvider回调中完成剩余工作"></a>4-4.在PacketTunnelProvider回调中完成剩余工作</h5><ul>
+<li>当我们在主控器调用开启VPN连接后，会进入VPN Target项目中PacketTunnelProvider文件的下述方法中</li>
+</ul>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">当一个新的通道被建立会会调用此函数。我们必须通过重写该类来完成建立连接。</div><div class="line"></div><div class="line"><span class="variable">@param :</span> options - 在主控制调用开启VPN连接时传入的字典，可空。</div><div class="line"><span class="variable">@param</span> : completionHandler - 在该方法彻底完成时必须调用这个Block。如果不能建立连接要将错误信息传给该block,如果成功建立连接则只需将nil传给该Block.</div><div class="line"></div><div class="line">- (void)<span class="attribute">startTunnelWithOptions</span>:(nullable NSDictionary&lt;NSString *,NSObject *&gt; *)options <span class="attribute">completionHandler</span>:(void (^)(NSError * __nullable error))completionHandler</div></pre></td></tr></table></figure>
+<p>注意：因为此时是处于另一个Target中，在手机相当于另一条进程，因此我们无法直接在控制台看到任何我们打印的log信息，这里我使用log4cplus则可以在我们的终端中来截获debug信息。如果你的本机装有log4cplus直接使用下面的命令即可获取信息，若未装则可以在github里直接搜索log4cplus mac版直接运行，也可以在log4cplus mac版的控制台里过滤关键字得到debug信息。<br><figure class="highlight 1c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ deviceconsole <span class="string">|grep XDXVPNManager</span></div></pre></td></tr></table></figure></p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#define XDX_NET_MTU                        1400</span></div><div class="line"><span class="meta">#define XDX_NET_REMOTEADDRESS              <span class="meta-string">"192.168.3.14"</span></span></div><div class="line"><span class="meta">#define XDX_NET_SUBNETMASKS                <span class="meta-string">"255.255.255.255"</span></span></div><div class="line"><span class="meta">#define XDX_NET_DNS                        <span class="meta-string">"223.5.5.5"</span></span></div><div class="line"><span class="meta">#define XDX_LOCAL_ADDRESS                  <span class="meta-string">"127.0.0.1"</span></span></div><div class="line"><span class="meta">#define TVU_NET_TUNNEL_IPADDRESS           <span class="meta-string">"10.10.10.10"</span></span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)startTunnelWithOptions:(<span class="built_in">NSDictionary</span> *)options completionHandler:(<span class="keyword">void</span> (^)(<span class="built_in">NSError</span> *))completionHandler</div><div class="line">&#123;</div><div class="line">    log4cplus_info(<span class="string">"XDXVPNManager"</span>, <span class="string">"XDXPacketTunnelManager - Start Tunel !"</span>);</div><div class="line">    NEPacketTunnelNetworkSettings *tunnelNetworkSettings = [[NEPacketTunnelNetworkSettings alloc] initWithTunnelRemoteAddress:@XDX_NET_REMOTEADDRESS];</div><div class="line">    tunnelNetworkSettings.MTU = [<span class="built_in">NSNumber</span> numberWithInteger:XDX_NET_MTU];</div><div class="line">    tunnelNetworkSettings.IPv4Settings = [[NEIPv4Settings alloc] initWithAddresses:[<span class="built_in">NSArray</span> arrayWithObjects:@TVU_NET_TUNNEL_IPADDRESS, <span class="literal">nil</span>]  subnetMasks:[<span class="built_in">NSArray</span> arrayWithObjects:@XDX_NET_SUBNETMASKS, <span class="literal">nil</span>]];</div><div class="line">    tunnelNetworkSettings.IPv4Settings.includedRoutes = @[[NEIPv4Route defaultRoute]];</div><div class="line">    NEIPv4Settings *excludeRoute = [[NEIPv4Settings alloc] initWithAddresses:[<span class="built_in">NSArray</span> arrayWithObjects:<span class="string">@"10.10.10.11"</span>, <span class="literal">nil</span>] subnetMasks:[<span class="built_in">NSArray</span> arrayWithObjects:@XDX_NET_SUBNETMASKS, <span class="literal">nil</span>]];</div><div class="line">    tunnelNetworkSettings.IPv4Settings.excludedRoutes = @[excludeRoute];</div><div class="line">    </div><div class="line">    [<span class="keyword">self</span> setTunnelNetworkSettings:tunnelNetworkSettings completionHandler:^(<span class="built_in">NSError</span> * _Nullable error) &#123;</div><div class="line">        <span class="keyword">if</span> (error == <span class="literal">nil</span>) &#123;</div><div class="line">            log4cplus_info(<span class="string">"XDXVPNManager"</span>, <span class="string">"XDXPacketTunnelManager - Start Tunel Success !"</span>);</div><div class="line">            completionHandler(<span class="literal">nil</span>);</div><div class="line">        &#125;<span class="keyword">else</span> &#123;</div><div class="line">            log4cplus_error(<span class="string">"XDXVPNManager"</span>, <span class="string">"XDXPacketTunnelManager - Start Tunel Failed - %s !"</span>,error.debugDescription.UTF8String);</div><div class="line">            completionHandler(error);</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;];</div><div class="line">    </div><div class="line">    [<span class="keyword">self</span>.packetFlow readPacketsWithCompletionHandler:^(<span class="built_in">NSArray</span>&lt;<span class="built_in">NSData</span> *&gt; * _Nonnull packets, <span class="built_in">NSArray</span>&lt;<span class="built_in">NSNumber</span> *&gt; * _Nonnull protocols) &#123;</div><div class="line">        log4cplus_debug(<span class="string">"XDXVPNManager"</span>, <span class="string">"XDXPacketTunnelManager - Read Packet !"</span>);</div><div class="line">        [packets enumerateObjectsUsingBlock:^(<span class="built_in">NSData</span> * _Nonnull obj, <span class="built_in">NSUInteger</span> idx, <span class="built_in">BOOL</span> * _Nonnull stop) &#123;</div><div class="line">            <span class="built_in">NSString</span> *packetStr = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%@"</span>,obj];</div><div class="line">            log4cplus_debug(<span class="string">"XDXVPNManager"</span>, <span class="string">"XDXPacketTunnelManager - Read Packet - %s !"</span>,packetStr.UTF8String);</div><div class="line">        &#125;];</div><div class="line">    &#125;];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>当你上述的每一步都正确配置，并在主控器中调用-startVPNTunnelAndReturnError方法时，紧接着会在vpn target中调用以上回调，我们需要在此回调中建立tunnel并配置我们需要的各种网络设置，最后在调用<code>- (void)setTunnelNetworkSettings</code>回调中调用<code>completionHandler(nil);</code>来建立vpn连接。</p>
+<blockquote>
+<p>注意，在设置网络参数成功后必须显式调用completionHandler(nil)才能正常建立连接(官方API要求)，如果设置网络参数出错则将错误信息传入completionHandler(error),否则无法正常建立连接。</p>
+</blockquote>
+<h4 id="这里是真正设置vpn-tunnel-网络参数的地方，主控制器中设置的仅为系统vpn设置中的展示名称"><a href="#这里是真正设置vpn-tunnel-网络参数的地方，主控制器中设置的仅为系统vpn设置中的展示名称" class="headerlink" title="这里是真正设置vpn tunnel 网络参数的地方，主控制器中设置的仅为系统vpn设置中的展示名称"></a>这里是真正设置vpn tunnel 网络参数的地方，主控制器中设置的仅为系统vpn设置中的展示名称</h4><ul>
+<li>首先新建一个NEPacketTunnelNetworkSettings对象，此对象是用来设置并建立vpn tunnel初始化对象时提供的RemoteAddress即为我们要建立连接的远程服务器的地址，注意如果是域名需要手动解析为IP地址再传入。下面提供了方法可转换。</li>
+<li>MTU:最大传输单元,即每个packet最大的容量</li>
+<li>includedRoutes：即vpn tunnel需要拦截包的地址，如果全部拦截则设置[NEIPv4Route defaultRoute]，也可以指定部分需要拦截的地址</li>
+<li>excludeRoute ： 设置不拦截哪些包的地址，默认不会拦截tunnel本身地址发出去的包。</li>
+<li>最后调用<code>- (void)setTunnelNetworkSettings</code>，在回调若成功直接调用<code>completionHandler(nil);</code>来建立vpn连接。</li>
+</ul>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#include <span class="meta-string">&lt;netinet/in.h&gt;</span></span></div><div class="line"><span class="meta">#include <span class="meta-string">&lt;netdb.h&gt;</span></span></div><div class="line"><span class="meta">#include <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="comment">// 域名转换IP</span></div><div class="line">- (<span class="built_in">NSString</span> *)queryIpWithDomain:(<span class="built_in">NSString</span> *)domain &#123;</div><div class="line">    <span class="keyword">struct</span> hostent *hs;</div><div class="line">    <span class="keyword">struct</span> sockaddr_in server;</div><div class="line">    <span class="keyword">if</span> ((hs = gethostbyname([domain UTF8String])) != <span class="literal">NULL</span>) &#123;</div><div class="line">        server.sin_addr = *((<span class="keyword">struct</span> in_addr*)hs-&gt;h_addr_list[<span class="number">0</span>]);</div><div class="line">        <span class="keyword">return</span> [<span class="built_in">NSString</span> stringWithUTF8String:inet_ntoa(server.sin_addr)];</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在调用完setTunnelNetworkSettings后如果回调返回error且我们按照上述所说完成completionHandler(nil);的配置后，vpn成功建立连接，此时我们的app状态栏里也会相应出现vpn的标识，如下图。<br><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/mOMVeRnjTsZcgRHb0eYFsIBONPgD7u.sSViDpUNFVQk!/r/dAgBAAAAAAAA" alt="14-VPN"></p>
+<ul>
+<li>附加步骤：在VPN Tunndel 中持续读取packet包<br>因为我们已经成功建立了vpn连接，所以网络数据包我们可以在此回调中截取到</li>
+</ul>
+<p>利用NEPacketTunnelProvider对象的packetFlow 完成下面的方法即可。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">从流中读入可用的IP包</div><div class="line">- (<span class="keyword">void</span>)readPakcets &#123;</div><div class="line">    __<span class="keyword">weak</span> PacketTunnelProvider *weakSelf = <span class="keyword">self</span>;</div><div class="line">    [<span class="keyword">self</span>.packetFlow readPacketsWithCompletionHandler:^(<span class="built_in">NSArray</span>&lt;<span class="built_in">NSData</span> *&gt; * _Nonnull packets, <span class="built_in">NSArray</span>&lt;<span class="built_in">NSNumber</span> *&gt; * _Nonnull protocols) &#123;</div><div class="line">        <span class="keyword">for</span> (<span class="built_in">NSData</span> *packet <span class="keyword">in</span> packets) &#123;</div><div class="line">            <span class="comment">// log4cplus_debug("TVUVPNManager", "Read Packet - %s",[NSString stringWithFormat:@"%@",packet].UTF8String);</span></div><div class="line">            __typeof__(<span class="keyword">self</span>) strongSelf = weakSelf;</div><div class="line">            <span class="comment">// TODO ...</span></div><div class="line">            </div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"XDX : read packet - %@"</span>,packet);</div><div class="line">        &#125;</div><div class="line">        [weakSelf readPakcets];</div><div class="line">    &#125;];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>以下为我读到的包<br><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/izQf7SxkTPdQWu60q3C8X5AOwJvDjoSJU1hh4YIKE9M!/r/dA4AAAAAAAAA" alt="read packet"></p>
+<p>另外如需Debug app extension target可以通过Xcode如下方法<br><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/PW5JfBUVyBHM7U7TC5VAecT4N5kwPFXzWexe.p92ZaA!/r/dIUBAAAAAAAA" alt="Debug"></p>
+<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/4KTKTmd64MoMxTZiFo292.6A6H1UHaB6G3pYrWghG*U!/r/dOAAAAAAAAAA" alt="Debug info"></p>
+<ul>
+<li>停止方法较为简单，不再叙述，详细可在Demo中查阅</li>
+</ul>
+<h3 id="总结：此Demo为利用苹果官方提供的VPN-Extension在一个项目中通过新建Target来完成一个简单建立VPN的过程。其中涉及到App-extension的知识可在本文所附的另一篇文章中查阅，主要涉及App-extension在项目中的配置，以及建立VPN连接时一些参数的设置及方法的调用时机-以及成功建立连接后可拦截手机中的网络Packet。"><a href="#总结：此Demo为利用苹果官方提供的VPN-Extension在一个项目中通过新建Target来完成一个简单建立VPN的过程。其中涉及到App-extension的知识可在本文所附的另一篇文章中查阅，主要涉及App-extension在项目中的配置，以及建立VPN连接时一些参数的设置及方法的调用时机-以及成功建立连接后可拦截手机中的网络Packet。" class="headerlink" title="总结：此Demo为利用苹果官方提供的VPN Extension在一个项目中通过新建Target来完成一个简单建立VPN的过程。其中涉及到App extension的知识可在本文所附的另一篇文章中查阅，主要涉及App extension在项目中的配置，以及建立VPN连接时一些参数的设置及方法的调用时机,以及成功建立连接后可拦截手机中的网络Packet。"></a>总结：此Demo为利用苹果官方提供的VPN Extension在一个项目中通过新建Target来完成一个简单建立VPN的过程。其中涉及到App extension的知识可在本文所附的另一篇文章中查阅，主要涉及App extension在项目中的配置，以及建立VPN连接时一些参数的设置及方法的调用时机,以及成功建立连接后可拦截手机中的网络Packet。</h3>
+      
+      
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang" title="打赏，支持一下">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()" title="关闭">×</a>
+            <div class="shang_tit">
+              <p>劫富济贫</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">一生负气成今日，四海无人对夕阳</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/06/23/20180623_vpn_extension/">App extension实战 - Personal VPN 连接并捕获packet</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 小东邪_Chengyang 的个人博客">小东邪_Chengyang</a></p>
+        <p><span>发布时间:</span>2018年06月23日 - 14时38分</p>
+        <p><span>最后更新:</span>2018年06月23日 - 15时37分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/06/23/20180623_vpn_extension/" title="App extension实战 - Personal VPN 连接并捕获packet">http://yoursite.com/2018/06/23/20180623_vpn_extension/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2018/06/23/20180623_vpn_extension/　　作者: 小东邪_Chengyang" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+  
+    <a href="/2018/03/25/yuv/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">What is YUV ?</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#本例需求-iOS建立简单的VPN连接并成功拦截IP数据包pakcet"><span class="toc-number">1.</span> <span class="toc-text">本例需求 : iOS建立简单的VPN连接并成功拦截IP数据包pakcet.</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#建议：建议阅读本文前先仔细阅读并理解下App-extension原理，有助于在项目中解决很多问题。App-extension总结"><span class="toc-number">2.</span> <span class="toc-text">建议：建议阅读本文前先仔细阅读并理解下App extension原理，有助于在项目中解决很多问题。App extension总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#注意：Personal-VPN功能是苹果开发者账号才有权限开启，所以如果没有开发者账号次Demo无法运行"><span class="toc-number">3.</span> <span class="toc-text">注意：Personal-VPN功能是苹果开发者账号才有权限开启，所以如果没有开发者账号次Demo无法运行</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#GitHub地址-附代码"><span class="toc-number">3.1.</span> <span class="toc-text">GitHub地址(附代码) : </span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#简书地址"><span class="toc-number">3.2.</span> <span class="toc-text">简书地址     : </span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#博客地址"><span class="toc-number">3.3.</span> <span class="toc-text">博客地址     : </span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#掘金地址"><span class="toc-number">3.4.</span> <span class="toc-text">掘金地址     : </span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一-App-extension-定义及工作原理"><span class="toc-number"></span> <span class="toc-text">一. App extension 定义及工作原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-App-extension-更多请了解App-extension总结"><span class="toc-number">0.1.</span> <span class="toc-text">1. App extension, 更多请了解App extension总结</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二-VPN-extension-简介"><span class="toc-number"></span> <span class="toc-text">二. VPN extension 简介</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-背景"><span class="toc-number">0.1.</span> <span class="toc-text">1. 背景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-定义"><span class="toc-number">0.2.</span> <span class="toc-text">2. 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-使用框架"><span class="toc-number">0.3.</span> <span class="toc-text">3.使用框架</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-核心API"><span class="toc-number">0.4.</span> <span class="toc-text">4. 核心API</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二-VPN-extension-创建步骤"><span class="toc-number"></span> <span class="toc-text">二. VPN extension 创建步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-新建Target"><span class="toc-number">0.1.</span> <span class="toc-text">1. 新建Target</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-删除模板中多余代码"><span class="toc-number">0.2.</span> <span class="toc-text">2. 删除模板中多余代码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-配置VPN所需信息"><span class="toc-number">0.3.</span> <span class="toc-text">3. 配置VPN所需信息</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#3-1-配置签名信息，开启权限"><span class="toc-number">0.3.1.</span> <span class="toc-text">3-1. 配置签名信息，开启权限</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-2-开启权限"><span class="toc-number">0.3.2.</span> <span class="toc-text">3-2 开启权限</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-3-在Xcode中配置VPN"><span class="toc-number">0.3.3.</span> <span class="toc-text">3-3 在Xcode中配置VPN</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-实现步骤"><span class="toc-number">0.4.</span> <span class="toc-text">4. 实现步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#4-1-导入必需框架"><span class="toc-number">0.4.1.</span> <span class="toc-text">4-1 导入必需框架</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-1-初始化并配置NETunnelProviderManager对象"><span class="toc-number">0.4.2.</span> <span class="toc-text">4-1 初始化并配置NETunnelProviderManager对象</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#注意：配置好的NETunnelProviderManager对象仅在系统设置中起展示作用，或者说这里的设置并不真正生效，真正生效的设置在app-extension-target中，如果为了保持一致，如果仅仅测试，配置信息可以随便填写（但target-bundle-id-必须为项目target真实的ID），如果为了与vpn真正配置保持一致，可填写正确地址。"><span class="toc-number">0.5.</span> <span class="toc-text">注意：配置好的NETunnelProviderManager对象仅在系统设置中起展示作用，或者说这里的设置并不真正生效，真正生效的设置在app extension target中，如果为了保持一致，如果仅仅测试，配置信息可以随便填写（但target bundle id 必须为项目target真实的ID），如果为了与vpn真正配置保持一致，可填写正确地址。</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#知识点，了解可跳过"><span class="toc-number">1.</span> <span class="toc-text">知识点，了解可跳过</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#知识点-1-区别"><span class="toc-number">1.0.1.</span> <span class="toc-text">知识点 1. 区别</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#NETunnelProviderManager类继承了-NEVPNManager大多数基本的功能，主要的区别如下："><span class="toc-number">1.0.2.</span> <span class="toc-text">NETunnelProviderManager类继承了 NEVPNManager大多数基本的功能，主要的区别如下：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#知识点-2-将网络数据路由到VPN两种方式"><span class="toc-number">1.0.3.</span> <span class="toc-text">知识点 2. 将网络数据路由到VPN两种方式</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-2-初始化NETunnelProviderManager对象"><span class="toc-number">1.0.4.</span> <span class="toc-text">4-2  初始化NETunnelProviderManager对象</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-3-主控制器启动VPN"><span class="toc-number">1.0.5.</span> <span class="toc-text">4-3. 主控制器启动VPN</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-4-在PacketTunnelProvider回调中完成剩余工作"><span class="toc-number">1.0.6.</span> <span class="toc-text">4-4.在PacketTunnelProvider回调中完成剩余工作</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#这里是真正设置vpn-tunnel-网络参数的地方，主控制器中设置的仅为系统vpn设置中的展示名称"><span class="toc-number">1.1.</span> <span class="toc-text">这里是真正设置vpn tunnel 网络参数的地方，主控制器中设置的仅为系统vpn设置中的展示名称</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#总结：此Demo为利用苹果官方提供的VPN-Extension在一个项目中通过新建Target来完成一个简单建立VPN的过程。其中涉及到App-extension的知识可在本文所附的另一篇文章中查阅，主要涉及App-extension在项目中的配置，以及建立VPN连接时一些参数的设置及方法的调用时机-以及成功建立连接后可拦截手机中的网络Packet。"><span class="toc-number">2.</span> <span class="toc-text">总结：此Demo为利用苹果官方提供的VPN Extension在一个项目中通过新建Target来完成一个简单建立VPN的过程。其中涉及到App extension的知识可在本文所附的另一篇文章中查阅，主要涉及App extension在项目中的配置，以及建立VPN连接时一些参数的设置及方法的调用时机,以及成功建立连接后可拦截手机中的网络Packet。</span></a></li></ol>
+</div>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="2018/06/23/20180623_vpn_extension/" data-title="App extension实战 - Personal VPN 连接并捕获packet" data-url="http://yoursite.com/2018/06/23/20180623_vpn_extension/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xiaodongxie"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = '/js/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+    <!-- 多说公共JS代码 end -->
+</div>
+
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2018/03/25/yuv/" title="下一篇: What is YUV ?">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/06/23/20180623_vpn_extension/">App extension实战 - Personal VPN 连接并捕获packet</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/25/yuv/">What is YUV ?</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/24/ios_cacheQueue/">利用C++ 设计缓存队列实现高效传输相机数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/24/deviceOrientation/">iOS带有Camera 的View 手动及自动设置屏幕方向汇总(iOS orietation video rotate)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/24/ios_sizeClass/">iOS使用Autolayout-SizeClass解决横竖屏控件位置差别较大情况</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/23/codec/">硬件编码相关知识(H264,H265)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/23/audioPillar/">iOS 音量柱的实现(mic 采集的声音DB反映成音量柱)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/23/h264DataStructure/">H.264 Data Structure (H.264码流结构)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/23/configSSH/">多账号配置SSH.md</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/23/H264H265Encoder/">H264,H265 Encoder</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/23/cropSampleBuffer/">iOS开发中截取相机部分画面，切割sampleBuffer（Crop sample buffer）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/23/record/">Audio -- PCM to AAC</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/25/group/">代码隐藏GroupedTableView上边多余的间隔</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/25/sendValue/">iOS控制器之间传值</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/23/masonry/">iOS之Masonry快速上手</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/23/hello/">Hello 小东邪</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/09/fulltext/">iOS之富文本</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/25/java/">mac系统安装Apache Tomcat详细步骤</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/25/ios-help/">iOS帮助文档最新安装方法</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2018 小东邪_Chengyang
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >桃花岛到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本模块阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+</body>
+</html>
