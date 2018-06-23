@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>iOS带有Camera 的View 手动及自动设置屏幕方向汇总(iOS orietation video rotate) | _小__东邪___</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="在一个始终打开Camera的View上，默认以横屏进入，横屏状态下可上下旋转自动变换方向，手动点击按钮切换竖屏，竖屏默认只有Home键向下一种方向.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS带有Camera 的View 手动及自动设置屏幕方向汇总(iOS orietation video rotate)">
+<meta property="og:url" content="http://yoursite.com/2018/02/24/deviceOrientation/index.html">
+<meta property="og:site_name" content="_小__东邪___">
+<meta property="og:description" content="在一个始终打开Camera的View上，默认以横屏进入，横屏状态下可上下旋转自动变换方向，手动点击按钮切换竖屏，竖屏默认只有Home键向下一种方向.">
+<meta property="og:updated_time" content="2018-02-24T05:58:11.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS带有Camera 的View 手动及自动设置屏幕方向汇总(iOS orietation video rotate)">
+<meta name="twitter:description" content="在一个始终打开Camera的View上，默认以横屏进入，横屏状态下可上下旋转自动变换方向，手动点击按钮切换竖屏，竖屏默认只有Home键向下一种方向.">
+  
+    <link rel="alternative" href="/atom.xml" title="_小__东邪___" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.png" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/" title="Hi Mate">小东邪_Chengyang</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">风陵渡口初相遇,一遇杨过误终身.</p>
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">桃花岛</a></li>
+                        
+                            <li><a href="/works">绝世武功</a></li>
+                        
+                            <li><a href="/about">千里传音</a></li>
+                        
+                            <li><a href="/FrontEndGuide">黯然销魂</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=xiao_dx@foxmail.com" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/ChengyangLi/ChengyangLi.github.io" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="https://www.zhihu.com/people/xiao-dong-xie-75" title="zhihu">zhihu</a>
+                            
+                                <a class="fl weibo" target="_blank" href="http://weibo.com/u/5088497199" title="weibo">weibo</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/AAC/" style="font-size: 10px;">AAC</a> <a href="/tags/Apache/" style="font-size: 10px;">Apache</a> <a href="/tags/Audio/" style="font-size: 10px;">Audio</a> <a href="/tags/AudioQueue/" style="font-size: 10px;">AudioQueue</a> <a href="/tags/AudioUnit/" style="font-size: 10px;">AudioUnit</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Camera/" style="font-size: 10px;">Camera</a> <a href="/tags/CaptureSession/" style="font-size: 10px;">CaptureSession</a> <a href="/tags/DB/" style="font-size: 10px;">DB</a> <a href="/tags/Data-Structure/" style="font-size: 10px;">Data Structure</a> <a href="/tags/Encoder/" style="font-size: 10px;">Encoder</a> <a href="/tags/H264/" style="font-size: 16.67px;">H264</a> <a href="/tags/H265/" style="font-size: 10px;">H265</a> <a href="/tags/HEVC/" style="font-size: 13.33px;">HEVC</a> <a href="/tags/Masonry/" style="font-size: 10px;">Masonry</a> <a href="/tags/MyEclipse/" style="font-size: 10px;">MyEclipse</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/Orientation/" style="font-size: 10px;">Orientation</a> <a href="/tags/PCM/" style="font-size: 10px;">PCM</a> <a href="/tags/Rotate/" style="font-size: 10px;">Rotate</a> <a href="/tags/SizeClass/" style="font-size: 10px;">SizeClass</a> <a href="/tags/TableViewGroup/" style="font-size: 10px;">TableViewGroup</a> <a href="/tags/crop/" style="font-size: 10px;">crop</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-API/" style="font-size: 10px;">iOS API</a> <a href="/tags/ios/" style="font-size: 13.33px;">ios</a> <a href="/tags/sampleBuffer/" style="font-size: 10px;">sampleBuffer</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/传值/" style="font-size: 10px;">传值</a> <a href="/tags/富文本/" style="font-size: 10px;">富文本</a> <a href="/tags/小东邪/" style="font-size: 10px;">小东邪</a> <a href="/tags/相机/" style="font-size: 10px;">相机</a> <a href="/tags/组成结构/" style="font-size: 10px;">组成结构</a> <a href="/tags/队列/" style="font-size: 10px;">队列</a> <a href="/tags/音视频/" style="font-size: 10px;">音视频</a> <a href="/tags/音量柱/" style="font-size: 10px;">音量柱</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://King-Cheng.github.io/">鹏丞万里</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">一生负气成今日，四海无人对夕阳.</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="Me">小东邪_Chengyang</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.png" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="Me">小东邪_Chengyang</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">风陵渡口初相遇,一遇杨过误终身.</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">桃花岛</a></li>
+                
+                    <li><a href="/works">绝世武功</a></li>
+                
+                    <li><a href="/about">千里传音</a></li>
+                
+                    <li><a href="/FrontEndGuide">黯然销魂</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=xiao_dx@foxmail.com" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/ChengyangLi/ChengyangLi.github.io" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="https://www.zhihu.com/people/xiao-dong-xie-75" title="zhihu">zhihu</a>
+                    
+                        <a class="weibo" target="_blank" href="http://weibo.com/u/5088497199" title="weibo">weibo</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-deviceOrientation" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/02/24/deviceOrientation/" class="article-date">
+      <time datetime="2018-02-24T05:58:11.000Z" itemprop="datePublished">2018-02-24</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      iOS带有Camera 的View 手动及自动设置屏幕方向汇总(iOS orietation video rotate)
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Camera/">Camera</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Orientation/">Orientation</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Rotate/">Rotate</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p><excerpt in="" index="" |="" 首页摘要=""> </excerpt></p>
+<ul>
+<li>在一个始终打开Camera的View上，默认以横屏进入，横屏状态下可上下旋转自动变换方向，手动点击按钮切换竖屏，竖屏默认只有Home键向下一种方向. <a id="more"></a><the rest="" of="" contents="" |="" 余下全文="">
+
+
+</the></li>
+</ul>
+<h2 id="带有Camera-的View-手动及自动设置屏幕方向汇总"><a href="#带有Camera-的View-手动及自动设置屏幕方向汇总" class="headerlink" title="带有Camera 的View 手动及自动设置屏幕方向汇总"></a>带有Camera 的View 手动及自动设置屏幕方向汇总</h2><h4 id="需求："><a href="#需求：" class="headerlink" title="需求："></a>需求：</h4><h4 id="1-在一个始终打开Camera的View上，默认以横屏进入，横屏状态下可上下旋转自动变换方向，手动点击按钮切换竖屏，竖屏默认只有Home键向下一种方向。"><a href="#1-在一个始终打开Camera的View上，默认以横屏进入，横屏状态下可上下旋转自动变换方向，手动点击按钮切换竖屏，竖屏默认只有Home键向下一种方向。" class="headerlink" title="1. 在一个始终打开Camera的View上，默认以横屏进入，横屏状态下可上下旋转自动变换方向，手动点击按钮切换竖屏，竖屏默认只有Home键向下一种方向。"></a>1. 在一个始终打开Camera的View上，默认以横屏进入，横屏状态下可上下旋转自动变换方向，手动点击按钮切换竖屏，竖屏默认只有Home键向下一种方向。</h4><h4 id="2-部分控件横竖屏下的位置差别较大-使用AutoLayout实现-不在本文介绍-如需帮助请点击SizeClass"><a href="#2-部分控件横竖屏下的位置差别较大-使用AutoLayout实现-不在本文介绍-如需帮助请点击SizeClass" class="headerlink" title="2. 部分控件横竖屏下的位置差别较大(使用AutoLayout实现) 不在本文介绍,如需帮助请点击SizeClass"></a>2. 部分控件横竖屏下的位置差别较大(使用AutoLayout实现) 不在本文介绍,如需帮助请点击<a href="https://www.jianshu.com/p/085ce8e59625" target="_blank" rel="external">SizeClass</a></h4><h4 id="注意：带有Camera的View在旋转时需要考虑先旋转屏幕方向再旋转Camera的Video方向，两者并不直接绑定，因此需要我们分开做旋转操作，否则会出现屏幕方向与相机的Video位置不能完全重合。"><a href="#注意：带有Camera的View在旋转时需要考虑先旋转屏幕方向再旋转Camera的Video方向，两者并不直接绑定，因此需要我们分开做旋转操作，否则会出现屏幕方向与相机的Video位置不能完全重合。" class="headerlink" title="注意：带有Camera的View在旋转时需要考虑先旋转屏幕方向再旋转Camera的Video方向，两者并不直接绑定，因此需要我们分开做旋转操作，否则会出现屏幕方向与相机的Video位置不能完全重合。"></a>注意：带有Camera的View在旋转时需要考虑先旋转屏幕方向再旋转Camera的Video方向，两者并不直接绑定，因此需要我们分开做旋转操作，否则会出现屏幕方向与相机的Video位置不能完全重合。</h4><h4 id="—————————————–"><a href="#—————————————–" class="headerlink" title="—————————————–"></a>—————————————–</h4><h4 id="GitHub地址-附代码-带有Camera-的View-手动及自动设置屏幕方向汇总"><a href="#GitHub地址-附代码-带有Camera-的View-手动及自动设置屏幕方向汇总" class="headerlink" title="GitHub地址(附代码) : 带有Camera 的View 手动及自动设置屏幕方向汇总"></a>GitHub地址(附代码) : <a href="https://github.com/ChengyangLi/XDXScreenOrientationChangedDemo" target="_blank" rel="external">带有Camera 的View 手动及自动设置屏幕方向汇总</a></h4><h4 id="简书地址-带有Camera-的View-手动及自动设置屏幕方向汇总"><a href="#简书地址-带有Camera-的View-手动及自动设置屏幕方向汇总" class="headerlink" title="简书地址   : 带有Camera 的View 手动及自动设置屏幕方向汇总"></a>简书地址   : <a href="https://www.jianshu.com/p/0f3f50086d8f" target="_blank" rel="external">带有Camera 的View 手动及自动设置屏幕方向汇总</a></h4><h4 id="博客地址-带有Camera-的View-手动及自动设置屏幕方向汇总"><a href="#博客地址-带有Camera-的View-手动及自动设置屏幕方向汇总" class="headerlink" title="博客地址   : 带有Camera 的View 手动及自动设置屏幕方向汇总"></a>博客地址   : <a href="https://chengyangli.github.io/2018/02/23/deviceOrientation/#more" target="_blank" rel="external">带有Camera 的View 手动及自动设置屏幕方向汇总</a></h4><h4 id="掘金地址-带有Camera-的View-手动及自动设置屏幕方向汇总"><a href="#掘金地址-带有Camera-的View-手动及自动设置屏幕方向汇总" class="headerlink" title="掘金地址   : 带有Camera 的View 手动及自动设置屏幕方向汇总"></a>掘金地址   : <a href="https://juejin.im/post/5a8fd79bf265da4e96740990" target="_blank" rel="external">带有Camera 的View 手动及自动设置屏幕方向汇总</a></h4><h4 id="—————————————–-1"><a href="#—————————————–-1" class="headerlink" title="—————————————–"></a>—————————————–</h4><h4 id="总体流程："><a href="#总体流程：" class="headerlink" title="总体流程："></a>总体流程：</h4><ul>
+<li>主控制器实现<code>- (UIInterfaceOrientationMask)supportedInterfaceOrientations</code>设置支持旋转的方向</li>
+<li>xib中设置每个控件横竖屏下不同的约束</li>
+<li>通过按钮手动设置屏幕将切换到的方向，并设置相机Video画面的方向</li>
+<li>设置屏幕不同方向的需要改变的控件的尺寸状态等相关逻辑</li>
+</ul>
+<h5 id="1-在主控制器中首先加载支持屏幕方向的方法"><a href="#1-在主控制器中首先加载支持屏幕方向的方法" class="headerlink" title="1. 在主控制器中首先加载支持屏幕方向的方法"></a>1. 在主控制器中首先加载支持屏幕方向的方法</h5><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">UIInterfaceOrientationMask</span>)supportedInterfaceOrientations &#123;</div><div class="line">    <span class="built_in">UIInterfaceOrientationMask</span> screenMode;</div><div class="line">    <span class="keyword">if</span> ([[<span class="built_in">NSUserDefaults</span> standardUserDefaults] boolForKey:<span class="string">@"isPortraitMode"</span>]) &#123;</div><div class="line">        g_isPortraitMode = <span class="literal">true</span>;</div><div class="line">        screenMode = <span class="built_in">UIInterfaceOrientationMaskPortrait</span>;</div><div class="line">    &#125;<span class="keyword">else</span> &#123;</div><div class="line">        g_isPortraitMode = <span class="literal">false</span>;</div><div class="line">        screenMode = <span class="built_in">UIInterfaceOrientationMaskLandscape</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> screenMode;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>当程序启动后，系统会先调用此方法，在<code>- (UIInterfaceOrientationMask)supportedInterfaceOrientations</code>中，通过全局变量flag标识设备支持旋转的方向，这里我们设置如果是竖屏则只支持Home键向下的情况，如果是横屏则支持上下旋转的两种横屏方向，该方法会在屏幕每次旋转时调用。</p>
+<h5 id="2-使用Autolayout-设置xib中控件的布局"><a href="#2-使用Autolayout-设置xib中控件的布局" class="headerlink" title="2. 使用Autolayout 设置xib中控件的布局"></a>2. 使用Autolayout 设置xib中控件的布局</h5><p>如果是要实现横竖屏上的部分控件位置差别比较大可参考以下文章，<br>如需帮助请点击<a href="https://www.jianshu.com/p/085ce8e59625" target="_blank" rel="external">SizeClass</a></p>
+<h5 id="3-手动设置屏幕方向"><a href="#3-手动设置屏幕方向" class="headerlink" title="3. 手动设置屏幕方向"></a>3. 手动设置屏幕方向</h5><figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)<span class="string">setScreenOrientation:</span>(UIInterfaceOrientation)orientation &#123;</div><div class="line">     <span class="comment">// m_rotatestate = orientation;   // 本行为我们自己项目中标致旋转方向的全局变量</span></div><div class="line">    <span class="keyword">if</span> ([[UIDevice currentDevice] <span class="string">respondsToSelector:</span><span class="meta">@selector</span>(<span class="string">setOrientation:</span>)]) &#123;</div><div class="line">        SEL selector = NSSelectorFromString(@<span class="string">"setOrientation:"</span>);</div><div class="line">        NSInvocation *invocation = [NSInvocation <span class="string">invocationWithMethodSignature:</span>[UIDevice <span class="string">instanceMethodSignatureForSelector:</span>selector]];</div><div class="line">        [invocation <span class="string">setSelector:</span>selector];</div><div class="line">        [invocation <span class="string">setTarget:</span>[UIDevice currentDevice]];</div><div class="line">        <span class="keyword">int</span> val = orientation;<span class="comment">//这里可以改变旋转的方向</span></div><div class="line">        [invocation <span class="string">setArgument:</span>&amp;val <span class="string">atIndex:</span><span class="number">2</span>];</div><div class="line">        [invocation invoke];</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>当点击转换按钮的时候可通过上面的代码将屏幕手动旋转为竖屏/横屏方向。</p>
+<h5 id="4-设置控件的状态"><a href="#4-设置控件的状态" class="headerlink" title="4.设置控件的状态"></a>4.设置控件的状态</h5><p>注意：要确保先设置了屏幕方向后再更新部分控件的位置或是状态，不然可能获取部分控件时调用控件的尺寸为上一种屏幕方向时控件的尺寸导致出现异常情况。</p>
+<h4 id="注意："><a href="#注意：" class="headerlink" title="注意："></a>注意：</h4><ul>
+<li>因为当APP退出时下次进入会使用上一次保存的横屏或竖屏状态，所以将横竖屏的值保存在数据库</li>
+<li>当切换横竖屏时，首先设置屏幕方向，<strong>请注意屏幕方向和相机方向并不直接关联</strong>，所以每次旋转需要分别旋转，然后设置相机Video的方向，即如下代码，相机的方向并不会随着屏幕方向变换而自动切换，所以需要同步进行设置。</li>
+</ul>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">-(<span class="keyword">void</span>)adjustAVOutputDataOrientation:(<span class="built_in">AVCaptureVideoOrientation</span>)aOrientation</div><div class="line">&#123;</div><div class="line">    <span class="keyword">for</span>(<span class="built_in">AVCaptureConnection</span> *connection <span class="keyword">in</span> video_output.connections)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">for</span>(<span class="built_in">AVCaptureInputPort</span> *port <span class="keyword">in</span> [connection inputPorts])</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">if</span>([[port mediaType] isEqual:<span class="built_in">AVMediaTypeVideo</span>])</div><div class="line">            &#123;</div><div class="line">                <span class="keyword">if</span>([connection isVideoOrientationSupported])</div><div class="line">                &#123;</div><div class="line">                    [connection setVideoOrientation:aOrientation];</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>注册<code>[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(deviceOrientationDidChange:) name: UIDeviceOrientationDidChangeNotification object: nil];</code> 当方向旋转过以后会调用一下方法，可进行部分逻辑的实现<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)deviceOrientationDidChange:(<span class="built_in">NSNotification</span> *)notification &#123;</div><div class="line">    <span class="comment">//Obtaining the current device orientation</span></div><div class="line">    <span class="built_in">UIDeviceOrientation</span> orientation = [[<span class="built_in">UIDevice</span> currentDevice] orientation];</div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"Curent UIInterfaceOrientation is %ld"</span>,(<span class="keyword">long</span>)orientation);</div><div class="line">    </div><div class="line">    <span class="comment">//Ignoring specific orientations</span></div><div class="line">    <span class="keyword">if</span> (g_isPortraitMode || orientation == <span class="built_in">UIDeviceOrientationFaceUp</span> || orientation == <span class="built_in">UIDeviceOrientationFaceDown</span> || orientation == <span class="built_in">UIDeviceOrientationUnknown</span>  || orientation == <span class="built_in">UIDeviceOrientationPortrait</span> || orientation == <span class="built_in">UIDeviceOrientationPortraitUpsideDown</span>)&#123;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span>(orientation == <span class="built_in">UIDeviceOrientationLandscapeLeft</span>)</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"Device Left"</span>);</div><div class="line">    <span class="keyword">if</span>(orientation == <span class="built_in">UIDeviceOrientationLandscapeRight</span>)</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"Device Right"</span>);</div><div class="line">    [<span class="keyword">self</span> rotateToInterfaceOrientation:(<span class="built_in">UIInterfaceOrientation</span>)orientation];</div><div class="line">&#125;</div></pre></td></tr></table></figure></li>
+</ul>
+
+      
+      
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang" title="打赏，支持一下">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()" title="关闭">×</a>
+            <div class="shang_tit">
+              <p>劫富济贫</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">一生负气成今日，四海无人对夕阳</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/02/24/deviceOrientation/">iOS带有Camera 的View 手动及自动设置屏幕方向汇总(iOS orietation video rotate)</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 小东邪_Chengyang 的个人博客">小东邪_Chengyang</a></p>
+        <p><span>发布时间:</span>2018年02月24日 - 13时58分</p>
+        <p><span>最后更新:</span>2018年02月24日 - 13时58分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/02/24/deviceOrientation/" title="iOS带有Camera 的View 手动及自动设置屏幕方向汇总(iOS orietation video rotate)">http://yoursite.com/2018/02/24/deviceOrientation/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2018/02/24/deviceOrientation/　　作者: 小东邪_Chengyang" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+    <a href="/2018/02/24/ios_cacheQueue/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          利用C++ 设计缓存队列实现高效传输相机数据
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/02/24/ios_sizeClass/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">iOS使用Autolayout-SizeClass解决横竖屏控件位置差别较大情况</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#带有Camera-的View-手动及自动设置屏幕方向汇总"><span class="toc-number">1.</span> <span class="toc-text">带有Camera 的View 手动及自动设置屏幕方向汇总</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#需求："><span class="toc-number">1.0.1.</span> <span class="toc-text">需求：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-在一个始终打开Camera的View上，默认以横屏进入，横屏状态下可上下旋转自动变换方向，手动点击按钮切换竖屏，竖屏默认只有Home键向下一种方向。"><span class="toc-number">1.0.2.</span> <span class="toc-text">1. 在一个始终打开Camera的View上，默认以横屏进入，横屏状态下可上下旋转自动变换方向，手动点击按钮切换竖屏，竖屏默认只有Home键向下一种方向。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-部分控件横竖屏下的位置差别较大-使用AutoLayout实现-不在本文介绍-如需帮助请点击SizeClass"><span class="toc-number">1.0.3.</span> <span class="toc-text">2. 部分控件横竖屏下的位置差别较大(使用AutoLayout实现) 不在本文介绍,如需帮助请点击SizeClass</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#注意：带有Camera的View在旋转时需要考虑先旋转屏幕方向再旋转Camera的Video方向，两者并不直接绑定，因此需要我们分开做旋转操作，否则会出现屏幕方向与相机的Video位置不能完全重合。"><span class="toc-number">1.0.4.</span> <span class="toc-text">注意：带有Camera的View在旋转时需要考虑先旋转屏幕方向再旋转Camera的Video方向，两者并不直接绑定，因此需要我们分开做旋转操作，否则会出现屏幕方向与相机的Video位置不能完全重合。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#—————————————–"><span class="toc-number">1.0.5.</span> <span class="toc-text">—————————————–</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#GitHub地址-附代码-带有Camera-的View-手动及自动设置屏幕方向汇总"><span class="toc-number">1.0.6.</span> <span class="toc-text">GitHub地址(附代码) : 带有Camera 的View 手动及自动设置屏幕方向汇总</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#简书地址-带有Camera-的View-手动及自动设置屏幕方向汇总"><span class="toc-number">1.0.7.</span> <span class="toc-text">简书地址   : 带有Camera 的View 手动及自动设置屏幕方向汇总</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#博客地址-带有Camera-的View-手动及自动设置屏幕方向汇总"><span class="toc-number">1.0.8.</span> <span class="toc-text">博客地址   : 带有Camera 的View 手动及自动设置屏幕方向汇总</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#掘金地址-带有Camera-的View-手动及自动设置屏幕方向汇总"><span class="toc-number">1.0.9.</span> <span class="toc-text">掘金地址   : 带有Camera 的View 手动及自动设置屏幕方向汇总</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#—————————————–-1"><span class="toc-number">1.0.10.</span> <span class="toc-text">—————————————–</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#总体流程："><span class="toc-number">1.0.11.</span> <span class="toc-text">总体流程：</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-在主控制器中首先加载支持屏幕方向的方法"><span class="toc-number">1.0.11.1.</span> <span class="toc-text">1. 在主控制器中首先加载支持屏幕方向的方法</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-使用Autolayout-设置xib中控件的布局"><span class="toc-number">1.0.11.2.</span> <span class="toc-text">2. 使用Autolayout 设置xib中控件的布局</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-手动设置屏幕方向"><span class="toc-number">1.0.11.3.</span> <span class="toc-text">3. 手动设置屏幕方向</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-设置控件的状态"><span class="toc-number">1.0.11.4.</span> <span class="toc-text">4.设置控件的状态</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#注意："><span class="toc-number">1.0.12.</span> <span class="toc-text">注意：</span></a></li></ol></li></ol></li></ol>
+</div>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="2018/02/24/deviceOrientation/" data-title="iOS带有Camera 的View 手动及自动设置屏幕方向汇总(iOS orietation video rotate)" data-url="http://yoursite.com/2018/02/24/deviceOrientation/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xiaodongxie"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = '/js/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+    <!-- 多说公共JS代码 end -->
+</div>
+
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2018/02/24/ios_cacheQueue/" title="上一篇: 利用C++ 设计缓存队列实现高效传输相机数据">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2018/02/24/ios_sizeClass/" title="下一篇: iOS使用Autolayout-SizeClass解决横竖屏控件位置差别较大情况">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/03/25/yuv/">yuv</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/24/ios_cacheQueue/">利用C++ 设计缓存队列实现高效传输相机数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/24/deviceOrientation/">iOS带有Camera 的View 手动及自动设置屏幕方向汇总(iOS orietation video rotate)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/24/ios_sizeClass/">iOS使用Autolayout-SizeClass解决横竖屏控件位置差别较大情况</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/23/codec/">硬件编码相关知识(H264,H265)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/23/audioPillar/">iOS 音量柱的实现(mic 采集的声音DB反映成音量柱)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/23/h264DataStructure/">H.264 Data Structure (H.264码流结构)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/23/configSSH/">多账号配置SSH.md</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/23/H264H265Encoder/">H264,H265 Encoder</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/23/cropSampleBuffer/">iOS开发中截取相机部分画面，切割sampleBuffer（Crop sample buffer）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/23/record/">Audio -- PCM to AAC</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/25/group/">代码隐藏GroupedTableView上边多余的间隔</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/25/sendValue/">iOS控制器之间传值</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/23/masonry/">iOS之Masonry快速上手</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/23/hello/">Hello 小东邪</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/09/fulltext/">iOS之富文本</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/25/java/">mac系统安装Apache Tomcat详细步骤</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/25/ios-help/">iOS帮助文档最新安装方法</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2018 小东邪_Chengyang
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >桃花岛到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本模块阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 24;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+</body>
+</html>
