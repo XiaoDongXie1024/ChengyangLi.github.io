@@ -221,125 +221,6 @@
 </nav>
       <div class="body-wrap">
   
-    <article id="post-yuv" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2018/03/25/yuv/" class="article-date">
-      <time datetime="2018-03-25T07:29:25.000Z" itemprop="datePublished">2018-03-25</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        <p>title: What is YUV ?<br>tags: <a href="多个标签">yuv,video</a><br>—<excerpt in="" index="" |="" 首页摘要=""> </excerpt></p>
-<ul>
-<li>在比如做移动客户端开发中(iOS,安卓)，我们在直播中要将本地视频推流到服务器，如何将本地相机采集的数据表示出来，或者比如我们要对采集到视频做旋转，裁剪，美颜等操作，如何能高效的完成以上动作，我们都不得不好好了解清楚图像的结构，以至于我们能用代码的形式将它表示出来。&lt;!— more –&gt;<the rest="" of="" contents="" |="" 余下全文="">
-
-
-</the></li>
-</ul>
-<h3 id="开发中用途"><a href="#开发中用途" class="headerlink" title="开发中用途"></a>开发中用途</h3><p>在比如做移动客户端开发中(iOS,安卓)，我们在直播中要将本地视频推流到服务器，如何将本地相机采集的数据表示出来，或者比如我们要对采集到视频做旋转，裁剪，美颜等操作，如何能高效的完成以上动作，我们都不得不好好了解清楚图像的结构，以至于我们能用代码的形式将它表示出来。</p>
-<h3 id="What-is-YUV"><a href="#What-is-YUV" class="headerlink" title="What is YUV ?"></a>What is YUV ?</h3><ol>
-<li><p>YUV是一种颜色编码方式，主要用于电视系统以及模拟视频领域，它将亮度信息(Y)与色彩信息(UV)分离，没有UV信息一样可以显示完整的图像，只不过是黑白的，这样的设计很好地解决了彩色电视机与黑白电视兼容的问题。</p>
-</li>
-<li><p>YUV不像传统RGB那样要求三个独立的视频信号同时传输，因此YUV方式传输视频占用较少带宽。</p>
-</li>
-</ol>
-<h4 id="概念区分"><a href="#概念区分" class="headerlink" title="概念区分"></a>概念区分</h4><ul>
-<li><p>Y’UV, YUV, YCbCr, YPbPr, etc.</p>
-<p>这几个词乍一看十分相似.</p>
-<ul>
-<li><p>在过去，YUV 和 Y’UV被用作电视系统中颜色信息的特定模拟信息编码。而YCbCr被用作颜色信息的数字编码，通常适用于视频和静态图像的压缩和传输（MPEG, JPEG）。</p>
-</li>
-<li><p>今天，YUV通常用被用在计算机行业描述使用YCbCr编码的文件格式。</p>
-</li>
-</ul>
-</li>
-<li><p>Y：表示明亮度(Luminance,Luma),也就是灰度值</p>
-</li>
-<li>U和V：色度(Chrominance,Chroma),描述影像色彩及饱和度。</li>
-</ul>
-<h4 id="1-采集方式-实心圆圈代表Y-空心圆圈代表UV"><a href="#1-采集方式-实心圆圈代表Y-空心圆圈代表UV" class="headerlink" title="1. 采集方式(实心圆圈代表Y,空心圆圈代表UV)"></a>1. 采集方式(实心圆圈代表Y,空心圆圈代表UV)</h4><ul>
-<li>YUV4:4:4 (每一个Y对应一组UV分量)</li>
-</ul>
-<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj4gQyTr/KbcvSTtOW1B1RFmnHDZ*fg.47LnrsqZ*hPoyqYFkgN4!/r/dEUBAAAAAAAA" alt="YUV4:4:4"></p>
-<ul>
-<li>YUV4:2:2 (每两个Y共用一组UV分量)</li>
-</ul>
-<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj4gQyTr/AGEXy4s6LZidmJedeqN00AyuNExs5BgP7OPDKvWgHGI!/r/dEEBAAAAAAAA" alt="YUV4:2:2"></p>
-<ul>
-<li>YUV4:2:0 (每四个Y共用一组UV分量)</li>
-</ul>
-<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj4gQyTr/OTDiLNXDX3hwRpaqBCYtPskBrp8DGwxvmgtcTPGzDh8!/r/dEUBAAAAAAAA" alt="YUV4:2:0"></p>
-<h4 id="2-存储方式"><a href="#2-存储方式" class="headerlink" title="2.存储方式"></a>2.存储方式</h4><blockquote>
-<p>了解了以上三幅图的YUV采集方式后，我们来重点说一下YUV的数据是如何存储的。</p>
-</blockquote>
-<p>在以上三张图中，实心圆圈代表一个Y分量，空心圆圈代表一个UV分量，而因为又分三种不同的采集方式，即1个Y对应一组UV分量，2个Y共用一组UV分量，4个Y共用一组UV分量，</p>
-<p>以YUV4:2:0为例，它又被分为YUV420P与YUV420SP,它们都是YUV420格式。</p>
-<ul>
-<li>YUV420P, Plane模式(Y,U,V三个plane)将Y,U,V分量分别打包，依次存储。下图为I420.<ul>
-<li>I420 : YYYYYYYY UU VV   </li>
-<li>YV12 : YYYYYYYY VV UU    </li>
-</ul>
-</li>
-</ul>
-<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/I.SsLDmhvPreNe5g58EeLCFOhX1PbcHrx.wYI2Qnt2Q!/r/dEUBAAAAAAAA" alt="YUV420p - I420"></p>
-<ul>
-<li>YUV420SP(NV12/NV21): two-plane模式，即Y和UV分为两个Plane,但是UV（CbCr）为交错存储，而不是分为三个plane. 下图为NV12<ul>
-<li>NV12: YYYYYYYY UVUV</li>
-<li>NV21: YYYYYYYY VUVU     </li>
-</ul>
-</li>
-</ul>
-<p><img src="http://r.photo.store.qq.com/psb?/V14Id4Zj1TAt9e/Sv52AMGJn3YGIs8DN0XAEJu..xMmYGBf5rIiE2QVRbg!/r/dEEBAAAAAAAA" alt="YUV420sp"></p>
-<p>根据以上两幅图，我们以分辨率为640<em>480的图片为例，则它的大小为  Y : width(640) </em> height(480) 可认为每个Y即为每个像素点，又因为每4个Y共用一组UV,所以，U和V的大小都为： width(640) <em> height(480) </em> (1 / 4 ). 所以图片真正的大小为 Y+U+V = 3 / 2 <em> (width(640) </em> height(480)).</p>
-<blockquote>
-<p>知道了YUV像素的排列方式以及如何求图像真正大小后我们便可以开始我们真正的工作。</p>
-</blockquote>
-<p>在程序中，比如一张图片的分辨率为640*480,如果该图片的格式为YUV420P,则我们可以很轻松的算出这张图片的Y,U,V三个分量。<br>我们用数组来存储该图像的大小byte[] src<br>则(I420)<br><figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Y = src[<span class="built_in">width</span> * <span class="built_in">height</span>];</div><div class="line">U = Y + scr[<span class="number">1</span>/<span class="number">4</span> * <span class="built_in">width</span> * <span class="built_in">height</span>];</div><div class="line">V = U + scr[<span class="number">1</span>/<span class="number">4</span> * <span class="built_in">width</span> * <span class="built_in">height</span>];</div></pre></td></tr></table></figure></p>
-<blockquote>
-<p>注意，计算的结果是通过不同格式来求的，所以不再一一介绍。</p>
-</blockquote>
-<p> YUV格式可分为两大类：打包(packed) , 平面(planar)</p>
-<ul>
-<li>打包(packed) : 将YUV分量存放在同一个数组中，通常是几个相邻的像素组成的一个宏像素(macro-pixel);</li>
-<li>平面(planar) : 使用三个数组分开存放YUV三个分量，就像一个三维平面。</li>
-</ul>
-<p>在以后的开发中，假如我们要对视频流中的图片做一些特殊处理，比如Crop, Rotate, Scale, 美颜等等，如果想高效实现我们必须了解YUV的格式这样我们才能做出正确处理。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>本文为YUV的基础知识，帮助初学者或在工作中接触音视频开发后因概念难以理解造成困惑无法继续开发的开发人员，只有我们了解了YUV的组成才能在代码中进行灵活应用，包括使用例如libyuv等优秀的第三方库。</p>
-<h4 id="参考-详解YUV数据格式-图文详解YUV420数据格式-YUV"><a href="#参考-详解YUV数据格式-图文详解YUV420数据格式-YUV" class="headerlink" title="参考: 详解YUV数据格式,图文详解YUV420数据格式,YUV"></a>参考: <a href="http://wentao1213.com/2016/11/28/linux-yuv-study/" target="_blank" rel="external">详解YUV数据格式</a>,<a href="https://www.cnblogs.com/azraelly/archive/2013/01/01/2841269.html" target="_blank" rel="external">图文详解YUV420数据格式</a>,<a href="https://en.wikipedia.org/wiki/YUV" target="_blank" rel="external">YUV</a></h4>
-      
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-
-      
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
     <article id="post-ios_cacheQueue" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -908,6 +789,71 @@
       
         <p class="article-more-link">
           <a  href="/2018/02/23/cropSampleBuffer/#more">click me >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-record" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/02/23/record/" class="article-date">
+      <time datetime="2018-02-23T09:39:53.000Z" itemprop="datePublished">2018-02-23</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/02/23/record/">Audio -- PCM to AAC</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <p><Excerpt in index | 首页摘要> </p>
+<ul>
+<li>本文需求：将Mic采集的PCM转成AAC，可得到两种不同数据,本例采用AudioQueue/AudioUnit两种方式实现<br>由于公司需求更改为Mic采集的pcm一路提供给WebRTC使用，另一路将pcm转为aac，将aac提供给直播用的API。因此应该先让Mic采集原始pcm数据，采用AudioQueue/AudioUnit两种方式保存，然后在回调函数中将其转换为aac提供给C++API,github地址:<a href="https://github.com/ChengyangLi/XDXPCMToAACDemo">原文代码</a>
+          
+      
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AAC/">AAC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Audio/">Audio</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AudioQueue/">AudioQueue</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AudioUnit/">AudioUnit</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PCM/">PCM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a  href="/2018/02/23/record/#more">click me >></a>
         </p>
       
       <div class="clearfix"></div>
